@@ -44,13 +44,16 @@
       },
       "collector": null
     },
-    "testMatch": [
-      "**/?(*.)+(spec|test).ts?(x)"
-    ],
     "preset": "ts-jest",
-    "testEnvironment": "jsdom",
     "roots": [
       "<rootDir>/src"
+    ],
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
+    ],
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/?(*.)+(spec|test).ts?(x)"
     ]
   }
 }

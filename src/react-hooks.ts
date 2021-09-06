@@ -22,7 +22,7 @@ export const mockReactHooks = (
 
     return origin.useCallback(mockedAction, ...deps);
   },
-  useEffect: function useEffect(action: () => () => void, ...deps: any[]) {
+  useEffect: function useEffect(action: () => () => void, deps: any[]) {
     // get caller function name from error stack since Funcion.caller is deprecated
     const componentName = getCallerName();
 
@@ -48,7 +48,7 @@ export const mockReactHooks = (
             unmountAction: mockedUnmount
           },
           renderIndex,
-          type: "useEffect"
+          hookType: "useEffect"
         });
         return mockedUnmount;
       }
@@ -65,10 +65,10 @@ export const mockReactHooks = (
         deps
       },
       renderIndex,
-      type: "useEffect"
+      hookType: "useEffect"
     });
 
-    return origin.useEffect(mockedAction, ...deps);
+    return origin.useEffect(mockedAction, deps);
   },
   useState: function useState(initialValue: unknown) {
     const result = origin.useState(initialValue);

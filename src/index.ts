@@ -28,9 +28,6 @@ export const jestCollector = ({
   includeImports,
   roots
 }: Options) => {
-  const privateCollector = new PrivateCollector();
-  collector = new Collector(privateCollector);
-
   if (roots !== undefined && !Array.isArray(roots)) {
     throw Error("Roots must be an array");
   }
@@ -66,6 +63,9 @@ export const jestCollector = ({
   if (!ignoreTest("include", include)) {
     return;
   }
+
+  const privateCollector = new PrivateCollector();
+  collector = new Collector(privateCollector);
 
   if (extensions === undefined) {
     extensions = [".ts", ".tsx"];

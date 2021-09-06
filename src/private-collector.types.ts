@@ -48,6 +48,12 @@ export interface RegisterFunction {
   name: string;
 }
 
+export interface RegisteredFunction {
+  call: { args: any; hooks?: ComponentHooks; result?: any }[];
+  dataTestId?: string;
+  jestFn: jest.Mock;
+}
+
 export interface RegisterHook {
   componentName: string;
   type: keyof ComponentHooksTypes;
@@ -57,8 +63,8 @@ export interface RegisterHook {
 export interface SetHook {
   componentName: string | undefined;
   dataTestId?: string;
+  hookType: keyof ComponentHooksTypes;
   index: number | undefined;
   props: HookEffect | HookState;
   renderIndex: number | undefined;
-  type: keyof ComponentHooksTypes;
 }

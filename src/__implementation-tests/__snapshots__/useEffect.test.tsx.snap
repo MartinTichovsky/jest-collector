@@ -1,0 +1,146 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useEffect Component with one useEffect and unregistered component 1`] = `
+Object {
+  "useEffect": Array [
+    Object {
+      "action": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "deps": Array [],
+    },
+  ],
+}
+`;
+
+exports[`useEffect Default - Component with one useEffect 1`] = `
+Array [
+  Object {
+    "useEffect": Array [
+      Object {
+        "action": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "deps": Array [],
+      },
+    ],
+  },
+]
+`;
+
+exports[`useEffect Default with test id - Component with one useEffect 1`] = `
+Array [
+  Object {
+    "useEffect": Array [
+      Object {
+        "action": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "deps": Array [],
+      },
+    ],
+  },
+]
+`;
+
+exports[`useEffect Deps in registered component 1`] = `
+Array [
+  Object {
+    "useEffect": Array [
+      Object {
+        "action": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "deps": Array [
+          1,
+          Object {
+            "property": "some",
+          },
+          "Text",
+          false,
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`useEffect Deps in unregistered component 1`] = `undefined`;
+
+exports[`useEffect Unmount registered component 1`] = `
+Array [
+  Object {
+    "useEffect": Array [
+      Object {
+        "action": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": [MockFunction],
+            },
+          ],
+        },
+        "deps": Array [],
+        "unmountAction": [MockFunction],
+      },
+    ],
+  },
+]
+`;
+
+exports[`useEffect Unmount unregistered component 1`] = `
+Object {
+  "useEffect": Array [
+    Object {
+      "action": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": [MockFunction],
+          },
+        ],
+      },
+      "deps": Array [],
+      "unmountAction": [MockFunction],
+    },
+  ],
+}
+`;

@@ -1,12 +1,21 @@
-import { ComponentHooks, ComponentHooksTypes } from "./private-collector.types";
+import {
+  ComponentHooks,
+  ComponentHooksTypes,
+  RegisteredFunction
+} from "./private-collector.types";
 
 export abstract class ControllerAbstract {
   public abstract getFunctionCallCount(
     functionName: string,
     dataTestId?: string
-  ): number;
+  ): number | undefined;
 
-  public abstract getRegisteredReactComponentRenders(
+  public abstract getRegisteredFunction(
+    name: string,
+    dataTestId?: string
+  ): RegisteredFunction | undefined;
+
+  public abstract getRegisteredReactComponent(
     componentName: string,
     dataTestId?: string
   ): ComponentHooks[] | undefined;
@@ -15,28 +24,35 @@ export abstract class ControllerAbstract {
     K extends keyof ComponentHooksTypes
   >(
     componentName: string,
-    type: K,
+    hookType: K,
     dataTestId?: string
-  ):
-    | {
-        getRender: (renderNumber: number) => ComponentHooks[K] | undefined;
-        getRenderHooks: (
-          renderNumber: number,
-          hookNumber: number
-        ) => ComponentHooksTypes[K] | undefined;
-      }
-    | undefined;
+  ): {
+    getRender: (renderSequence: number) => ComponentHooks[K] | undefined;
+    getRenderHooks: (
+      renderSequence: number,
+      hookSequence: number
+    ) => ComponentHooksTypes[K] | undefined;
+  };
+
+  public abstract getUnregisteredReactComponent(
+    componentName: string
+  ): ComponentHooks | undefined;
 
   public abstract getUnregisteredReactComponentHooks<
     K extends keyof ComponentHooksTypes
   >(
     componentName: string,
-    type: K
-  ):
-    | {
-        getHook: (hookNumber: number) => ComponentHooksTypes[K] | undefined;
-      }
-    | undefined;
+    hookType: K
+  ): {
+    getHook: (hookSequence: number) => ComponentHooksTypes[K] | undefined;
+  };
+
+  public abstract hasRegisteredComponent(
+    componentName: string,
+    dataTestId?: string
+  ): boolean;
+
+  public abstract hasUnregisteredComponent(componentName: string): boolean;
 
   public abstract reset(): void;
 }

@@ -425,14 +425,14 @@ describe("jestCollector", () => {
 
   test("File mock calls", () => {
     _resolveReact.mockReturnValueOnce(undefined);
-    const origin = jest.requireActual("../test-helper/test-file.ts");
+    const origin = jest.requireActual("../__tests-helper/test-file.ts");
 
     Object.defineProperty(origin, "nonWritable", { writable: false });
 
     expect(() =>
       jestCollector({
         includeImports: ["/test-file.ts"],
-        roots: ["test-helper"]
+        roots: ["__tests-helper"]
       })
     ).not.toThrowError();
 

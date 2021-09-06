@@ -1,5 +1,11 @@
 [
   [
+    "__tests-helper",
+    [
+      "test-file.ts"
+    ]
+  ],
+  [
     "src",
     [
       [
@@ -73,12 +79,6 @@
       "SelectOption.types.ts",
       "types.ts",
       "utils.ts"
-    ]
-  ],
-  [
-    "test-helper",
-    [
-      "test-file.ts"
     ]
   ],
   [
