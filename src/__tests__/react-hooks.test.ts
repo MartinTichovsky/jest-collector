@@ -1,5 +1,5 @@
-import { PrivateCollector } from "./private-collector";
-import { mockReactHooks } from "./react-hooks";
+import { PrivateCollector } from "../private-collector";
+import { mockReactHooks } from "../react-hooks";
 
 const args = { deps: [1, 2.3] };
 const registeredComponent = "RegisteredComponent";

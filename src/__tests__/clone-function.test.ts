@@ -1,11 +1,11 @@
-import { mockFunction, registerClone } from "./clone-function";
-import { PrivateCollector } from "./private-collector";
+import { mockFunction, registerClone } from "../clone-function";
+import { PrivateCollector } from "../private-collector";
 
 const collector = new PrivateCollector();
 let mockDescribeNativeComponentFrame = false;
 
-jest.mock("./caller.ts", () => {
-  const origin = jest.requireActual("./caller");
+jest.mock("../caller.ts", () => {
+  const origin = jest.requireActual("../caller");
 
   return {
     ...origin,

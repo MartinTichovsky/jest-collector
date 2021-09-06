@@ -1,0 +1,1713 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jestCollector Default 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude SelectOption.tsx in first dir 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude SelectOption.tsx in root 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude SelectOption.tsx in root or first dir 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude SelectOption.tsx in second dir 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude all files ending with .types.ts or .types.tsx 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude all from folders 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude everything 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude everything starts with SelectOption 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude everything with name SelectOption.tsx 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude ts and tsx extensions 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/unknown",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/script.js",
+    [Function],
+  ],
+  Array [
+    "./src/log.log",
+    [Function],
+  ],
+  Array [
+    "./src/Readme.md",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Exclude From Imports Exclude utils.ts from src and index.ts from utils 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Option/Option.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Option/types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Form.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Select.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Select.types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/func.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/common.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/index.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Extensions Include all files 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/unknown",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/script.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/log.log",
+    [Function],
+  ],
+  Array [
+    "./src/Readme.md",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Extensions Include all js files 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/script.js",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Extensions Include all ts files 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Option/types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Select.types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/func.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/common.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/index.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include SelectOption.tsx in first dir 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include SelectOption.tsx in root 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include SelectOption.tsx in root or first dir 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include SelectOption.tsx in second dir 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include all files ending with .types.ts or types.tsx 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include all from folders 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include everything 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include everything starts with SelectOption 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include everything with name SelectOption.tsx 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include ts and tsx extensions 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Include Imports Include utils.ts from src and index.ts from utils 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector React module is not included 1`] = `
+Array [
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+]
+`;
+
+exports[`jestCollector Roots Multiple 1`] = `
+Array [
+  Array [
+    "./node_modules/react/index.js",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/Field.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/components/Field/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/Input.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/components/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./src/constants.ts",
+    [Function],
+  ],
+  Array [
+    "./src/controller.ts",
+    [Function],
+  ],
+  Array [
+    "./src/index.ts",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.tsx",
+    [Function],
+  ],
+  Array [
+    "./src/SelectOption.types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/types.ts",
+    [Function],
+  ],
+  Array [
+    "./src/utils.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Option/Option.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Option/types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Form.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Select.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/folder/Select.types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/func.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/common.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/index.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/types.ts",
+    [Function],
+  ],
+  Array [
+    "./utils/types.tsx",
+    [Function],
+  ],
+  Array [
+    "./utils/utils.ts",
+    [Function],
+  ],
+]
+`;

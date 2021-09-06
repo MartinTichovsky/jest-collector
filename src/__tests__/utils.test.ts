@@ -1,85 +1,23 @@
 import fs from "fs";
+import { getTestPath } from "../jest-globals";
 import {
   convertFileSystem,
   convertFileSystemArray,
   createRegexp,
   getFiles,
+  ignoreTest,
   testRegex
-} from "./utils";
-
-type FileSystem = (string | [directory: string, items: FileSystem])[];
-let fileSystem: FileSystem = [
-  [
-    "src",
-    [
-      ["folder1", ["file1-1.ts"]],
-      [
-        "folder2",
-        [
-          ["folder2-1", ["file2-1-1.ts", "file2-1-1.test.ts"]],
-          "file2-1.ts",
-          "file2-2.ts",
-          "file2-2.test.ts",
-          "file2-3.tsx"
-        ]
-      ],
-      ["empty-folder", []],
-      "file1.ts",
-      "file2.ts",
-      "file3.tsx",
-      "file3.test.tsx"
-    ]
-  ]
-];
+} from "../utils";
 
 jest.mock("fs", () => {
   const origin = jest.requireActual("fs");
+  const { lstatSyncMock, readdirSyncMock } = require("./helpers/fs-path");
+  const fileSystem = require("./helpers/utils.file-structure");
 
   return {
     ...origin,
-    lstatSync: (item: string) => ({
-      isDirectory: () => {
-        item = item.replace(process.cwd(), "");
-        const paths = item.split("/");
-
-        let isDirectory = false;
-        let folderItems = fileSystem.slice();
-
-        for (let key of paths) {
-          const existingItem = folderItems.find(
-            (item) => (Array.isArray(item) && item[0] === key) || item === key
-          );
-
-          if (!existingItem || !Array.isArray(existingItem)) {
-            isDirectory = false;
-            break;
-          }
-
-          folderItems = existingItem[1].slice();
-          isDirectory = true;
-        }
-
-        return isDirectory;
-      }
-    }),
-    readdirSync: (folder: string) => {
-      folder = folder.replace(process.cwd(), "");
-      const paths = folder.split("/");
-      let folderItems = fileSystem.slice();
-
-      for (let key of paths) {
-        const existingItem = folderItems.find(
-          (item) => (Array.isArray(item) && item[0] === key) || item === key
-        );
-        if (!existingItem || !Array.isArray(existingItem)) {
-          folderItems = [];
-          break;
-        }
-        folderItems = existingItem[1].slice();
-      }
-
-      return folderItems.map((item) => (Array.isArray(item) ? item[0] : item));
-    }
+    lstatSync: lstatSyncMock(fileSystem),
+    readdirSync: readdirSyncMock(fileSystem)
   };
 });
 
@@ -90,6 +28,21 @@ jest.mock("path", () => {
     ...origin,
     resolve: (item1: string, item2: string) => `${item1}/${item2}`
   };
+});
+
+jest.mock("../jest-globals", () => {
+  const origin = jest.requireActual("../jest-globals");
+
+  return {
+    ...origin,
+    getTestPath: jest.fn()
+  };
+});
+
+const _getTestPath = getTestPath as jest.Mock;
+
+beforeEach(() => {
+  jest.clearAllMocks();
 });
 
 describe("Wildcards", () => {
@@ -109,7 +62,7 @@ describe("Wildcards", () => {
     testSuite(createRegexp("^/**/*$"));
   });
 
-  test("Match only one item", () => {
+  test("Match only one item in root", () => {
     const testSuite = (pattern: string) => {
       expect(() => testRegex([pattern])).not.toThrowError();
       expect("/folder".match(pattern)).toBeNull();
@@ -119,10 +72,22 @@ describe("Wildcards", () => {
       expect("folder".match(pattern)).toBeNull();
     };
 
-    testSuite(createRegexp("file.tsx"));
     testSuite(createRegexp("/file.tsx"));
     testSuite(createRegexp("./file.tsx"));
     testSuite(createRegexp("^/file.tsx$"));
+  });
+
+  test("Match only one item in every folder", () => {
+    const testSuite = (pattern: string) => {
+      expect(() => testRegex([pattern])).not.toThrowError();
+      expect("/folder".match(pattern)).toBeNull();
+      expect("/file.tsx".match(pattern)).not.toBeNull();
+      expect("/folder/file.tsx".match(pattern)).not.toBeNull();
+      expect("/folder/folder/file.tsx".match(pattern)).not.toBeNull();
+      expect("folder".match(pattern)).toBeNull();
+    };
+
+    testSuite(createRegexp("file.tsx"));
   });
 
   test("Match all files in root or first folder", () => {
@@ -251,16 +216,24 @@ describe("getFiles", () => {
     ];
     expect(
       convertFileSystemArray(
-        getFiles({ excludeItems: [], extensions: [], folder: "src" })
+        getFiles({
+          exclude: [],
+          extensions: [],
+          folder: "src",
+          include: [],
+          root: "src"
+        })
       )
     ).toEqual(files);
 
     expect(
       convertFileSystemArray(
         getFiles({
-          excludeItems: [],
+          exclude: [],
           extensions: [".ts", ".tsx"],
-          folder: "src"
+          folder: "src",
+          include: [],
+          root: "src"
         })
       )
     ).toEqual(files);
@@ -269,7 +242,13 @@ describe("getFiles", () => {
   test("Get all ts files", () => {
     expect(
       convertFileSystemArray(
-        getFiles({ excludeItems: [], extensions: [".ts"], folder: "src" })
+        getFiles({
+          exclude: [],
+          extensions: [".ts"],
+          folder: "src",
+          include: [],
+          root: "src"
+        })
       )
     ).toEqual([
       "./src/folder1/file1-1.ts",
@@ -286,7 +265,13 @@ describe("getFiles", () => {
   test("Get all tsx files", () => {
     expect(
       convertFileSystemArray(
-        getFiles({ excludeItems: [], extensions: [".tsx"], folder: "src" })
+        getFiles({
+          exclude: [],
+          extensions: [".tsx"],
+          folder: "src",
+          include: [],
+          root: "src"
+        })
       )
     ).toEqual([
       "./src/folder2/file2-3.tsx",
@@ -299,9 +284,11 @@ describe("getFiles", () => {
     expect(
       convertFileSystemArray(
         getFiles({
-          excludeItems: [createRegexp("src/**/folder2")],
+          exclude: [createRegexp("folder2/**/*")],
           extensions: [".ts"],
-          folder: "src"
+          folder: "src",
+          include: [],
+          root: "src"
         })
       )
     ).toEqual(["./src/folder1/file1-1.ts", "./src/file1.ts", "./src/file2.ts"]);
@@ -311,9 +298,11 @@ describe("getFiles", () => {
     expect(
       convertFileSystemArray(
         getFiles({
-          excludeItems: [createRegexp("src/**/*.test.(tsx?)")],
+          exclude: [createRegexp("**/*.test.(tsx?)")],
           extensions: [],
-          folder: "src"
+          folder: "src",
+          include: [],
+          root: "src"
         })
       )
     ).toEqual([
@@ -328,12 +317,50 @@ describe("getFiles", () => {
     ]);
   });
 
+  test("Include folder", () => {
+    expect(
+      convertFileSystemArray(
+        getFiles({
+          exclude: [],
+          extensions: [".ts"],
+          folder: "src",
+          include: [createRegexp("folder2/**")],
+          root: "src"
+        })
+      )
+    ).toEqual([
+      "./src/folder2/file2-1.ts",
+      "./src/folder2/file2-2.ts",
+      "./src/folder2/file2-2.test.ts"
+    ]);
+  });
+
+  test("Include files", () => {
+    expect(
+      convertFileSystemArray(
+        getFiles({
+          exclude: [],
+          extensions: [],
+          folder: "src",
+          include: [createRegexp("**/*.test.(tsx?)")],
+          root: "src"
+        })
+      )
+    ).toEqual([
+      "./src/folder2/folder2-1/file2-1-1.test.ts",
+      "./src/folder2/file2-2.test.ts",
+      "./src/file3.test.tsx"
+    ]);
+  });
+
   test("Non existing folder", () => {
     expect(
       getFiles({
-        excludeItems: [],
+        exclude: [],
         extensions: [],
-        folder: "srca"
+        folder: "srca",
+        include: [],
+        root: "src"
       })
     ).toEqual([]);
   });
@@ -341,4 +368,26 @@ describe("getFiles", () => {
 
 test("testRegex", () => {
   expect(() => testRegex(["abcd["])).toThrowError();
+});
+
+describe("ignoreTest", () => {
+  test("Default", () => {
+    expect(ignoreTest("exclude")).toBeFalsy();
+    expect(ignoreTest("include")).toBeTruthy();
+
+    _getTestPath.mockReturnValue(expect.getState().testPath);
+
+    expect(ignoreTest("exclude")).toBeFalsy();
+    expect(ignoreTest("include")).toBeTruthy();
+  });
+
+  test("Exclude", () => {
+    _getTestPath.mockReturnValue("/some.test.tsx");
+    expect(ignoreTest("exclude", ["some.test.tsx"])).toBeTruthy();
+  });
+
+  test("Include", () => {
+    _getTestPath.mockReturnValue("/some.test.tsx");
+    expect(ignoreTest("include", ["some.test.tsx"])).toBeTruthy();
+  });
 });

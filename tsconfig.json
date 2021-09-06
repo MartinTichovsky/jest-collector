@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "composite": true,
     "module": "CommonJS",
     "target": "ES5",
@@ -11,9 +12,9 @@
     "esModuleInterop": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
+    "resolveJsonModule": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "allowSyntheticDefaultImports": true,
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,

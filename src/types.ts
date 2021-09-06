@@ -1,16 +1,24 @@
 export interface TestItemProps {
-  excludeItems: string[];
+  exclude: string[];
+  include: string[];
   relativePath: string;
+  root: string;
 }
 
 export interface GetFilesProps {
-  excludeItems: string[];
+  exclude: string[];
   extensions: string[];
   folder: string;
+  include: string[];
+  root: string;
 }
 
 export interface Options {
   exclude?: string[];
+  excludeImports?: string[];
   extensions?: string[];
-  include: string[];
+  include?: string[];
+  includeImports?: string[];
+  roots: string[];
+  process?: string[];
 }

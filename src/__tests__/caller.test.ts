@@ -1,4 +1,4 @@
-import { getCallerName } from "./caller";
+import { getCallerName } from "../caller";
 
 describe("getCallerName", () => {
   test("First caller", () => {

@@ -1,4 +1,4 @@
-import { PrivateCollector } from "./private-collector";
+import { PrivateCollector } from "../private-collector";
 
 const props = { deps: [1, 2.3] };
 const registeredFunction = "RegisteredFunction";

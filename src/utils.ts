@@ -1,15 +1,16 @@
 import fs from "fs";
 import path from "path";
+import { getTestPath } from "./jest-globals";
 import { GetFilesProps, TestItemProps } from "./types";
 
 const fileNameRegexp = "[a-zA-Z0-9\\-._\\$\\@\\[\\]\\+&!]+";
 
-export const convertFileSystem = (item: string) => item.replace(/\\/g, "/");
+export const convertFileSystem = (item: string) => item?.replace(/\\/g, "/");
 export const convertFileSystemArray = (result: string[]) =>
   result.map((item) => convertFileSystem(item));
 
 export const createRegexp = (value: string) => {
-  let result = value;
+  let result = getPattern(value);
 
   if (result.startsWith("^")) {
     result = result.slice(1);
@@ -39,7 +40,7 @@ export const createRegexp = (value: string) => {
 };
 
 export const getFiles = (
-  { excludeItems, extensions, folder }: GetFilesProps,
+  { exclude, extensions, folder, include, root }: GetFilesProps,
   files: string[] = []
 ) => {
   fs.readdirSync(folder).forEach((item) => {
@@ -47,18 +48,14 @@ export const getFiles = (
     const relativePath = convertFileSystem(
       `/${path.relative(process.cwd(), itemPath)}`
     );
-    const isItemMatch = testItem({ excludeItems, relativePath });
-
-    if (!isItemMatch) {
-      return files;
-    }
 
     const isDirectory = fs.lstatSync(itemPath).isDirectory();
 
     if (isDirectory) {
-      getFiles({ excludeItems, extensions, folder: itemPath }, files);
+      getFiles({ exclude, extensions, folder: itemPath, include, root }, files);
     } else if (
       !isDirectory &&
+      testItem({ exclude, include, relativePath, root }) &&
       (!extensions.length || extensions.includes(path.extname(item)))
     ) {
       files.push(`.${relativePath}`);
@@ -68,16 +65,55 @@ export const getFiles = (
   return files;
 };
 
-export const testItem = ({ excludeItems, relativePath }: TestItemProps) => {
-  return excludeItems.every((regex) => !relativePath.match(regex));
+export const getPattern = (value: string) => {
+  if (!value.match(/^[\^\.\/\*]+/)) {
+    value = `**/*/${value}`;
+  }
+
+  return value;
 };
 
-export const testRegex = (patterns: string[]) => {
+export const ignoreTest = (
+  property: "exclude" | "include",
+  items?: string[]
+) => {
+  const testPath = getTestPath();
+
+  if (!testPath || !items) {
+    return property === "exclude" ? false : true;
+  }
+
+  const relativeTestPath = convertFileSystem(
+    testPath.replace(process.cwd(), "")
+  );
+
+  items = items.map((value) => createRegexp(value));
+
+  testRegex(items, property);
+
+  return items.some((regexp) => relativeTestPath.match(regexp));
+};
+
+export const testItem = ({
+  exclude,
+  include,
+  relativePath,
+  root
+}: TestItemProps) => {
+  relativePath = relativePath.replace(`/${root}`, "");
+
+  return (
+    (!exclude.length || exclude.every((regex) => !relativePath.match(regex))) &&
+    (!include.length || include.some((regex) => relativePath.match(regex)))
+  );
+};
+
+export const testRegex = (patterns: string[], property?: string) => {
   for (let pattern of patterns) {
     try {
       new RegExp(pattern);
     } catch {
-      throw Error(`'${pattern}' is not valid RegExp`);
+      throw Error(`pattern '${pattern}' in '${property}' is not valid RegExp`);
     }
   }
 };

@@ -1,10 +1,17 @@
 import path from "path";
 import { mockFunction } from "./clone-function";
 import { Collector } from "./collector";
+import { mock, resolveReact } from "./jest-globals";
 import { PrivateCollector } from "./private-collector";
 import { mockReactHooks } from "./react-hooks";
 import { Options } from "./types";
-import { createRegexp, getFiles, testRegex } from "./utils";
+import {
+  convertFileSystem,
+  createRegexp,
+  getFiles,
+  ignoreTest,
+  testRegex
+} from "./utils";
 
 export { Collector };
 export { Options };
@@ -13,12 +20,31 @@ declare global {
   var collector: Collector;
 }
 
-export const jestCollector = ({ exclude, extensions, include }: Options) => {
+export const jestCollector = ({
+  exclude,
+  excludeImports,
+  extensions,
+  include,
+  includeImports,
+  roots
+}: Options) => {
   const privateCollector = new PrivateCollector();
   collector = new Collector(privateCollector);
 
+  if (roots !== undefined && !Array.isArray(roots)) {
+    throw Error("Roots must be an array");
+  }
+
+  if (roots === undefined || !roots.length) {
+    throw Error("Roots path must be provided");
+  }
+
   if (exclude !== undefined && !Array.isArray(exclude)) {
     throw Error("Exclude must be an array");
+  }
+
+  if (excludeImports !== undefined && !Array.isArray(excludeImports)) {
+    throw Error("ExcludeImports must be an array");
   }
 
   if (extensions !== undefined && !Array.isArray(extensions)) {
@@ -29,62 +55,89 @@ export const jestCollector = ({ exclude, extensions, include }: Options) => {
     throw Error("Include must be an array");
   }
 
+  if (includeImports !== undefined && !Array.isArray(includeImports)) {
+    throw Error("IncludeImports must be an array");
+  }
+
+  if (ignoreTest("exclude", exclude)) {
+    return;
+  }
+
+  if (!ignoreTest("include", include)) {
+    return;
+  }
+
   if (extensions === undefined) {
     extensions = [".ts", ".tsx"];
   }
 
   // mocking react to get statistics from calling hooks
-  const reactModule = require.resolve("react", {
-    paths: [process.cwd()]
-  });
+  let reactModule: string | undefined;
+
+  try {
+    reactModule = convertFileSystem(resolveReact());
+  } catch {}
 
   if (reactModule) {
-    jest.mock(reactModule, () => {
-      const origin = jest.requireActual(
-        require.resolve("react", {
-          paths: [process.cwd()]
-        })
-      );
+    mock(reactModule, () => {
+      const origin = jest.requireActual(reactModule!);
 
       return mockReactHooks(origin, privateCollector);
     });
   }
 
-  let excludeItems = ["**/*/__tests__", "**/*.test.(tsx?|jsx?)"];
-
-  if (exclude !== undefined) {
-    excludeItems = excludeItems.concat(exclude);
+  if (excludeImports === undefined) {
+    excludeImports = [];
   }
 
-  excludeItems = excludeItems.map((value) => createRegexp(value));
+  excludeImports = excludeImports.concat([
+    "__tests__/**/*",
+    "**/*.test.(tsx?|jsx?)"
+  ]);
 
-  testRegex(excludeItems);
+  excludeImports = excludeImports.map((value) => createRegexp(value));
+  testRegex(excludeImports, "excludeImports");
+
+  if (includeImports === undefined) {
+    includeImports = [];
+  }
+
+  includeImports = includeImports.map((value) => createRegexp(value));
+  testRegex(includeImports, "includeImports");
 
   // load all suitable files
-  const files = include
-    .map((value) =>
-      getFiles({
-        excludeItems,
+  const files = roots
+    .map((root) => {
+      const rootFolder = path.resolve(process.cwd(), root);
+      return getFiles({
+        exclude: excludeImports!,
         extensions: extensions!,
-        folder: path.resolve(process.cwd(), value)
-      })
-    )
-    .flat();
+        folder: rootFolder,
+        include: includeImports!,
+        root: path.basename(rootFolder)
+      });
+    })
+    .flat()
+    .map((file) => path.resolve(process.cwd(), file));
 
   // mock all functions
   files.forEach((file) => {
-    const filePath = path.resolve(process.cwd(), file);
-
-    jest.mock(filePath, () => {
-      const origin = jest.requireActual(filePath);
+    mock(file, () => {
+      const origin = jest.requireActual(file);
+      const mocked = {};
 
       for (let key in origin) {
-        if (typeof origin[key] === "function") {
-          origin[key] = mockFunction(origin[key], privateCollector);
+        const propertyDescriptor = Object.getOwnPropertyDescriptor(origin, key);
+
+        if (
+          typeof origin[key] === "function" &&
+          (propertyDescriptor === undefined || propertyDescriptor.writable)
+        ) {
+          mocked[key] = mockFunction(origin[key], privateCollector);
         }
       }
 
-      return origin;
+      return { ...origin, ...mocked };
     });
   });
 };

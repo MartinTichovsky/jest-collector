@@ -41,7 +41,8 @@
     "globals": {
       "ts-jest": {
         "tsconfig": "tsconfig.test.json"
-      }
+      },
+      "collector": null
     },
     "testMatch": [
       "**/?(*.)+(spec|test).ts?(x)"
