@@ -44,6 +44,84 @@ Array [
 ]
 `;
 
+exports[`useEffect Default - Component with one useEffect 2`] = `
+Object {
+  "call": Array [
+    Object {
+      "args": Arguments [
+        Object {
+          "callFunc": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          },
+        },
+        Object {},
+      ],
+      "hooks": Object {
+        "useEffect": Array [
+          Object {
+            "action": [MockFunction] {
+              "calls": Array [
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "deps": Array [],
+          },
+        ],
+      },
+      "result": <div>
+        Some content
+      </div>,
+    },
+  ],
+  "dataTestId": undefined,
+  "jestFn": [MockFunction] {
+    "calls": Array [
+      Array [
+        Arguments [
+          Object {
+            "callFunc": [MockFunction] {
+              "calls": Array [
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+          },
+          Object {},
+        ],
+      ],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": <div>
+          Some content
+        </div>,
+      },
+    ],
+  },
+  "relativePath": "/src/__implementation-tests/registered/UseEffect.tsx",
+}
+`;
+
 exports[`useEffect Default with test id - Component with one useEffect 1`] = `
 Array [
   Object {
@@ -65,6 +143,110 @@ Array [
     ],
   },
 ]
+`;
+
+exports[`useEffect Default with test id - Component with one useEffect 2`] = `
+Object {
+  "call": Array [
+    Object {
+      "args": Arguments [
+        Object {
+          "callFunc": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          },
+          "data-testid": "test-id",
+        },
+        Object {},
+      ],
+      "hooks": Object {
+        "useEffect": Array [
+          Object {
+            "action": [MockFunction] {
+              "calls": Array [
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "deps": Array [],
+          },
+        ],
+      },
+      "result": <div>
+        Some content
+      </div>,
+    },
+  ],
+  "dataTestId": "test-id",
+  "jestFn": [MockFunction] {
+    "calls": Array [
+      Array [
+        Arguments [
+          Object {
+            "callFunc": [MockFunction] {
+              "calls": Array [
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+          },
+          Object {},
+        ],
+      ],
+      Array [
+        Arguments [
+          Object {
+            "callFunc": [MockFunction] {
+              "calls": Array [
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "data-testid": "test-id",
+          },
+          Object {},
+        ],
+      ],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": <div>
+          Some content
+        </div>,
+      },
+      Object {
+        "type": "return",
+        "value": <div>
+          Some content
+        </div>,
+      },
+    ],
+  },
+  "relativePath": "/src/__implementation-tests/registered/UseEffect.tsx",
+}
 `;
 
 exports[`useEffect Deps in registered component 1`] = `
@@ -140,6 +322,41 @@ Object {
       },
       "deps": Array [],
       "unmountAction": [MockFunction],
+    },
+  ],
+}
+`;
+
+exports[`useEffect Unregistered with two effect 1`] = `
+Object {
+  "useEffect": Array [
+    Object {
+      "action": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "deps": Array [],
+    },
+    Object {
+      "action": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "deps": Array [],
     },
   ],
 }

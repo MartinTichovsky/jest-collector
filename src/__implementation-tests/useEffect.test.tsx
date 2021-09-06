@@ -13,6 +13,7 @@ import {
   UnegisteredWithDeps,
   UnregisteredRenders,
   UnregisteredWithOneUseEffect,
+  UnregisteredWithTwoUseEffects,
   UnregisteredWithUmount
 } from "./unregistered/UseEffect";
 
@@ -47,6 +48,10 @@ const defaultTest = (callFunc: () => void, dataTestId?: string) => {
   expect(useEffectHooks?.getRenderHooks(1, 1)?.action).toBeCalledTimes(1);
   expect(useEffectHooks?.getRenderHooks(1, 1)?.deps).toEqual([]);
   expect(useEffectHooks?.getRenderHooks(1, 1)?.unmountAction).toBeUndefined();
+
+  expect(
+    collector.getRegisteredFunction(OneUseEffect.name, dataTestId)
+  ).toMatchSnapshot();
 };
 
 describe("useEffect", () => {
@@ -173,6 +178,26 @@ describe("useEffect", () => {
     expect(useEffectHooks?.getRenderHooks(1, 1)?.unmountAction).toBeCalledTimes(
       1
     );
+  });
+
+  test("Unregistered with two effect", () => {
+    render(<UnregisteredWithTwoUseEffects />);
+
+    expect(
+      collector.hasUnregisteredComponent(UnregisteredWithTwoUseEffects.name)
+    ).toBeTruthy();
+
+    expect(
+      collector.getUnregisteredReactComponent(
+        UnregisteredWithTwoUseEffects.name
+      )
+    ).toMatchSnapshot();
+
+    const useEffects = collector.getUnregisteredReactComponent(
+      UnregisteredWithTwoUseEffects.name
+    );
+
+    expect(useEffects?.["useEffect"]?.length).toBe(2);
   });
 
   test("Deps in registered component", () => {

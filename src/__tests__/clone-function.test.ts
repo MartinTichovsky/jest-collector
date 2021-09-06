@@ -31,7 +31,7 @@ describe("mockFunction and clone", () => {
     function TestFunction() {
       return 5;
     }
-    const mockedFunction = mockFunction(TestFunction, collector);
+    const mockedFunction = mockFunction(TestFunction, collector, __filename);
     expect(mockedFunction).not.toEqual(TestFunction);
     expect(mockedFunction.name).toBe(TestFunction.name);
     expect(mockedFunction()).toBe(5);
@@ -41,7 +41,7 @@ describe("mockFunction and clone", () => {
     function TestFunction(a: number, b: number) {
       return a + b;
     }
-    const mockedFunction = mockFunction(TestFunction, collector);
+    const mockedFunction = mockFunction(TestFunction, collector, __filename);
     expect(mockedFunction(5, 6)).toBe(11);
   });
 
@@ -49,7 +49,7 @@ describe("mockFunction and clone", () => {
     function TestFunction({ a, b }: { a: number; b: number }) {
       return a + b;
     }
-    const mockedFunction = mockFunction(TestFunction, collector);
+    const mockedFunction = mockFunction(TestFunction, collector, __filename);
     expect(mockedFunction({ a: 8, b: 9 })).toBe(17);
   });
 
@@ -57,7 +57,7 @@ describe("mockFunction and clone", () => {
     function TestFunction(this: any, { a, b }: { a: number; b: number }) {
       this.result = a + b;
     }
-    const mockedFunction = mockFunction(TestFunction, collector);
+    const mockedFunction = mockFunction(TestFunction, collector, __filename);
     expect(new mockedFunction({ a: 1, b: 2 }).result).toBe(3);
   });
 
@@ -69,7 +69,7 @@ describe("mockFunction and clone", () => {
       return describeNativeComponentFrame(...props);
     }
     mockDescribeNativeComponentFrame = true;
-    const mockedFunction = mockFunction(reactCaller, collector);
+    const mockedFunction = mockFunction(reactCaller, collector, __filename);
     expect(mockedFunction({ children: [123] })).toBeNull();
   });
 
@@ -77,16 +77,20 @@ describe("mockFunction and clone", () => {
     function TestFunction(props: any) {
       return props?.["data-testid"];
     }
-    const mockedFunction = mockFunction(TestFunction, collector);
+    const mockedFunction = mockFunction(TestFunction, collector, __filename);
     expect(mockedFunction({ "data-testid": "test-id" })).toBe("test-id");
     expect(mockedFunction()).toBeUndefined();
     expect(mockedFunction({})).toBeUndefined();
   });
 
   test("Anonymous function", () => {
-    const mockedFunction = mockFunction(() => {
-      return "something";
-    }, collector);
+    const mockedFunction = mockFunction(
+      () => {
+        return "something";
+      },
+      collector,
+      __filename
+    );
     expect(mockedFunction()).toBe("something");
   });
 });

@@ -12,6 +12,18 @@ export const UnregisteredWithOneUseEffect = ({
   return <div>Unregistered component</div>;
 };
 
+export const UnregisteredWithTwoUseEffects = () => {
+  React.useEffect(() => {
+    // some action
+  }, []);
+
+  React.useEffect(() => {
+    // some action
+  }, []);
+
+  return <div></div>;
+};
+
 export const UnregisteredWithUmount = () => {
   React.useEffect(() => {
     return () => {

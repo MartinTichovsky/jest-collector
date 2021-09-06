@@ -3,10 +3,6 @@ import {
   ComponentHooks,
   ComponentHooksTypes,
   FunctionExecuted,
-  HookCallback,
-  HookEffect,
-  HookResult,
-  HookState,
   RegisteredFunction,
   RegisterFunction,
   SetHook
@@ -30,28 +26,37 @@ export class PrivateCollector extends ControllerAbstract {
     };
   } = {};
 
-  private addUnregisteredReactComponent(
+  private addUnregisteredReactComponent<K extends keyof ComponentHooksTypes>(
     componentName: string,
-    type: keyof ComponentHooksTypes,
-    props?: HookCallback | HookEffect | HookResult | HookState
+    hookType: K,
+    props?: ComponentHooksTypes[K]
   ) {
     if (!(componentName in this.unregisteredReactComponents)) {
       this.unregisteredReactComponents[componentName] = {};
     }
 
-    if (!(type in this.unregisteredReactComponents[componentName])) {
-      this.unregisteredReactComponents[componentName][type] = [];
+    if (!(hookType in this.unregisteredReactComponents[componentName])) {
+      this.unregisteredReactComponents[componentName][hookType] = [];
     }
 
-    this.unregisteredReactComponents[componentName][type]!.push(props || {});
+    (this.unregisteredReactComponents[componentName][
+      hookType
+    ] as ComponentHooksTypes[K][])!.push(props || {});
 
     return {
-      index: this.unregisteredReactComponents[componentName][type]!.length - 1,
+      index:
+        this.unregisteredReactComponents[componentName][hookType]!.length - 1,
       renderIndex: undefined
     };
   }
 
-  public functionCalled({ args, dataTestId, jestFn, name }: RegisterFunction) {
+  public functionCalled({
+    args,
+    dataTestId,
+    jestFn,
+    name,
+    relativePath
+  }: RegisterFunction) {
     if (!(name in this.activeDataTestId)) {
       this.activeDataTestId[name] = [];
     }
@@ -74,7 +79,8 @@ export class PrivateCollector extends ControllerAbstract {
       this.registeredFunctions[name].push({
         call: [{ args }],
         dataTestId,
-        jestFn
+        jestFn,
+        relativePath
       });
 
       return 0;
@@ -172,11 +178,17 @@ export class PrivateCollector extends ControllerAbstract {
       ?.call.map((call) => call?.hooks || {});
   }
 
-  public getRegisteredReactComponentHooks(
+  public getRegisteredReactComponentHooks<K extends keyof ComponentHooksTypes>(
     componentName: string,
-    hookType: keyof ComponentHooksTypes,
+    hookType: K,
     dataTestId?: string
-  ) {
+  ): {
+    getRender: (renderSequence: number) => ComponentHooks[K] | undefined;
+    getRenderHooks: (
+      renderSequence: number,
+      hookSequence: number
+    ) => ComponentHooksTypes[K] | undefined;
+  } {
     const exists = componentName in this.registeredFunctions;
 
     return {
@@ -206,7 +218,8 @@ export class PrivateCollector extends ControllerAbstract {
           (item) => item.dataTestId === dataTestId
         );
 
-        return !existingItem ||
+        return (
+          !existingItem ||
           renderSequence < 1 ||
           hookSequence < 1 ||
           existingItem.call.length < renderSequence ||
@@ -214,10 +227,11 @@ export class PrivateCollector extends ControllerAbstract {
           !(hookType in existingItem.call[renderSequence - 1].hooks!) ||
           existingItem.call[renderSequence - 1].hooks![hookType]!.length <
             hookSequence
-          ? undefined
-          : existingItem.call[renderSequence - 1].hooks![hookType]![
-              hookSequence - 1
-            ];
+            ? undefined
+            : existingItem.call[renderSequence - 1].hooks![hookType]![
+                hookSequence - 1
+              ]
+        ) as ComponentHooksTypes[K] | undefined;
       }
     };
   }
@@ -246,18 +260,25 @@ export class PrivateCollector extends ControllerAbstract {
 
   public getUnregisteredReactComponentHooks<
     K extends keyof ComponentHooksTypes
-  >(componentName: string, hookType: K) {
+  >(
+    componentName: string,
+    hookType: K
+  ): {
+    getHook: (hookSequence: number) => ComponentHooksTypes[K] | undefined;
+  } {
     return {
       getHook: (hookNumber: number) => {
-        return !(componentName in this.unregisteredReactComponents) ||
+        return (
+          !(componentName in this.unregisteredReactComponents) ||
           !(hookType in this.unregisteredReactComponents[componentName]) ||
           !this.unregisteredReactComponents[componentName][hookType]!.length ||
           this.unregisteredReactComponents[componentName][hookType]!.length <
             hookNumber
-          ? undefined
-          : this.unregisteredReactComponents[componentName][hookType]![
-              hookNumber - 1
-            ];
+            ? undefined
+            : this.unregisteredReactComponents[componentName][hookType]![
+                hookNumber - 1
+              ]
+        ) as ComponentHooksTypes[K] | undefined;
       }
     };
   }
@@ -298,7 +319,7 @@ export class PrivateCollector extends ControllerAbstract {
       currentCall.hooks[hookType] = [];
     }
 
-    currentCall.hooks[hookType]!.push(props!);
+    (currentCall.hooks[hookType] as ComponentHooksTypes[K][])!.push(props!);
 
     return {
       index: currentCall.hooks[hookType]!.length - 1,

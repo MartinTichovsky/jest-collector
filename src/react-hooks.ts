@@ -8,19 +8,18 @@ export const mockReactHooks = (
   ...origin,
   useCallback: function useCallback(
     action: (...props: any[]) => void,
-    ...deps: any[]
+    deps: any[]
   ) {
     // get caller function name from error stack since Funcion.caller is deprecated
     const componentName = getCallerName();
-
-    const mockedAction = jest.fn((...props) => action(...props));
+    const resultAction = origin.useCallback(action, deps);
 
     privateCollector.registerHook(componentName, "useCallback", {
-      action: mockedAction,
+      action: resultAction,
       deps
     });
 
-    return origin.useCallback(mockedAction, ...deps);
+    return resultAction;
   },
   useEffect: function useEffect(action: () => () => void, deps: any[]) {
     // get caller function name from error stack since Funcion.caller is deprecated
@@ -50,6 +49,7 @@ export const mockReactHooks = (
           renderIndex,
           hookType: "useEffect"
         });
+
         return mockedUnmount;
       }
 

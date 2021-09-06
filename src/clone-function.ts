@@ -4,7 +4,8 @@ import { PrivateCollector } from "./private-collector";
 export const registerClone = () => {
   if (!("clone" in Function.prototype)) {
     Function.prototype["clone"] = function (
-      privateCollector: PrivateCollector
+      privateCollector: PrivateCollector,
+      relativePath: string
     ) {
       if (!this.name) {
         return this;
@@ -27,7 +28,8 @@ export const registerClone = () => {
             args: arguments,
             dataTestId,
             jestFn,
-            name: _this.name
+            name: _this.name,
+            relativePath
           });
 
           result = new.target
@@ -68,8 +70,9 @@ export const registerClone = () => {
 
 export const mockFunction = (
   member: any,
-  privateCollector: PrivateCollector
+  privateCollector: PrivateCollector,
+  relativePath: string
 ) => {
   registerClone();
-  return member.clone(privateCollector);
+  return member.clone(privateCollector, relativePath);
 };

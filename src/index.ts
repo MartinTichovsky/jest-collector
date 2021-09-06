@@ -123,8 +123,9 @@ export const jestCollector = ({
   // mock all functions
   files.forEach((file) => {
     mock(file, () => {
-      const origin = jest.requireActual(file);
       const mocked = {};
+      const origin = jest.requireActual(file);
+      const relativePath = convertFileSystem(file.replace(process.cwd(), ""));
 
       for (let key in origin) {
         const propertyDescriptor = Object.getOwnPropertyDescriptor(origin, key);
@@ -133,7 +134,11 @@ export const jestCollector = ({
           typeof origin[key] === "function" &&
           (propertyDescriptor === undefined || propertyDescriptor.writable)
         ) {
-          mocked[key] = mockFunction(origin[key], privateCollector);
+          mocked[key] = mockFunction(
+            origin[key],
+            privateCollector,
+            relativePath
+          );
         }
       }
 

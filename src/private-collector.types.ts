@@ -20,7 +20,7 @@ export interface FunctionExecuted {
 }
 
 export interface HookCallback {
-  action?: jest.Mock;
+  action?: (...props: unknown[]) => unknown;
   deps?: any[];
 }
 
@@ -46,12 +46,14 @@ export interface RegisterFunction {
   jestFn: jest.Mock;
   dataTestId?: string;
   name: string;
+  relativePath: string;
 }
 
 export interface RegisteredFunction {
   call: { args: any; hooks?: ComponentHooks; result?: any }[];
   dataTestId?: string;
   jestFn: jest.Mock;
+  relativePath: string;
 }
 
 export interface RegisterHook {
