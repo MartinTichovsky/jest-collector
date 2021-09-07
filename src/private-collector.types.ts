@@ -8,7 +8,7 @@ export interface ComponentHooksTypes<T = undefined> {
   useCallback: HookCallback<T>;
   useContext: HookResult;
   useEffect: HookEffect<T>;
-  useRef: HookResult;
+  useRef: HookUseRef;
   useReducer: HookResult;
   useState: HookState<T>;
   useMemo: HookResult;
@@ -54,6 +54,14 @@ export interface HookState<T = undefined> {
   state: any[];
 }
 
+export interface HookUseRef {
+  args: any;
+  ref: {
+    current?: unknown;
+  };
+  hasBeenChanged: boolean;
+}
+
 export interface Options {
   dataTestId?: string;
   relativePath?: string;
@@ -77,6 +85,11 @@ export interface RegisteredFunction<T = undefined> {
   relativePath: string;
 }
 
+export interface RegisrterHook {
+  componentName: string;
+  relativePath: string;
+}
+
 export interface RegisterHookProps<K extends keyof ComponentHooksTypes> {
   hooks: ComponentHooksTypes[K][];
   hookType: K;
@@ -85,24 +98,16 @@ export interface RegisterHookProps<K extends keyof ComponentHooksTypes> {
   sequence: number;
 }
 
-export interface RegisterHookWithAction<K extends "useEffect" | "useCallback"> {
-  componentName: string;
+export interface RegisterUseRef extends RegisrterHook {
+  props: ComponentHooksTypes["useRef"];
+}
+
+export interface RegisterUseState extends RegisrterHook {
+  props: ComponentHooksTypes["useState"];
+}
+
+export interface RegisterUseWithAction<K extends "useEffect" | "useCallback">
+  extends RegisrterHook {
   hookType: K;
   props: ComponentHooksTypes[K];
-  relativePath: string;
-}
-
-export interface RegisterUseState {
-  componentName: string;
-  props: ComponentHooksTypes["useState"];
-  relativePath: string;
-}
-
-export interface SetHook<K extends keyof ComponentHooksTypes> {
-  componentName: string | undefined;
-  dataTestId?: string;
-  hookType: K;
-  index: number | undefined;
-  props: Partial<ComponentHooksTypes[K]>;
-  renderIndex: number | undefined;
 }

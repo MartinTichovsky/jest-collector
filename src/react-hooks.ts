@@ -95,6 +95,34 @@ export const mockReactHooks = (
 
     return origin.useEffect(register.action, deps);
   },
+  useRef: function useRef(args: unknown) {
+    const ref = origin.useRef(args);
+
+    // get caller function name from error stack since Funcion.caller is deprecated
+    const caller = getCaller();
+
+    const register = privateCollector.registerUseRef({
+      componentName: caller.name,
+      props: {
+        args,
+        ref,
+        hasBeenChanged: false
+      },
+      relativePath: caller.relativePath
+    });
+
+    /* istanbul ignore next line */
+    if (register.ref !== ref) {
+      register.hasBeenChanged = true;
+    } else {
+      register.hasBeenChanged = false;
+    }
+
+    register.args = args;
+    register.ref = ref;
+
+    return register.ref;
+  },
   useState: function useState(initialValue: unknown) {
     const result = origin.useState(initialValue);
 

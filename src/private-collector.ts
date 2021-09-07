@@ -8,8 +8,9 @@ import {
   RegisteredFunction,
   RegisterFunction,
   RegisterHookProps,
-  RegisterHookWithAction,
-  RegisterUseState
+  RegisterUseRef,
+  RegisterUseState,
+  RegisterUseWithAction
 } from "./private-collector.types";
 
 export class PrivateCollector extends ControllerAbstract {
@@ -258,7 +259,7 @@ export class PrivateCollector extends ControllerAbstract {
     hookType,
     props,
     relativePath
-  }: RegisterHookWithAction<K>) {
+  }: RegisterUseWithAction<K>) {
     const registered = this.getFunction(componentName, {
       dataTestId: this.getActiveDataTestId(componentName, relativePath),
       relativePath
@@ -319,6 +320,42 @@ export class PrivateCollector extends ControllerAbstract {
     return this.registerHookProps({
       registered,
       hooks: registered.hooks[hookType] as ComponentHooksTypes["useState"][],
+      hookType,
+      props,
+      sequence
+    });
+  }
+
+  public registerUseRef({
+    componentName,
+    props,
+    relativePath
+  }: RegisterUseRef) {
+    const hookType = "useRef";
+    const registered = this.getFunction(componentName, {
+      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      relativePath
+    });
+
+    if (!registered) {
+      return props;
+    }
+
+    this.registerHook(registered, hookType);
+
+    const existingHook = registered.hooks[hookType]?.find(
+      (item) => item.ref === props.ref
+    );
+
+    if (existingHook) {
+      return existingHook;
+    }
+
+    const sequence = this.getSequenceNumber(registered, hookType);
+
+    return this.registerHookProps({
+      registered,
+      hooks: registered.hooks[hookType] as ComponentHooksTypes["useRef"][],
       hookType,
       props,
       sequence
