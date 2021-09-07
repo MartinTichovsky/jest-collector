@@ -35,3 +35,15 @@ export const Renders = ({
 
   return <div></div>;
 };
+
+export const WithReturn = ({
+  caller
+}: {
+  caller: { action: (num: number) => string };
+}) => {
+  caller.action = React.useCallback((num: number) => {
+    return `Call ${num}`;
+  }, []);
+
+  return <div></div>;
+};

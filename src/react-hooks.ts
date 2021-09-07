@@ -94,39 +94,31 @@ export const mockReactHooks = (
     register.action.mockImplementation(implementation);
 
     return origin.useEffect(register.action, deps);
+  },
+  useState: function useState(initialValue: unknown) {
+    const result = origin.useState(initialValue);
+
+    // get caller function name from error stack since Funcion.caller is deprecated
+    const caller = getCaller();
+
+    const register = privateCollector.registerUseState({
+      componentName: caller.name,
+      props: {
+        _originState: result[1],
+        setState: jest.fn(),
+        state: []
+      },
+      relativePath: caller.relativePath
+    });
+
+    register.state.push(result[0]);
+    register.setState.mockImplementation((...props) => result[1](...props));
+
+    Object.defineProperties(
+      register.setState,
+      Object.getOwnPropertyDescriptors(result[1])
+    );
+
+    return [result[0], register.setState];
   }
-  // useState: function useState(initialValue: unknown) {
-  //   const result = origin.useState(initialValue);
-
-  //   // get caller function name from error stack since Funcion.caller is deprecated
-  //   const caller = getCaller();
-
-  //   const existingMockedSetState =
-  //     privateCollector.getExistingSetStateMockedAction(caller.name, result[1]);
-
-  //   if (existingMockedSetState) {
-  //     privateCollector.registerHook(caller.name, "useState", {
-  //       state: result[0]
-  //     });
-
-  //     return [result[0], existingMockedSetState];
-  //   }
-
-  //   const mockedSetState = jest.fn((...props) => {
-  //     return result[1](...props);
-  //   });
-
-  //   Object.defineProperties(
-  //     mockedSetState,
-  //     Object.getOwnPropertyDescriptors(result[1])
-  //   );
-
-  //   privateCollector.registerHook(caller.name, "useState", {
-  //     mockedSetState,
-  //     setState: result[1],
-  //     state: result[0]
-  //   });
-
-  //   return [result[0], mockedSetState];
-  // }
 });

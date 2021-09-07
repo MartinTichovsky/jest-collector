@@ -8,7 +8,8 @@ import {
   RegisteredFunction,
   RegisterFunction,
   RegisterHookProps,
-  RegisterHookWithAction
+  RegisterHookWithAction,
+  RegisterUseState
 } from "./private-collector.types";
 
 export class PrivateCollector extends ControllerAbstract {
@@ -97,33 +98,6 @@ export class PrivateCollector extends ControllerAbstract {
     return registered ? registered.calls.length : undefined;
   }
 
-  // public getExistingSetStateMockedAction(
-  //   componentName: string,
-  //   setState: Function
-  // ) {
-  //   const existingItem = this.registeredFunctions[componentName]?.find(
-  //     (item) => item.dataTestId === this.getActiveDataTestId(componentName)
-  //   );
-
-  //   if (!existingItem) {
-  //     return;
-  //   }
-
-  //   for (let call of existingItem.call) {
-  //     if (!call.hooks?.["useState"]) {
-  //       continue;
-  //     }
-
-  //     const existingStateItem = call.hooks["useState"]?.find(
-  //       (item) => item.setState === setState
-  //     );
-
-  //     if (existingStateItem) {
-  //       return existingStateItem.mockedSetState;
-  //     }
-  //   }
-  // }
-
   public getFunction(name: string, options?: Options) {
     if (options?.relativePath !== undefined) {
       return this.registeredFunctions.find(
@@ -167,37 +141,70 @@ export class PrivateCollector extends ControllerAbstract {
     const registered = this.getFunction(componentName, options);
 
     return {
-      getAll: () =>
-        registered ? this.removeOriginScope(registered.hooks) : undefined,
+      getAll: <K extends keyof ComponentHooksTypes>(hookType?: K) =>
+        registered
+          ? ((hookType
+              ? registered.hooks[hookType]?.map((item) => ({
+                  ...item,
+                  _originScope: undefined
+                }))
+              : this.removeOriginScope(registered.hooks)) as K extends undefined
+              ? ComponentHooks<never>
+              : ComponentHooks<never>[K])
+          : undefined,
       getHook: <K extends keyof ComponentHooksTypes>(
         hookType: K,
         sequence: number
       ) =>
         this.getHookWithoutScope(registered, hookType, sequence) as
-          | ComponentHooksTypes[K]
+          | ComponentHooksTypes<never>[K]
           | undefined,
       getHooksByType: <K extends keyof ComponentHooksTypes>(hookType: K) => ({
         get: (sequence: number) =>
           this.getHookWithoutScope(registered, hookType, sequence) as
-            | ComponentHooksTypes[K]
+            | ComponentHooksTypes<never>[K]
             | undefined
-      })
+      }),
+      getUseState: (sequence: number) => {
+        let stateIndex = 0;
+
+        return {
+          getState: (stateSequence: number) =>
+            registered &&
+            registered.hooks["useState"] &&
+            sequence > 0 &&
+            sequence <= registered.hooks["useState"].length &&
+            registered.hooks["useState"][sequence - 1].state &&
+            stateSequence > 0 &&
+            stateSequence <=
+              registered.hooks["useState"][sequence - 1].state.length
+              ? registered.hooks["useState"][sequence - 1].state[
+                  stateSequence - 1
+                ]
+              : undefined,
+          next: () => {
+            const useState = this.getHookWithoutScope(
+              registered,
+              "useState",
+              sequence
+            ) as ComponentHooksTypes["useState"] | undefined;
+            const result = useState
+              ? useState.state.slice(stateIndex, useState.state.length)
+              : [];
+
+            if (useState) {
+              stateIndex = useState.state.length;
+            }
+
+            return result;
+          },
+          reset: () => {
+            stateIndex = 0;
+          }
+        };
+      }
     };
   }
-
-  // public getSetState(
-  //   componentName: string,
-  //   dataTestId?: string,
-  //   orderNumber: number = 0
-  // ) {
-  //   // if (!(componentName in this.registeredFunctions)) {
-  //   //   return undefined;
-  //   // }
-  //   // const renders = this.registeredFunctions[componentName].filter(
-  //   //   (render) => render.dataTestId === dataTestId
-  //   // );
-  //   // return renders?.[0]?.hooks?.["useState"]?.[orderNumber]?.mockedSetState;
-  // }
 
   private getSequenceNumber(
     registered: RegisteredFunction,
@@ -271,11 +278,47 @@ export class PrivateCollector extends ControllerAbstract {
       return existingHook;
     }
 
-    const sequence = this.getSequenceNumber(registered, "useEffect");
+    const sequence = this.getSequenceNumber(registered, hookType);
 
     return this.registerHookProps({
       registered,
       hooks: registered.hooks[hookType] as ComponentHooksTypes[K][],
+      hookType,
+      props,
+      sequence
+    });
+  }
+
+  public registerUseState({
+    componentName,
+    props,
+    relativePath
+  }: RegisterUseState) {
+    const hookType = "useState";
+    const registered = this.getFunction(componentName, {
+      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      relativePath
+    });
+
+    if (!registered) {
+      return props;
+    }
+
+    this.registerHook(registered, hookType);
+
+    const existingHook = registered.hooks[hookType]?.find(
+      (item) => item._originState === props._originState
+    );
+
+    if (existingHook) {
+      return existingHook;
+    }
+
+    const sequence = this.getSequenceNumber(registered, hookType);
+
+    return this.registerHookProps({
+      registered,
+      hooks: registered.hooks[hookType] as ComponentHooksTypes["useState"][],
       hookType,
       props,
       sequence

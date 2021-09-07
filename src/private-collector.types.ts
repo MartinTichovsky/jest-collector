@@ -10,7 +10,7 @@ export interface ComponentHooksTypes<T = undefined> {
   useEffect: HookEffect<T>;
   useRef: HookResult;
   useReducer: HookResult;
-  useState: HookState;
+  useState: HookState<T>;
   useMemo: HookResult;
 }
 
@@ -48,10 +48,10 @@ export interface HookResult {
   result?: any;
 }
 
-export interface HookState {
-  mockedSetState?: jest.Mock;
-  setState?: Function;
-  state?: any[];
+export interface HookState<T = undefined> {
+  _originState: T extends undefined ? Function : never;
+  setState: jest.Mock;
+  state: any[];
 }
 
 export interface Options {
@@ -89,6 +89,12 @@ export interface RegisterHookWithAction<K extends "useEffect" | "useCallback"> {
   componentName: string;
   hookType: K;
   props: ComponentHooksTypes[K];
+  relativePath: string;
+}
+
+export interface RegisterUseState {
+  componentName: string;
+  props: ComponentHooksTypes["useState"];
   relativePath: string;
 }
 

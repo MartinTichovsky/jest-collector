@@ -420,7 +420,7 @@ describe("jestCollector", () => {
 
     expect(mockedResult.useCallback).not.toEqual(react.useCallback);
     expect(mockedResult.useEffect).not.toEqual(react.useEffect);
-    //expect(mockedResult.useState).not.toEqual(react.useState);
+    expect(mockedResult.useState).not.toEqual(react.useState);
   });
 
   test("File mock calls", () => {

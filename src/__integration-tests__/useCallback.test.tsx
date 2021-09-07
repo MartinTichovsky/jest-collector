@@ -1,6 +1,11 @@
 import { act, render } from "@testing-library/react";
 import React from "react";
-import { OneUseCallback, Renders, WithDeps } from "./components/UseCallback";
+import {
+  OneUseCallback,
+  Renders,
+  WithDeps,
+  WithReturn
+} from "./components/UseCallback";
 
 beforeEach(() => {
   collector.reset();
@@ -12,26 +17,26 @@ describe("useCallback", () => {
 
     render(<OneUseCallback callFunc={callFunc} />);
 
-    const hooks = collector
+    const useCallbackHooks = collector
       .getReactComponentHooks(OneUseCallback.name)
       .getHooksByType("useCallback");
 
-    expect(hooks.get(1)).not.toBeUndefined();
-    expect(hooks.get(1)?.action).not.toBeCalled();
-    expect(hooks.get(1)?.action()).toEqual(callFunc);
-    expect(hooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useCallbackHooks.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks.get(1)?.action).not.toBeCalled();
+    expect(useCallbackHooks.get(1)?.action()).toEqual(callFunc);
+    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeFalsy();
   });
 
   test("Deps in the component", () => {
     const deps = [1, { property: "some" }, "Text", false];
     render(<WithDeps deps={deps} />);
 
-    const hooks = collector
+    const useCallbackHooks = collector
       .getReactComponentHooks(WithDeps.name)
       .getHooksByType("useCallback");
 
-    expect(hooks?.get(1)).not.toBeUndefined();
-    expect(hooks?.get(1)?.deps).toEqual(deps);
+    expect(useCallbackHooks?.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks?.get(1)?.deps).toEqual(deps);
   });
 
   test("Dynamic render", () => {
@@ -44,7 +49,7 @@ describe("useCallback", () => {
 
     render(<Renders caller={caller} />);
 
-    const hooks = collector
+    const useCallbackHooks = collector
       .getReactComponentHooks(Renders.name)
       .getHooksByType("useCallback");
 
@@ -56,18 +61,54 @@ describe("useCallback", () => {
         });
       }
 
-      expect(hooks.get(1)).not.toBeUndefined();
-      expect(hooks.get(1)?.action).toBeCalledTimes(expectedCallCount);
-      expect(hooks.get(1)?.action()).toEqual(caller.action);
+      expect(useCallbackHooks.get(1)).not.toBeUndefined();
+      expect(useCallbackHooks.get(1)?.action).toBeCalledTimes(
+        expectedCallCount
+      );
+      expect(useCallbackHooks.get(1)?.action()).toEqual(caller.action);
     };
 
     testSuite(1, 1);
-    expect(hooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeFalsy();
     testSuite(2, 3);
-    expect(hooks.get(1)?.hasBeenChanged).toBeTruthy();
+    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeTruthy();
     testSuite(3, 5);
-    expect(hooks.get(1)?.hasBeenChanged).toBeTruthy();
+    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeTruthy();
     testSuite(3, 7);
-    expect(hooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeFalsy();
+  });
+
+  test("Component with one useCallback", () => {
+    const callFunc = jest.fn();
+
+    render(<OneUseCallback callFunc={callFunc} />);
+
+    const useCallbackHooks = collector
+      .getReactComponentHooks(OneUseCallback.name)
+      .getHooksByType("useCallback");
+
+    expect(useCallbackHooks.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks.get(1)?.action).not.toBeCalled();
+    expect(useCallbackHooks.get(1)?.action()).toEqual(callFunc);
+    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeFalsy();
+  });
+
+  test("Dynamic state", () => {
+    const caller = {
+      action: (_nume: number) => ""
+    };
+
+    render(<WithReturn caller={caller} />);
+
+    const useCallbackHooks = collector
+      .getReactComponentHooks(WithReturn.name)
+      .getHooksByType("useCallback");
+
+    expect(useCallbackHooks.get(1)?.action).not.toBeCalled();
+
+    caller.action(56);
+
+    expect(useCallbackHooks.get(1)?.action).lastCalledWith(56);
+    expect(useCallbackHooks.get(1)?.action).toReturnWith("Call 56");
   });
 });

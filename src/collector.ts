@@ -39,15 +39,24 @@ export class Collector extends ControllerAbstract {
     componentName: string,
     options?: Options
   ): {
-    getAll: () => ComponentHooks | undefined;
+    getAll: <K extends keyof ComponentHooksTypes>(
+      hookType?: K
+    ) =>
+      | (K extends undefined ? ComponentHooks<never> : ComponentHooks<never>[K])
+      | undefined;
     getHook: <K extends keyof ComponentHooksTypes>(
       hookType: K,
       sequence: number
-    ) => ComponentHooksTypes[K] | undefined;
+    ) => ComponentHooksTypes<never>[K] | undefined;
     getHooksByType: <K extends keyof ComponentHooksTypes>(
       hookType: K
     ) => {
-      get: (sequence: number) => ComponentHooksTypes[K] | undefined;
+      get: (sequence: number) => ComponentHooksTypes<never>[K] | undefined;
+    };
+    getUseState: (sequence: number) => {
+      getState: (stateSequence: number) => unknown | undefined;
+      next: () => unknown[];
+      reset: () => void;
     };
   } {
     return this.privateCollector.getReactComponentHooks(componentName, options);

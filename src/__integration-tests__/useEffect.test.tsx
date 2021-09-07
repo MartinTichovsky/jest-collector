@@ -103,7 +103,7 @@ describe("useEffect", () => {
     const getExpectedText = (num: number) => `Registered renders ${num}`;
     const caller = {
       action: jest.fn(),
-      setState: ((state: number) => {}) as React.Dispatch<
+      setState: ((_state: number) => {}) as React.Dispatch<
         React.SetStateAction<number>
       >
     };
