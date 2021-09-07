@@ -1,19 +1,35 @@
-import { getCallerName } from "../caller";
+import { getCaller } from "../caller";
 
-describe("getCallerName", () => {
+describe("getCaller", () => {
   test("First caller", () => {
     expect(
       (function TestFunc() {
-        return getCallerName(0);
+        const caller = getCaller(0);
+
+        return {
+          name: caller.name,
+          relativePath: caller.relativePath
+        };
       })()
-    ).toBe("getCallerName");
+    ).toEqual({
+      name: "getCaller",
+      relativePath: "/src/caller.ts"
+    });
   });
 
   test("Second caller", () => {
     expect(
       (function TestFunc() {
-        return getCallerName();
+        const caller = getCaller();
+
+        return {
+          name: caller.name,
+          relativePath: caller.relativePath
+        };
       })()
-    ).toBe("TestFunc");
+    ).toEqual({
+      name: "TestFunc",
+      relativePath: "/src/__tests__/caller.test.ts"
+    });
   });
 });

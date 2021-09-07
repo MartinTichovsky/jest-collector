@@ -1,4 +1,4 @@
-import { getCallerName } from "./caller";
+import { getCaller } from "./caller";
 import { PrivateCollector } from "./private-collector";
 
 export const mockReactHooks = (
@@ -11,100 +11,122 @@ export const mockReactHooks = (
     deps: any[]
   ) {
     // get caller function name from error stack since Funcion.caller is deprecated
-    const componentName = getCallerName();
-    const resultAction = origin.useCallback(action, deps);
-
-    privateCollector.registerHook(componentName, "useCallback", {
-      action: resultAction,
-      deps
-    });
-
-    return resultAction;
-  },
-  useEffect: function useEffect(action: () => () => void, deps: any[]) {
-    // get caller function name from error stack since Funcion.caller is deprecated
-    const componentName = getCallerName();
-
-    const { index, renderIndex } = privateCollector.registerHook(
-      componentName,
-      "useEffect",
-      {}
+    const caller = getCaller();
+    const dataTestId = privateCollector.getActiveDataTestId(
+      caller.name,
+      caller.relativePath
     );
 
-    const dataTestId = privateCollector.getActiveDataTestId(componentName);
-
-    const mockedAction = jest.fn(() => {
-      const unmount = action();
-
-      if (typeof unmount === "function") {
-        const mockedUnmount = jest.fn(() => unmount());
-
-        privateCollector.setHook({
-          componentName,
-          dataTestId,
-          index,
-          props: {
-            unmountAction: mockedUnmount
-          },
-          renderIndex,
-          hookType: "useEffect"
-        });
-
-        return mockedUnmount;
-      }
-
-      return unmount;
-    });
-
-    privateCollector.setHook({
-      componentName,
-      dataTestId,
-      index,
-      props: {
-        action: mockedAction,
-        deps
-      },
-      renderIndex,
-      hookType: "useEffect"
-    });
-
-    return origin.useEffect(mockedAction, deps);
-  },
-  useState: function useState(initialValue: unknown) {
-    const result = origin.useState(initialValue);
-
-    // get caller function name from error stack since Funcion.caller is deprecated
-    const componentName = getCallerName();
-
-    const existingMockedSetState =
-      privateCollector.getExistingSetStateMockedAction(
-        componentName,
-        result[1]
-      );
-
-    if (existingMockedSetState) {
-      privateCollector.registerHook(componentName, "useState", {
-        state: result[0]
-      });
-
-      return [result[0], existingMockedSetState];
+    if (
+      !privateCollector.hasFunction(caller.name, {
+        dataTestId,
+        relativePath: caller.relativePath
+      })
+    ) {
+      return origin.useEffect(action, deps);
     }
 
-    const mockedSetState = jest.fn((...props) => {
-      return result[1](...props);
+    const register = privateCollector.registerHookWithAction({
+      componentName: caller.name,
+      hookType: "useCallback",
+      props: {
+        _originScope: action.toString(),
+        action: jest.fn(action),
+        deps,
+        hasBeenChanged: false
+      },
+      relativePath: caller.relativePath
     });
 
-    Object.defineProperties(
-      mockedSetState,
-      Object.getOwnPropertyDescriptors(result[1])
+    const result = origin.useCallback(action, deps);
+
+    if (register.action.getMockImplementation() !== result) {
+      register.hasBeenChanged = true;
+    } else {
+      register.hasBeenChanged = false;
+    }
+
+    register.action.mockImplementation(result);
+
+    return register.action;
+  },
+  useEffect: (action: () => () => void, deps: any[]) => {
+    // get caller function name from error stack since Funcion.caller is deprecated
+    const caller = getCaller();
+    const dataTestId = privateCollector.getActiveDataTestId(
+      caller.name,
+      caller.relativePath
     );
 
-    privateCollector.registerHook(componentName, "useState", {
-      mockedSetState,
-      setState: result[1],
-      state: result[0]
+    if (
+      !privateCollector.hasFunction(caller.name, {
+        dataTestId,
+        relativePath: caller.relativePath
+      })
+    ) {
+      return origin.useEffect(action, deps);
+    }
+
+    const register = privateCollector.registerHookWithAction({
+      componentName: caller.name,
+      hookType: "useEffect",
+      props: { _originScope: action.toString(), action: jest.fn(), deps },
+      relativePath: caller.relativePath
     });
 
-    return [result[0], mockedSetState];
+    const implementation = () => {
+      const unmount = action();
+
+      if (typeof unmount !== "function") {
+        return unmount;
+      }
+
+      if (register.unmountAction === undefined) {
+        register.unmountAction = jest.fn();
+      }
+
+      register.unmountAction.mockImplementation(unmount);
+
+      return register.unmountAction;
+    };
+
+    register.deps = deps;
+    register.action.mockImplementation(implementation);
+
+    return origin.useEffect(register.action, deps);
   }
+  // useState: function useState(initialValue: unknown) {
+  //   const result = origin.useState(initialValue);
+
+  //   // get caller function name from error stack since Funcion.caller is deprecated
+  //   const caller = getCaller();
+
+  //   const existingMockedSetState =
+  //     privateCollector.getExistingSetStateMockedAction(caller.name, result[1]);
+
+  //   if (existingMockedSetState) {
+  //     privateCollector.registerHook(caller.name, "useState", {
+  //       state: result[0]
+  //     });
+
+  //     return [result[0], existingMockedSetState];
+  //   }
+
+  //   const mockedSetState = jest.fn((...props) => {
+  //     return result[1](...props);
+  //   });
+
+  //   Object.defineProperties(
+  //     mockedSetState,
+  //     Object.getOwnPropertyDescriptors(result[1])
+  //   );
+
+  //   privateCollector.registerHook(caller.name, "useState", {
+  //     mockedSetState,
+  //     setState: result[1],
+  //     state: result[0]
+  //   });
+
+  //   return [result[0], mockedSetState];
+  // }
 });

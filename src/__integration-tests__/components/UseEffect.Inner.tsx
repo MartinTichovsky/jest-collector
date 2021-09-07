@@ -1,6 +1,6 @@
 import React from "react";
 
-export const RegisteredTemplateInner = ({
+export const TemplateInner = ({
   action,
   num,
   text,

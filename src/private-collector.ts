@@ -1,54 +1,19 @@
 import { ControllerAbstract } from "./private-collector.abstract";
 import {
+  ActiveDataTestId,
   ComponentHooks,
   ComponentHooksTypes,
   FunctionExecuted,
+  Options,
   RegisteredFunction,
   RegisterFunction,
-  SetHook
+  RegisterHookProps,
+  RegisterHookWithAction
 } from "./private-collector.types";
 
 export class PrivateCollector extends ControllerAbstract {
-  registeredFunctions: {
-    [key: string]: RegisteredFunction[];
-  } = {};
-
-  unregisteredReactComponents: {
-    [key: string]: ComponentHooks;
-  } = {};
-
-  public activeDataTestId: { [key: string]: (string | undefined)[] } = {};
-
-  memoizedStateCalls: {
-    [key: string]: {
-      dataTestId?: string;
-      calls: Map<Function, any[]>;
-    };
-  } = {};
-
-  private addUnregisteredReactComponent<K extends keyof ComponentHooksTypes>(
-    componentName: string,
-    hookType: K,
-    props?: ComponentHooksTypes[K]
-  ) {
-    if (!(componentName in this.unregisteredReactComponents)) {
-      this.unregisteredReactComponents[componentName] = {};
-    }
-
-    if (!(hookType in this.unregisteredReactComponents[componentName])) {
-      this.unregisteredReactComponents[componentName][hookType] = [];
-    }
-
-    (this.unregisteredReactComponents[componentName][
-      hookType
-    ] as ComponentHooksTypes[K][])!.push(props || {});
-
-    return {
-      index:
-        this.unregisteredReactComponents[componentName][hookType]!.length - 1,
-      renderIndex: undefined
-    };
-  }
+  private activeDataTestId: ActiveDataTestId[] = [];
+  private registeredFunctions: RegisteredFunction[] = [];
 
   public functionCalled({
     args,
@@ -57,29 +22,35 @@ export class PrivateCollector extends ControllerAbstract {
     name,
     relativePath
   }: RegisterFunction) {
-    if (!(name in this.activeDataTestId)) {
-      this.activeDataTestId[name] = [];
-    }
-
-    this.activeDataTestId[name].push(dataTestId);
-
-    if (!(name in this.registeredFunctions)) {
-      this.registeredFunctions[name] = [];
-    }
-
-    const existingItem = this.registeredFunctions[name].find(
-      (item) => item.dataTestId === dataTestId
+    const active = this.activeDataTestId.find(
+      (item) => item.name === name && item.relativePath === relativePath
     );
 
-    if (existingItem) {
-      existingItem.call.push({ args });
-
-      return existingItem.call.length - 1;
+    if (active) {
+      active.dataTestIds.push(dataTestId);
     } else {
-      this.registeredFunctions[name].push({
-        call: [{ args }],
+      this.activeDataTestId.push({
+        dataTestIds: [dataTestId],
+        name,
+        relativePath
+      });
+    }
+
+    const registered = this.getFunction(name, { dataTestId, relativePath });
+
+    if (registered) {
+      registered.calls.push({ args });
+      registered.hooksCounter = {};
+
+      return registered.calls.length - 1;
+    } else {
+      this.registeredFunctions.push({
+        calls: [{ args }],
         dataTestId,
+        hooks: {},
+        hooksCounter: {},
         jestFn,
+        name,
         relativePath
       });
 
@@ -91,301 +62,241 @@ export class PrivateCollector extends ControllerAbstract {
     name,
     dataTestId,
     index,
+    relativePath,
     result
   }: FunctionExecuted) {
-    if (
-      !(name in this.registeredFunctions) ||
-      !(name in this.activeDataTestId)
-    ) {
+    const active = this.activeDataTestId.find(
+      (item) => item.name === name && item.relativePath === relativePath
+    );
+    const registered = this.getFunction(name, { dataTestId, relativePath });
+
+    if (!active || !registered) {
       return;
     }
 
-    this.activeDataTestId[name] = this.activeDataTestId[name].slice(
+    active.dataTestIds = active.dataTestIds.slice(
       0,
-      this.activeDataTestId[name].length - 1
+      active.dataTestIds.length - 1
     );
 
-    const existingItem = this.registeredFunctions[name].find(
-      (item) => item.dataTestId === dataTestId
-    );
-
-    if (existingItem && index < existingItem.call.length) {
-      existingItem.call[index].result = result;
+    if (index < registered.calls.length) {
+      registered.calls[index].result = result;
     }
   }
 
-  public getActiveDataTestId(name: string) {
-    return this.activeDataTestId[name]?.[
-      this.activeDataTestId[name].length - 1
-    ];
-  }
-
-  public getFunctionCallCount(functionName: string, dataTestId?: string) {
-    return (
-      this.registeredFunctions[functionName]?.find(
-        (item) => item.dataTestId === dataTestId
-      )?.call.length || undefined
-    );
-  }
-
-  public getExistingSetStateMockedAction(
-    componentName: string,
-    setState: Function
-  ) {
-    const existingItem = this.registeredFunctions[componentName]?.find(
-      (item) => item.dataTestId === this.getActiveDataTestId(componentName)
+  public getActiveDataTestId(name: string, relativePath: string) {
+    const active = this.activeDataTestId.find(
+      (item) => item.name === name && item.relativePath === relativePath
     );
 
-    if (!existingItem) {
-      return;
-    }
+    return active?.dataTestIds[active.dataTestIds.length - 1];
+  }
 
-    for (let call of existingItem.call) {
-      if (!call.hooks?.["useState"]) {
-        continue;
-      }
+  public getCallCount(name: string, options?: Options) {
+    const registered = this.getFunction(name, options);
+    return registered ? registered.calls.length : undefined;
+  }
 
-      const existingStateItem = call.hooks["useState"]?.find(
-        (item) => item.setState === setState
+  // public getExistingSetStateMockedAction(
+  //   componentName: string,
+  //   setState: Function
+  // ) {
+  //   const existingItem = this.registeredFunctions[componentName]?.find(
+  //     (item) => item.dataTestId === this.getActiveDataTestId(componentName)
+  //   );
+
+  //   if (!existingItem) {
+  //     return;
+  //   }
+
+  //   for (let call of existingItem.call) {
+  //     if (!call.hooks?.["useState"]) {
+  //       continue;
+  //     }
+
+  //     const existingStateItem = call.hooks["useState"]?.find(
+  //       (item) => item.setState === setState
+  //     );
+
+  //     if (existingStateItem) {
+  //       return existingStateItem.mockedSetState;
+  //     }
+  //   }
+  // }
+
+  public getFunction(name: string, options?: Options) {
+    if (options?.relativePath !== undefined) {
+      return this.registeredFunctions.find(
+        (item) =>
+          item.dataTestId === options?.dataTestId &&
+          item.name === name &&
+          item.relativePath === options?.relativePath
       );
-
-      if (existingStateItem) {
-        return existingStateItem.mockedSetState;
-      }
-    }
-  }
-
-  public getRegisteredFunction(name: string, dataTestId?: string) {
-    if (!(name in this.registeredFunctions)) {
-      return undefined;
     }
 
-    return this.registeredFunctions[name].find(
-      (item) => item.dataTestId === dataTestId
+    const registered = this.registeredFunctions.filter(
+      (item) => item.name === name && item.dataTestId === options?.dataTestId
     );
-  }
 
-  public getRegisteredReactComponent(
-    componentName: string,
-    dataTestId?: string
-  ) {
-    if (!(componentName in this.registeredFunctions)) {
-      return undefined;
+    if (registered.length > 1) {
+      console.warn(
+        `More functions with name '${name}' and different relative path detected. Use relative path to get exact result.`
+      );
     }
 
-    return this.registeredFunctions[componentName]
-      .find((item) => item.dataTestId === dataTestId)
-      ?.call.map((call) => call?.hooks || {});
+    return registered.length ? registered[0] : undefined;
   }
 
-  public getRegisteredReactComponentHooks<K extends keyof ComponentHooksTypes>(
-    componentName: string,
-    hookType: K,
-    dataTestId?: string
-  ): {
-    getRender: (renderSequence: number) => ComponentHooks[K] | undefined;
-    getRenderHooks: (
-      renderSequence: number,
-      hookSequence: number
-    ) => ComponentHooksTypes[K] | undefined;
-  } {
-    const exists = componentName in this.registeredFunctions;
+  private getHookWithoutScope(
+    registered: RegisteredFunction | undefined,
+    hookType: keyof ComponentHooksTypes,
+    sequence: number
+  ) {
+    return registered &&
+      hookType in registered.hooks &&
+      sequence > 0 &&
+      sequence <= registered.hooks[hookType]!.length
+      ? {
+          ...registered.hooks[hookType]![sequence - 1],
+          _originScope: undefined
+        }
+      : undefined;
+  }
+
+  public getReactComponentHooks(componentName: string, options?: Options) {
+    const registered = this.getFunction(componentName, options);
 
     return {
-      getRender: (renderSequence: number) => {
-        if (!exists) {
-          return undefined;
-        }
-
-        const existingItem = this.registeredFunctions[componentName].find(
-          (item) => item.dataTestId === dataTestId
-        );
-
-        return !existingItem ||
-          renderSequence < 1 ||
-          existingItem.call.length < renderSequence ||
-          !existingItem.call[renderSequence - 1].hooks ||
-          !(hookType in existingItem.call[renderSequence - 1].hooks!)
-          ? undefined
-          : existingItem.call[renderSequence - 1].hooks![hookType];
-      },
-      getRenderHooks: (renderSequence: number, hookSequence: number) => {
-        if (!exists) {
-          return undefined;
-        }
-
-        const existingItem = this.registeredFunctions[componentName].find(
-          (item) => item.dataTestId === dataTestId
-        );
-
-        return (
-          !existingItem ||
-          renderSequence < 1 ||
-          hookSequence < 1 ||
-          existingItem.call.length < renderSequence ||
-          !existingItem.call[renderSequence - 1].hooks ||
-          !(hookType in existingItem.call[renderSequence - 1].hooks!) ||
-          existingItem.call[renderSequence - 1].hooks![hookType]!.length <
-            hookSequence
-            ? undefined
-            : existingItem.call[renderSequence - 1].hooks![hookType]![
-                hookSequence - 1
-              ]
-        ) as ComponentHooksTypes[K] | undefined;
-      }
+      getAll: () =>
+        registered ? this.removeOriginScope(registered.hooks) : undefined,
+      getHook: <K extends keyof ComponentHooksTypes>(
+        hookType: K,
+        sequence: number
+      ) =>
+        this.getHookWithoutScope(registered, hookType, sequence) as
+          | ComponentHooksTypes[K]
+          | undefined,
+      getHooksByType: <K extends keyof ComponentHooksTypes>(hookType: K) => ({
+        get: (sequence: number) =>
+          this.getHookWithoutScope(registered, hookType, sequence) as
+            | ComponentHooksTypes[K]
+            | undefined
+      })
     };
   }
 
-  public getSetState(
-    componentName: string,
-    dataTestId?: string,
-    orderNumber: number = 0
-  ) {
-    // if (!(componentName in this.registeredFunctions)) {
-    //   return undefined;
-    // }
-    // const renders = this.registeredFunctions[componentName].filter(
-    //   (render) => render.dataTestId === dataTestId
-    // );
-    // return renders?.[0]?.hooks?.["useState"]?.[orderNumber]?.mockedSetState;
-  }
+  // public getSetState(
+  //   componentName: string,
+  //   dataTestId?: string,
+  //   orderNumber: number = 0
+  // ) {
+  //   // if (!(componentName in this.registeredFunctions)) {
+  //   //   return undefined;
+  //   // }
+  //   // const renders = this.registeredFunctions[componentName].filter(
+  //   //   (render) => render.dataTestId === dataTestId
+  //   // );
+  //   // return renders?.[0]?.hooks?.["useState"]?.[orderNumber]?.mockedSetState;
+  // }
 
-  public getUnregisteredReactComponent(componentName: string) {
-    if (!(componentName in this.unregisteredReactComponents)) {
-      return undefined;
+  private getSequenceNumber(
+    registered: RegisteredFunction,
+    hookType: keyof ComponentHooksTypes
+  ) {
+    if (!(hookType in registered.hooksCounter)) {
+      registered.hooksCounter[hookType] = 1;
     }
 
-    return this.unregisteredReactComponents[componentName];
+    return registered.hooksCounter[hookType]!;
   }
 
-  public getUnregisteredReactComponentHooks<
-    K extends keyof ComponentHooksTypes
-  >(
-    componentName: string,
+  public hasFunction(name: string, options?: Options) {
+    return this.getFunction(name, options) !== undefined;
+  }
+
+  private registerHook<K extends keyof ComponentHooksTypes>(
+    registered: RegisteredFunction,
     hookType: K
-  ): {
-    getHook: (hookSequence: number) => ComponentHooksTypes[K] | undefined;
-  } {
-    return {
-      getHook: (hookNumber: number) => {
-        return (
-          !(componentName in this.unregisteredReactComponents) ||
-          !(hookType in this.unregisteredReactComponents[componentName]) ||
-          !this.unregisteredReactComponents[componentName][hookType]!.length ||
-          this.unregisteredReactComponents[componentName][hookType]!.length <
-            hookNumber
-            ? undefined
-            : this.unregisteredReactComponents[componentName][hookType]![
-                hookNumber - 1
-              ]
-        ) as ComponentHooksTypes[K] | undefined;
-      }
-    };
-  }
-
-  public hasRegisteredComponent(componentName: string, dataTestId?: string) {
-    return (
-      componentName in this.registeredFunctions &&
-      this.registeredFunctions[componentName].some(
-        (item) => item.dataTestId === dataTestId
-      )
-    );
-  }
-
-  public hasUnregisteredComponent(componentName: string) {
-    return componentName in this.unregisteredReactComponents;
-  }
-
-  public registerHook<K extends keyof ComponentHooksTypes>(
-    componentName: string,
-    hookType: K,
-    props: ComponentHooksTypes[K]
   ) {
-    const existigItem = this.registeredFunctions[componentName]?.find(
-      (item) => item.dataTestId === this.getActiveDataTestId(componentName)
-    );
+    if (!(hookType in registered.hooks)) {
+      registered.hooks[hookType] = [];
+    }
+  }
 
-    if (!existigItem) {
-      return this.addUnregisteredReactComponent(componentName, hookType, props);
+  private registerHookProps<K extends keyof ComponentHooksTypes>({
+    hooks,
+    hookType,
+    props,
+    registered,
+    sequence
+  }: RegisterHookProps<K>) {
+    if (hooks.length >= sequence) {
+      for (let i = hooks.length; i >= 0; i--) {
+        if (i === sequence - 1) {
+          hooks[i] = props;
+        } else {
+          hooks[i] = hooks[i - 1];
+        }
+      }
+    } else {
+      hooks[sequence - 1] = props;
     }
 
-    const currentCall = existigItem.call[existigItem.call.length - 1];
+    registered.hooksCounter[hookType] = sequence + 1;
+    return hooks[sequence - 1];
+  }
 
-    if (!currentCall.hooks) {
-      currentCall.hooks = {};
+  public registerHookWithAction<K extends "useEffect" | "useCallback">({
+    componentName,
+    hookType,
+    props,
+    relativePath
+  }: RegisterHookWithAction<K>) {
+    const registered = this.getFunction(componentName, {
+      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      relativePath
+    });
+
+    if (!registered) {
+      return props;
     }
 
-    if (!(hookType in currentCall.hooks!)) {
-      currentCall.hooks[hookType] = [];
+    this.registerHook(registered, hookType);
+
+    const existingHook = (
+      registered.hooks[hookType] as ComponentHooksTypes[K][]
+    )?.find((item) => item._originScope === props._originScope);
+
+    if (existingHook) {
+      return existingHook;
     }
 
-    (currentCall.hooks[hookType] as ComponentHooksTypes[K][])!.push(props!);
+    const sequence = this.getSequenceNumber(registered, "useEffect");
 
-    return {
-      index: currentCall.hooks[hookType]!.length - 1,
-      renderIndex: existigItem.call.length - 1
-    };
+    return this.registerHookProps({
+      registered,
+      hooks: registered.hooks[hookType] as ComponentHooksTypes[K][],
+      hookType,
+      props,
+      sequence
+    });
+  }
+
+  public removeOriginScope(hooks: ComponentHooks<never>) {
+    const result: ComponentHooks<never> = {};
+
+    for (let key in hooks) {
+      result[key] = (hooks[key] as { _originScope: string }[]).map((item) => ({
+        ...item,
+        _originScope: undefined
+      }));
+    }
+
+    return result;
   }
 
   public reset() {
-    this.activeDataTestId = {};
-    this.registeredFunctions = {};
-    this.unregisteredReactComponents = {};
-  }
-
-  public setHook({
-    componentName,
-    dataTestId,
-    hookType,
-    index,
-    props,
-    renderIndex
-  }: SetHook) {
-    if (componentName === undefined || index === undefined) {
-      return;
-    }
-
-    // check unregistered integrity
-    if (
-      renderIndex === undefined &&
-      (!(componentName in this.unregisteredReactComponents) ||
-        !(hookType in this.unregisteredReactComponents[componentName]) ||
-        !this.unregisteredReactComponents[componentName][hookType]!.length ||
-        this.unregisteredReactComponents[componentName][hookType]!.length <=
-          index)
-    ) {
-      return;
-    }
-
-    // push into unregistered component
-    if (renderIndex === undefined) {
-      this.unregisteredReactComponents[componentName][hookType]![index] = {
-        ...this.unregisteredReactComponents[componentName][hookType]![index],
-        ...props
-      };
-      return;
-    }
-
-    const existingItem = this.registeredFunctions[componentName]?.find(
-      (item) => item.dataTestId === dataTestId
-    );
-
-    // check registered integrity
-    if (
-      !existingItem ||
-      !existingItem.call.length ||
-      existingItem.call.length <= renderIndex ||
-      !existingItem.call[renderIndex].hooks ||
-      !(hookType in existingItem.call[renderIndex].hooks!) ||
-      !existingItem.call[renderIndex].hooks![hookType]!.length ||
-      existingItem.call[renderIndex].hooks![hookType]!.length <= index
-    ) {
-      return;
-    }
-
-    existingItem.call[renderIndex].hooks![hookType]![index] = {
-      ...existingItem.call[renderIndex].hooks![hookType]![index],
-      ...props
-    };
+    this.activeDataTestId = [];
+    this.registeredFunctions = [];
   }
 }

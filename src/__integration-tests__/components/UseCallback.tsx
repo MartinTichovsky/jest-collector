@@ -1,10 +1,6 @@
 import React from "react";
 
-export const UnregisteredWithOneUseCallback = ({
-  callFunc
-}: {
-  callFunc: () => void;
-}) => {
+export const OneUseCallback = ({ callFunc }: { callFunc: () => void }) => {
   React.useCallback(() => {
     return callFunc;
   }, []);
@@ -12,7 +8,7 @@ export const UnregisteredWithOneUseCallback = ({
   return <div></div>;
 };
 
-export const UnegisteredWithDeps = ({ deps }: { deps: unknown[] }) => {
+export const WithDeps = ({ deps }: { deps: unknown[] }) => {
   React.useCallback(() => {
     // some action
   }, [...deps]);
@@ -20,7 +16,7 @@ export const UnegisteredWithDeps = ({ deps }: { deps: unknown[] }) => {
   return <div></div>;
 };
 
-export const UnregisteredRenders = ({
+export const Renders = ({
   caller
 }: {
   caller: {
@@ -31,9 +27,11 @@ export const UnregisteredRenders = ({
   const [state, setState] = React.useState(0);
   caller.setState = setState;
 
-  React.useCallback(() => {
+  const action = React.useCallback(() => {
     return caller.action;
-  }, []);
+  }, [state]);
+
+  action();
 
   return <div></div>;
 };

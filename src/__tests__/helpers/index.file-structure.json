@@ -1,6 +1,6 @@
 [
   [
-    "__tests-helper",
+    "__tests-helper__",
     [
       "test-file.ts"
     ]

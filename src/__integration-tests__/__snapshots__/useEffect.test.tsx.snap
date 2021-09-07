@@ -1,9 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useEffect Component with one useEffect and unregistered component 1`] = `
+exports[`useEffect Default - Component with one useEffect 1`] = `
 Object {
   "useEffect": Array [
     Object {
+      "_originScope": undefined,
       "action": [MockFunction] {
         "calls": Array [
           Array [],
@@ -21,32 +22,9 @@ Object {
 }
 `;
 
-exports[`useEffect Default - Component with one useEffect 1`] = `
-Array [
-  Object {
-    "useEffect": Array [
-      Object {
-        "action": [MockFunction] {
-          "calls": Array [
-            Array [],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": undefined,
-            },
-          ],
-        },
-        "deps": Array [],
-      },
-    ],
-  },
-]
-`;
-
 exports[`useEffect Default - Component with one useEffect 2`] = `
 Object {
-  "call": Array [
+  "calls": Array [
     Object {
       "args": Arguments [
         Object {
@@ -64,30 +42,32 @@ Object {
         },
         Object {},
       ],
-      "hooks": Object {
-        "useEffect": Array [
-          Object {
-            "action": [MockFunction] {
-              "calls": Array [
-                Array [],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": undefined,
-                },
-              ],
-            },
-            "deps": Array [],
-          },
-        ],
-      },
       "result": <div>
         Some content
       </div>,
     },
   ],
   "dataTestId": undefined,
+  "hooks": Object {
+    "useEffect": Array [
+      Object {
+        "_originScope": undefined,
+        "action": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "deps": Array [],
+      },
+    ],
+  },
+  "hooksCounter": undefined,
   "jestFn": [MockFunction] {
     "calls": Array [
       Array [
@@ -118,36 +98,36 @@ Object {
       },
     ],
   },
-  "relativePath": "/src/__implementation-tests/registered/UseEffect.tsx",
+  "name": "OneUseEffect",
+  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
 }
 `;
 
 exports[`useEffect Default with test id - Component with one useEffect 1`] = `
-Array [
-  Object {
-    "useEffect": Array [
-      Object {
-        "action": [MockFunction] {
-          "calls": Array [
-            Array [],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": undefined,
-            },
-          ],
-        },
-        "deps": Array [],
+Object {
+  "useEffect": Array [
+    Object {
+      "_originScope": undefined,
+      "action": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
       },
-    ],
-  },
-]
+      "deps": Array [],
+    },
+  ],
+}
 `;
 
 exports[`useEffect Default with test id - Component with one useEffect 2`] = `
 Object {
-  "call": Array [
+  "calls": Array [
     Object {
       "args": Arguments [
         Object {
@@ -166,30 +146,32 @@ Object {
         },
         Object {},
       ],
-      "hooks": Object {
-        "useEffect": Array [
-          Object {
-            "action": [MockFunction] {
-              "calls": Array [
-                Array [],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": undefined,
-                },
-              ],
-            },
-            "deps": Array [],
-          },
-        ],
-      },
       "result": <div>
         Some content
       </div>,
     },
   ],
   "dataTestId": "test-id",
+  "hooks": Object {
+    "useEffect": Array [
+      Object {
+        "_originScope": undefined,
+        "action": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "deps": Array [],
+      },
+    ],
+  },
+  "hooksCounter": undefined,
   "jestFn": [MockFunction] {
     "calls": Array [
       Array [
@@ -245,15 +227,38 @@ Object {
       },
     ],
   },
-  "relativePath": "/src/__implementation-tests/registered/UseEffect.tsx",
+  "name": "OneUseEffect",
+  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
 }
 `;
 
-exports[`useEffect Deps in registered component 1`] = `
-Array [
-  Object {
+exports[`useEffect Deps in the component 1`] = `
+Object {
+  "calls": Array [
+    Object {
+      "args": Arguments [
+        Object {
+          "deps": Array [
+            1,
+            Object {
+              "property": "some",
+            },
+            "Text",
+            false,
+          ],
+        },
+        Object {},
+      ],
+      "result": <div>
+        Registered with deps
+      </div>,
+    },
+  ],
+  "dataTestId": undefined,
+  "hooks": Object {
     "useEffect": Array [
       Object {
+        "_originScope": undefined,
         "action": [MockFunction] {
           "calls": Array [
             Array [],
@@ -276,16 +281,57 @@ Array [
       },
     ],
   },
-]
+  "hooksCounter": undefined,
+  "jestFn": [MockFunction] {
+    "calls": Array [
+      Array [
+        Arguments [
+          Object {
+            "deps": Array [
+              1,
+              Object {
+                "property": "some",
+              },
+              "Text",
+              false,
+            ],
+          },
+          Object {},
+        ],
+      ],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": <div>
+          Registered with deps
+        </div>,
+      },
+    ],
+  },
+  "name": "WithDeps",
+  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+}
 `;
 
-exports[`useEffect Deps in unregistered component 1`] = `undefined`;
-
 exports[`useEffect Unmount registered component 1`] = `
-Array [
-  Object {
+Object {
+  "calls": Array [
+    Object {
+      "args": Arguments [
+        Object {},
+        Object {},
+      ],
+      "result": <div>
+        Registered with unmount
+      </div>,
+    },
+  ],
+  "dataTestId": undefined,
+  "hooks": Object {
     "useEffect": Array [
       Object {
+        "_originScope": undefined,
         "action": [MockFunction] {
           "calls": Array [
             Array [],
@@ -302,62 +348,26 @@ Array [
       },
     ],
   },
-]
-`;
-
-exports[`useEffect Unmount unregistered component 1`] = `
-Object {
-  "useEffect": Array [
-    Object {
-      "action": [MockFunction] {
-        "calls": Array [
-          Array [],
+  "hooksCounter": undefined,
+  "jestFn": [MockFunction] {
+    "calls": Array [
+      Array [
+        Arguments [
+          Object {},
+          Object {},
         ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": [MockFunction],
-          },
-        ],
+      ],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": <div>
+          Registered with unmount
+        </div>,
       },
-      "deps": Array [],
-      "unmountAction": [MockFunction],
-    },
-  ],
-}
-`;
-
-exports[`useEffect Unregistered with two effect 1`] = `
-Object {
-  "useEffect": Array [
-    Object {
-      "action": [MockFunction] {
-        "calls": Array [
-          Array [],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      },
-      "deps": Array [],
-    },
-    Object {
-      "action": [MockFunction] {
-        "calls": Array [
-          Array [],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      },
-      "deps": Array [],
-    },
-  ],
+    ],
+  },
+  "name": "WithUmount",
+  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
 }
 `;

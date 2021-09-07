@@ -3,6 +3,7 @@ import { ControllerAbstract } from "./private-collector.abstract";
 import {
   ComponentHooks,
   ComponentHooksTypes,
+  Options,
   RegisteredFunction
 } from "./private-collector.types";
 
@@ -11,72 +12,53 @@ export class Collector extends ControllerAbstract {
     super();
   }
 
-  public getFunctionCallCount(functionName: string, dataTestId?: string) {
-    return this.privateCollector.getFunctionCallCount(functionName, dataTestId);
+  public getCallCount(name: string, options?: Options) {
+    return this.privateCollector.getCallCount(name, options);
   }
 
-  public getRegisteredFunction(
+  public getComponent(
     name: string,
-    dataTestId?: string
-  ): RegisteredFunction | undefined {
-    return this.privateCollector.getRegisteredFunction(name, dataTestId);
+    options?: Options
+  ): RegisteredFunction<never> | undefined {
+    return this.getFunction(name, options);
   }
 
-  public getRegisteredReactComponent(
-    componentName: string,
-    dataTestId?: string
-  ) {
-    return this.privateCollector.getRegisteredReactComponent(
-      componentName,
-      dataTestId
-    );
+  public getFunction(name: string, options?: Options) {
+    const result = this.privateCollector.getFunction(name, options);
+
+    return result
+      ? ({
+          ...result,
+          hooks: this.privateCollector.removeOriginScope(result.hooks),
+          hooksCounter: undefined
+        } as RegisteredFunction<never> | undefined)
+      : undefined;
   }
 
-  public getRegisteredReactComponentHooks<K extends keyof ComponentHooksTypes>(
+  public getReactComponentHooks(
     componentName: string,
-    hookType: K,
-    dataTestId?: string
+    options?: Options
   ): {
-    getRender: (renderNumber: number) => ComponentHooks[K] | undefined;
-    getRenderHooks: (
-      renderNumber: number,
-      hookNumber: number
+    getAll: () => ComponentHooks | undefined;
+    getHook: <K extends keyof ComponentHooksTypes>(
+      hookType: K,
+      sequence: number
     ) => ComponentHooksTypes[K] | undefined;
+    getHooksByType: <K extends keyof ComponentHooksTypes>(
+      hookType: K
+    ) => {
+      get: (sequence: number) => ComponentHooksTypes[K] | undefined;
+    };
   } {
-    return this.privateCollector.getRegisteredReactComponentHooks(
-      componentName,
-      hookType,
-      dataTestId
-    );
+    return this.privateCollector.getReactComponentHooks(componentName, options);
   }
 
-  public getUnregisteredReactComponent(componentName: string) {
-    return this.privateCollector.getUnregisteredReactComponent(componentName);
+  public hasComponent(componentName: string, options?: Options) {
+    return this.hasFunction(componentName, options);
   }
 
-  public getUnregisteredReactComponentHooks<
-    K extends keyof ComponentHooksTypes
-  >(
-    componentName: string,
-    hookType: K
-  ): {
-    getHook: (hookNumber: number) => ComponentHooksTypes[K] | undefined;
-  } {
-    return this.privateCollector.getUnregisteredReactComponentHooks(
-      componentName,
-      hookType
-    );
-  }
-
-  public hasRegisteredComponent(componentName: string, dataTestId?: string) {
-    return this.privateCollector.hasRegisteredComponent(
-      componentName,
-      dataTestId
-    );
-  }
-
-  public hasUnregisteredComponent(componentName: string) {
-    return this.privateCollector.hasUnregisteredComponent(componentName);
+  public hasFunction(componentName: string, options?: Options) {
+    return this.privateCollector.hasFunction(componentName, options);
   }
 
   public reset() {

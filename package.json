@@ -44,6 +44,12 @@
       },
       "collector": null
     },
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx}",
+      "!**/__integration-tests__/**",
+      "!**/__tests__/**",
+      "!**/__tests-helper__/**"
+    ],
     "preset": "ts-jest",
     "roots": [
       "<rootDir>/src"

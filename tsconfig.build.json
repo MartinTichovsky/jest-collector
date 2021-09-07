@@ -2,9 +2,9 @@
   "extends": "./tsconfig.json",
   "exclude": [
     "node_modules",
-    "**/__implementation-tests",
+    "**/__integration-tests__",
     "**/__tests__",
-    "**/__tests-helper",
+    "**/__tests-helper__",
     "**/*.test.ts",
     "**/*.test.tsx"
   ]

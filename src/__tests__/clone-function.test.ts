@@ -4,15 +4,15 @@ import { PrivateCollector } from "../private-collector";
 const collector = new PrivateCollector();
 let mockDescribeNativeComponentFrame = false;
 
-jest.mock("../caller.ts", () => {
+jest.mock("../caller", () => {
   const origin = jest.requireActual("../caller");
 
   return {
     ...origin,
-    getCallerName: (...props: any) =>
+    getCaller: (...props: any) =>
       mockDescribeNativeComponentFrame
-        ? "describeNativeComponentFrame"
-        : origin.getCallerName(...props)
+        ? { name: "describeNativeComponentFrame" }
+        : origin.getCaller(...props)
   };
 });
 

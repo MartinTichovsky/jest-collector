@@ -1,6 +1,5 @@
 import React from "react";
-import { UnregisteredWithOneUseEffect } from "../unregistered/UseEffect";
-import { RegisteredTemplateInner } from "./UseEffect.Inner";
+import { TemplateInner } from "./UseEffect.Inner";
 
 export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
   React.useEffect(() => {
@@ -10,23 +9,7 @@ export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
   return <div>Some content</div>;
 };
 
-export const OneUseEffectWithUnregisteredComponent = ({
-  callFunc
-}: {
-  callFunc: () => void;
-}) => {
-  React.useEffect(() => {
-    callFunc();
-  }, []);
-
-  return (
-    <div>
-      <UnregisteredWithOneUseEffect callFunc={callFunc} />
-    </div>
-  );
-};
-
-export const RegisteredWithUmount = () => {
+export const WithUmount = () => {
   React.useEffect(() => {
     return () => {
       // some unmount action
@@ -36,7 +19,7 @@ export const RegisteredWithUmount = () => {
   return <div>Registered with unmount</div>;
 };
 
-export const RegisteredWithDeps = ({ deps }: { deps: unknown[] }) => {
+export const WithDeps = ({ deps }: { deps: unknown[] }) => {
   React.useEffect(() => {
     // some unmount action
   }, [...deps]);
@@ -44,7 +27,7 @@ export const RegisteredWithDeps = ({ deps }: { deps: unknown[] }) => {
   return <div>Registered with deps</div>;
 };
 
-export const RegisteredRenders = ({
+export const Renders = ({
   caller
 }: {
   caller: {
@@ -62,7 +45,7 @@ export const RegisteredRenders = ({
   return <div>Registered renders {state}</div>;
 };
 
-export const RegisteredTemplate = ({
+export const Template = ({
   caller
 }: {
   caller: {
@@ -77,7 +60,7 @@ export const RegisteredTemplate = ({
   caller.setState = setState;
 
   return (
-    <RegisteredTemplateInner
+    <TemplateInner
       action={caller.action}
       num={state.num}
       text={state.text}

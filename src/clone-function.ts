@@ -1,4 +1,4 @@
-import { getCallerName } from "./caller";
+import { getCaller } from "./caller";
 import { PrivateCollector } from "./private-collector";
 
 export const registerClone = () => {
@@ -13,16 +13,16 @@ export const registerClone = () => {
 
       const _this = this as any;
       let result: any;
-      const jestFn = jest.fn((...props) => result);
+      const jestFn = jest.fn((..._props) => result);
 
       const _overload = {
         // this scope will be called on each call
         [_this.name]: function () {
-          if (getCallerName(2) === "describeNativeComponentFrame") {
+          if (getCaller(2).name === "describeNativeComponentFrame") {
             return null;
           }
 
-          const dataTestId = arguments[0]?.["data-testid"];
+          let dataTestId = arguments[0]?.["data-testid"];
 
           const functionIndex = privateCollector.functionCalled({
             args: arguments,
@@ -42,6 +42,7 @@ export const registerClone = () => {
             dataTestId,
             index: functionIndex,
             name: _this.name,
+            relativePath,
             result
           });
 
