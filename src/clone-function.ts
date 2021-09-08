@@ -34,9 +34,13 @@ export const registerClone = () => {
             relativePath
           });
 
+          const t0 = performance.now();
+
           result = new.target
             ? new _this(...Array.from(arguments))
             : _this.apply(_this, arguments);
+
+          const t1 = performance.now();
 
           if (result instanceof React.Component) {
             mockReactComponent({
@@ -55,7 +59,8 @@ export const registerClone = () => {
             index: functionIndex,
             name: _this.name,
             relativePath,
-            result
+            result,
+            time: t1 - t0
           });
 
           return result;

@@ -44,14 +44,14 @@ export class PrivateCollector extends ControllerAbstract {
     const registered = this.getFunction(name, { dataTestId, relativePath });
 
     if (registered) {
-      registered.calls.push({ args });
+      registered.calls.push({ args, stats: { time: 0 } });
       registered.hooksCounter = {};
       this.unregisterAllHooks(registered);
 
       return registered.calls.length - 1;
     } else {
       this.registeredFunctions.push({
-        calls: [{ args }],
+        calls: [{ args, stats: { time: 0 } }],
         dataTestId,
         hooksCounter: {},
         jestFn,
@@ -68,7 +68,8 @@ export class PrivateCollector extends ControllerAbstract {
     dataTestId,
     index,
     relativePath,
-    result
+    result,
+    time
   }: FunctionExecuted) {
     const active = this.activeDataTestId.find(
       (item) => item.name === name && item.relativePath === relativePath
@@ -86,6 +87,7 @@ export class PrivateCollector extends ControllerAbstract {
 
     if (index < registered.calls.length) {
       registered.calls[index].result = result;
+      registered.calls[index].stats.time = time;
     }
   }
 

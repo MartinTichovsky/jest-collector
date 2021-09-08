@@ -12,6 +12,7 @@ import {
   MoreUseEffectsInner,
   TemplateInner
 } from "./components/UseEffect.Inner";
+import { removeStatsFromCalls } from "./utils";
 
 beforeEach(() => {
   collector.reset();
@@ -38,7 +39,9 @@ const defaultTest = (callFunc: () => void, dataTestId?: string) => {
   expect(hooks?.getHook("useEffect", 1)?.unmountAction).toBeUndefined();
 
   expect(
-    collector.getComponent(OneUseEffect.name, { dataTestId })
+    removeStatsFromCalls(
+      collector.getComponent(OneUseEffect.name, { dataTestId })
+    )
   ).toMatchSnapshot();
 };
 
@@ -201,7 +204,9 @@ describe("useEffect", () => {
     expect(screen.getByText("Registered with unmount")).toBeTruthy();
     expect(collector.hasComponent(WithUmount.name)).toBeTruthy();
     expect(collector.getCallCount(WithUmount.name)).toBe(1);
-    expect(collector.getComponent(WithUmount.name)).toMatchSnapshot();
+    expect(
+      removeStatsFromCalls(collector.getComponent(WithUmount.name))
+    ).toMatchSnapshot();
 
     const useEffectHooks = collector
       .getReactHooks(WithUmount.name)
@@ -225,7 +230,9 @@ describe("useEffect", () => {
     expect(screen.getByText("Registered with deps")).toBeTruthy();
     expect(collector.hasComponent(WithDeps.name)).toBeTruthy();
     expect(collector.getCallCount(WithDeps.name)).toBe(1);
-    expect(collector.getComponent(WithDeps.name)).toMatchSnapshot();
+    expect(
+      removeStatsFromCalls(collector.getComponent(WithDeps.name))
+    ).toMatchSnapshot();
 
     const useEffectHooks = collector
       .getReactHooks(WithDeps.name)

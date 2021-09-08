@@ -20,6 +20,7 @@ export interface FunctionExecuted {
   name: string;
   relativePath: string;
   result: any;
+  time: number;
 }
 
 export type HooksCounter = { [key in keyof ReactHooksTypes]?: number };
@@ -105,7 +106,7 @@ export interface RegisterComponentImplementation {
 }
 
 export interface RegisteredFunction<T = undefined> {
-  calls: { args: any; result?: any }[];
+  calls: { args: any; result?: any; stats: Stats }[];
   dataTestId?: string;
   hooks?: ReactHooks<T>;
   hooksCounter: T extends undefined ? HooksCounter : never;
@@ -144,4 +145,8 @@ export interface RegisterUseWithAction<K extends "useEffect" | "useCallback">
   extends RegisterHook {
   hookType: K;
   props: ReactHooksTypes[K];
+}
+
+export interface Stats {
+  time: number;
 }
