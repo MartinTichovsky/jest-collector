@@ -4,7 +4,6 @@ exports[`useEffect Default - Component with one useEffect 1`] = `
 Object {
   "useEffect": Array [
     Object {
-      "_originScope": undefined,
       "action": [MockFunction] {
         "calls": Array [
           Array [],
@@ -51,7 +50,6 @@ Object {
   "hooks": Object {
     "useEffect": Array [
       Object {
-        "_originScope": undefined,
         "action": [MockFunction] {
           "calls": Array [
             Array [],
@@ -107,7 +105,6 @@ exports[`useEffect Default with test id - Component with one useEffect 1`] = `
 Object {
   "useEffect": Array [
     Object {
-      "_originScope": undefined,
       "action": [MockFunction] {
         "calls": Array [
           Array [],
@@ -155,7 +152,6 @@ Object {
   "hooks": Object {
     "useEffect": Array [
       Object {
-        "_originScope": undefined,
         "action": [MockFunction] {
           "calls": Array [
             Array [],
@@ -258,7 +254,6 @@ Object {
   "hooks": Object {
     "useEffect": Array [
       Object {
-        "_originScope": undefined,
         "action": [MockFunction] {
           "calls": Array [
             Array [],
@@ -331,7 +326,6 @@ Object {
   "hooks": Object {
     "useEffect": Array [
       Object {
-        "_originScope": undefined,
         "action": [MockFunction] {
           "calls": Array [
             Array [],

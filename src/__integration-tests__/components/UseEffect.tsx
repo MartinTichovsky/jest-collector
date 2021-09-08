@@ -1,5 +1,5 @@
 import React from "react";
-import { TemplateInner } from "./UseEffect.Inner";
+import { MoreUseEffectsInner, TemplateInner } from "./UseEffect.Inner";
 
 export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
   React.useEffect(() => {
@@ -7,6 +7,38 @@ export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
   }, []);
 
   return <div>Some content</div>;
+};
+
+export const MoreUseEffects = ({
+  caller,
+  callFunc1,
+  callFunc2,
+  callFunc3,
+  secondEffect
+}: {
+  caller: {
+    setStateInner?: React.Dispatch<React.SetStateAction<number>>;
+    setStateParent?: React.Dispatch<React.SetStateAction<number>>;
+  };
+  callFunc1: () => void;
+  callFunc2: () => void;
+  callFunc3: () => void;
+  secondEffect: boolean;
+}) => {
+  const [, setState] = React.useState(0);
+  caller.setStateParent = setState;
+
+  return (
+    <div>
+      <MoreUseEffectsInner
+        caller={caller}
+        callFunc1={callFunc1}
+        callFunc2={callFunc2}
+        callFunc3={callFunc3}
+        secondEffect={secondEffect}
+      />
+    </div>
+  );
 };
 
 export const WithUmount = () => {

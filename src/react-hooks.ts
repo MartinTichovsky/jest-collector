@@ -33,7 +33,8 @@ export const mockReactHooks = (
         _originScope: action.toString(),
         action: jest.fn(action),
         deps,
-        hasBeenChanged: false
+        hasBeenChanged: false,
+        isRegistered: true
       },
       relativePath: caller.relativePath
     });
@@ -49,6 +50,24 @@ export const mockReactHooks = (
     register.action.mockImplementation(result);
 
     return register.action;
+  },
+  useContext: function useContext(args: unknown) {
+    const context = origin.useContext(args);
+
+    // get caller function name from error stack since Funcion.caller is deprecated
+    const caller = getCaller();
+
+    privateCollector.registerUseContext({
+      componentName: caller.name,
+      props: {
+        args,
+        context,
+        isRegistered: true
+      },
+      relativePath: caller.relativePath
+    });
+
+    return context;
   },
   useEffect: (action: () => () => void, deps: any[]) => {
     // get caller function name from error stack since Funcion.caller is deprecated
@@ -70,7 +89,12 @@ export const mockReactHooks = (
     const register = privateCollector.registerHookWithAction({
       componentName: caller.name,
       hookType: "useEffect",
-      props: { _originScope: action.toString(), action: jest.fn(), deps },
+      props: {
+        _originScope: action.toString(),
+        action: jest.fn(),
+        deps,
+        isRegistered: true
+      },
       relativePath: caller.relativePath
     });
 
@@ -105,8 +129,9 @@ export const mockReactHooks = (
       componentName: caller.name,
       props: {
         args,
-        ref,
-        hasBeenChanged: false
+        hasBeenChanged: false,
+        isRegistered: true,
+        ref
       },
       relativePath: caller.relativePath
     });
@@ -133,6 +158,7 @@ export const mockReactHooks = (
       componentName: caller.name,
       props: {
         _originState: result[1],
+        isRegistered: true,
         setState: jest.fn(),
         state: []
       },

@@ -9,6 +9,7 @@ import {
   RegisteredFunction,
   RegisterFunction,
   RegisterHookProps,
+  RegisterUseContext,
   RegisterUseRef,
   RegisterUseState,
   RegisterUseWithAction
@@ -17,6 +18,20 @@ import {
 export class PrivateCollector extends ControllerAbstract {
   private activeDataTestId: ActiveDataTestId[] = [];
   private registeredFunctions: RegisteredFunction[] = [];
+
+  private deleteUnregisteredHooks(registered: RegisteredFunction) {
+    if (!registered.hooks) {
+      return;
+    }
+
+    for (let hookType in registered.hooks) {
+      for (let i = registered.hooks[hookType].length - 1; i >= 0; i--) {
+        if (!registered.hooks[hookType][i].isRegistered) {
+          registered.hooks[hookType].splice(i, 1);
+        }
+      }
+    }
+  }
 
   public functionCalled({
     args,
@@ -44,6 +59,7 @@ export class PrivateCollector extends ControllerAbstract {
     if (registered) {
       registered.calls.push({ args });
       registered.hooksCounter = {};
+      this.unregisterAllHooks(registered);
 
       return registered.calls.length - 1;
     } else {
@@ -84,6 +100,8 @@ export class PrivateCollector extends ControllerAbstract {
     if (index < registered.calls.length) {
       registered.calls[index].result = result;
     }
+
+    this.deleteUnregisteredHooks(registered);
   }
 
   public getActiveDataTestId(name: string, relativePath: string) {
@@ -132,10 +150,7 @@ export class PrivateCollector extends ControllerAbstract {
       hookType in registered.hooks &&
       sequence > 0 &&
       sequence <= registered.hooks[hookType]!.length
-      ? {
-          ...registered.hooks[hookType]![sequence - 1],
-          _originScope: undefined
-        }
+      ? this.removeHelperProps(registered.hooks[hookType]![sequence - 1])
       : undefined;
   }
 
@@ -150,7 +165,9 @@ export class PrivateCollector extends ControllerAbstract {
                   ...item,
                   _originScope: undefined
                 }))
-              : this.removeOriginScope(registered.hooks)) as K extends undefined
+              : this.removePropsFromAllHooks(
+                  registered.hooks
+                )) as K extends undefined
               ? ReactHooks<never>
               : ReactHooks<never>[K])
           : undefined,
@@ -276,7 +293,7 @@ export class PrivateCollector extends ControllerAbstract {
     sequence
   }: RegisterHookProps<K>) {
     if (hooks.length >= sequence) {
-      for (let i = hooks.length; i >= 0; i--) {
+      for (let i = hooks.length; i >= sequence - 1; i--) {
         if (i === sequence - 1) {
           hooks[i] = props;
         } else {
@@ -313,6 +330,7 @@ export class PrivateCollector extends ControllerAbstract {
     )?.find((item) => item._originScope === props._originScope);
 
     if (existingHook) {
+      existingHook.isRegistered = true;
       return existingHook;
     }
 
@@ -321,6 +339,34 @@ export class PrivateCollector extends ControllerAbstract {
     return this.registerHookProps({
       registered,
       hooks: registered.hooks![hookType] as ReactHooksTypes[K][],
+      hookType,
+      props,
+      sequence
+    });
+  }
+
+  public registerUseContext({
+    componentName,
+    props,
+    relativePath
+  }: RegisterUseContext) {
+    const hookType = "useContext";
+    const registered = this.getFunction(componentName, {
+      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      relativePath
+    });
+
+    if (!registered) {
+      return props;
+    }
+
+    this.registerHook(registered, hookType);
+
+    const sequence = this.getSequenceNumber(registered, hookType);
+
+    this.registerHookProps({
+      registered,
+      hooks: registered.hooks![hookType] as ReactHooksTypes["useContext"][],
       hookType,
       props,
       sequence
@@ -349,6 +395,7 @@ export class PrivateCollector extends ControllerAbstract {
     );
 
     if (existingHook) {
+      existingHook.isRegistered = true;
       return existingHook;
     }
 
@@ -385,6 +432,7 @@ export class PrivateCollector extends ControllerAbstract {
     );
 
     if (existingHook) {
+      existingHook.isRegistered = true;
       return existingHook;
     }
 
@@ -399,7 +447,22 @@ export class PrivateCollector extends ControllerAbstract {
     });
   }
 
-  public removeOriginScope(hooks?: ReactHooks<never>) {
+  private removeHelperProps(item: {}) {
+    const result = {
+      ...item
+    };
+    delete result["_originScope"];
+    delete result["_originState"];
+    delete result["isRegistered"];
+
+    return result;
+  }
+
+  private removePropsFromHook(hooks: {}[]) {
+    return hooks.map((item) => this.removeHelperProps(item));
+  }
+
+  public removePropsFromAllHooks(hooks?: ReactHooks) {
     if (!hooks) {
       return undefined;
     }
@@ -407,10 +470,7 @@ export class PrivateCollector extends ControllerAbstract {
     const result: ReactHooks<never> = {};
 
     for (let key in hooks) {
-      result[key] = (hooks[key] as { _originScope: string }[]).map((item) => ({
-        ...item,
-        _originScope: undefined
-      }));
+      result[key] = this.removePropsFromHook(hooks[key]);
     }
 
     return result;
@@ -419,5 +479,17 @@ export class PrivateCollector extends ControllerAbstract {
   public reset() {
     this.activeDataTestId = [];
     this.registeredFunctions = [];
+  }
+
+  private unregisterAllHooks(registered: RegisteredFunction) {
+    if (!registered.hooks) {
+      return;
+    }
+
+    for (let hookType in registered.hooks) {
+      for (let hook of registered.hooks[hookType]) {
+        hook.isRegistered = false;
+      }
+    }
   }
 }

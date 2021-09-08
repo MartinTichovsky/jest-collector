@@ -29,7 +29,7 @@ export class Collector extends ControllerAbstract {
     return result
       ? ({
           ...result,
-          hooks: this.privateCollector.removeOriginScope(result.hooks),
+          hooks: this.privateCollector.removePropsFromAllHooks(result.hooks),
           hooksCounter: undefined
         } as RegisteredFunction<never> | undefined)
       : undefined;

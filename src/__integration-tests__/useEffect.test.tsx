@@ -1,13 +1,17 @@
 import { act, render, screen } from "@testing-library/react";
 import React from "react";
 import {
+  MoreUseEffects,
   OneUseEffect,
   Renders,
   Template,
   WithDeps,
   WithUmount
 } from "./components/UseEffect";
-import { TemplateInner } from "./components/UseEffect.Inner";
+import {
+  MoreUseEffectsInner,
+  TemplateInner
+} from "./components/UseEffect.Inner";
 
 beforeEach(() => {
   collector.reset();
@@ -54,6 +58,118 @@ describe("useEffect", () => {
     render(<OneUseEffect callFunc={callFunc} data-testid={dataTestId} />);
 
     defaultTest(callFunc, dataTestId);
+  });
+
+  test("More useEffects", () => {
+    const callFunc11 = jest.fn();
+    const callFunc12 = jest.fn();
+    const callFunc13 = jest.fn();
+    const callFunc21 = jest.fn();
+    const callFunc22 = jest.fn();
+    const callFunc23 = jest.fn();
+
+    const caller = {
+      setStateInner: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >,
+      setStateParent: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+
+    render(
+      <MoreUseEffects
+        caller={caller}
+        callFunc1={callFunc11}
+        callFunc2={callFunc12}
+        callFunc3={callFunc13}
+        secondEffect={true}
+      />
+    );
+
+    // check on first render
+    const useEffectHooks = collector
+      .getReactComponentHooks(MoreUseEffectsInner.name)
+      .getHooksByType("useEffect");
+
+    expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(1);
+    expect(
+      collector
+        .getReactComponentHooks(MoreUseEffectsInner.name)
+        .getAll("useEffect")?.length
+    ).toBe(3);
+    expect(callFunc11).toBeCalledTimes(1);
+    expect(callFunc12).toBeCalledTimes(1);
+    expect(callFunc13).toBeCalledTimes(1);
+    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(4)).toBeUndefined();
+
+    // second render of inner component
+    act(() => {
+      caller.setStateInner(1);
+    });
+
+    expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(2);
+    expect(
+      collector
+        .getReactComponentHooks(MoreUseEffectsInner.name)
+        .getAll("useEffect")?.length
+    ).toBe(3);
+    expect(callFunc11).toBeCalledTimes(1);
+    expect(callFunc12).toBeCalledTimes(1);
+    expect(callFunc13).toBeCalledTimes(1);
+    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(4)).toBeUndefined();
+
+    // third render of parent
+    act(() => {
+      caller.setStateInner(1);
+    });
+
+    expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(3);
+    expect(
+      collector
+        .getReactComponentHooks(MoreUseEffectsInner.name)
+        .getAll("useEffect")?.length
+    ).toBe(3);
+    expect(callFunc11).toBeCalledTimes(1);
+    expect(callFunc12).toBeCalledTimes(1);
+    expect(callFunc13).toBeCalledTimes(1);
+    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks.get(4)).toBeUndefined();
+
+    // next render should register less effects
+    render(
+      <MoreUseEffectsInner
+        caller={caller}
+        callFunc1={callFunc21}
+        callFunc2={callFunc22}
+        callFunc3={callFunc23}
+        secondEffect={false}
+      />
+    );
+
+    expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(4);
+    expect(
+      collector
+        .getReactComponentHooks(MoreUseEffectsInner.name)
+        .getAll("useEffect")?.length
+    ).toBe(2);
+    expect(callFunc11).toBeCalledTimes(1);
+    expect(callFunc12).toBeCalledTimes(1);
+    expect(callFunc13).toBeCalledTimes(1);
+    expect(callFunc21).toBeCalledTimes(1);
+    expect(callFunc22).not.toBeCalled();
+    expect(callFunc23).toBeCalledTimes(1);
+    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks.get(3)).toBeUndefined();
   });
 
   test("Unmount registered component", () => {

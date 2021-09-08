@@ -1,7 +1,7 @@
 import React from "react";
 
 export const OneUseState = () => {
-  const [_state, _setState] = React.useState(0);
+  React.useState(0);
 
   return <div>Some content</div>;
 };
@@ -22,7 +22,7 @@ export const MultipleStates = ({
 }: {
   caller: { action: (num: number) => void };
 }) => {
-  const [_state, _setState] = React.useState({});
+  React.useState({});
   const [text, setText] = React.useState("");
 
   const action = React.useCallback(
