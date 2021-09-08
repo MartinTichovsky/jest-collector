@@ -1,9 +1,9 @@
 import { PrivateCollector } from "./private-collector";
 import { ControllerAbstract } from "./private-collector.abstract";
 import {
-  ComponentHooks,
-  ComponentHooksTypes,
   Options,
+  ReactHooks,
+  ReactHooksTypes,
   RegisteredFunction
 } from "./private-collector.types";
 
@@ -39,19 +39,19 @@ export class Collector extends ControllerAbstract {
     componentName: string,
     options?: Options
   ): {
-    getAll: <K extends keyof ComponentHooksTypes>(
+    getAll: <K extends keyof ReactHooksTypes>(
       hookType?: K
     ) =>
-      | (K extends undefined ? ComponentHooks<never> : ComponentHooks<never>[K])
+      | (K extends undefined ? ReactHooks<never> : ReactHooks<never>[K])
       | undefined;
-    getHook: <K extends keyof ComponentHooksTypes>(
+    getHook: <K extends keyof ReactHooksTypes>(
       hookType: K,
       sequence: number
-    ) => ComponentHooksTypes<never>[K] | undefined;
-    getHooksByType: <K extends keyof ComponentHooksTypes>(
+    ) => ReactHooksTypes<never>[K] | undefined;
+    getHooksByType: <K extends keyof ReactHooksTypes>(
       hookType: K
     ) => {
-      get: (sequence: number) => ComponentHooksTypes<never>[K] | undefined;
+      get: (sequence: number) => ReactHooksTypes<never>[K] | undefined;
     };
     getUseState: (sequence: number) => {
       getState: (stateSequence: number) => unknown | undefined;
@@ -60,6 +60,13 @@ export class Collector extends ControllerAbstract {
     };
   } {
     return this.privateCollector.getReactComponentHooks(componentName, options);
+  }
+
+  public getReactComponentLifecycle(componentName: string, options?: Options) {
+    return this.privateCollector.getReactComponentLifecycle(
+      componentName,
+      options
+    );
   }
 
   public hasComponent(componentName: string, options?: Options) {

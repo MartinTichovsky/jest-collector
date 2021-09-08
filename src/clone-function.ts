@@ -1,5 +1,7 @@
+import React from "react";
 import { getCaller } from "./caller";
 import { PrivateCollector } from "./private-collector";
+import { mockReactComponent } from "./react-component";
 
 export const registerClone = () => {
   if (!("clone" in Function.prototype)) {
@@ -35,6 +37,16 @@ export const registerClone = () => {
           result = new.target
             ? new _this(...Array.from(arguments))
             : _this.apply(_this, arguments);
+
+          if (result instanceof React.Component) {
+            mockReactComponent({
+              component: _this,
+              dataTestId,
+              componentName: _this.name,
+              privateCollector,
+              relativePath
+            });
+          }
 
           jestFn(arguments);
 

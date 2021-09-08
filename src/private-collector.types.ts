@@ -1,23 +1,10 @@
+import React from "react";
+
 export interface ActiveDataTestId {
   name: string;
   dataTestIds: (string | undefined)[];
   relativePath: string;
 }
-
-export interface ComponentHooksTypes<T = undefined> {
-  useCallback: HookCallback<T>;
-  useContext: HookResult;
-  useEffect: HookEffect<T>;
-  useRef: HookUseRef;
-  useReducer: HookResult;
-  useState: HookState<T>;
-  useMemo: HookResult;
-}
-
-export type ComponentHooks<T = undefined> = {
-  [K in keyof ComponentHooksTypes]?: ComponentHooksTypes<T>[K][];
-};
-
 export interface FunctionExecuted {
   dataTestId?: string;
   index: number;
@@ -26,7 +13,7 @@ export interface FunctionExecuted {
   result: any;
 }
 
-export type HooksCounter = { [key in keyof ComponentHooksTypes]?: number };
+export type HooksCounter = { [key in keyof ReactHooksTypes]?: number };
 
 export interface HookWithAction<T = undefined> {
   _originScope: T extends undefined ? string : never;
@@ -67,6 +54,26 @@ export interface Options {
   relativePath?: string;
 }
 
+export interface ReactClassComponentLifecycle {
+  render: jest.Mock;
+  setState: jest.Mock;
+}
+
+export interface ReactHooksTypes<T = undefined> {
+  useCallback: HookCallback<T>;
+  useContext: HookResult;
+  useEffect: HookEffect<T>;
+  useImperativeHandle: HookResult;
+  useRef: HookUseRef;
+  useReducer: HookResult;
+  useState: HookState<T>;
+  useMemo: HookResult;
+}
+
+export type ReactHooks<T = undefined> = {
+  [K in keyof ReactHooksTypes]?: ReactHooksTypes<T>[K][];
+};
+
 export interface RegisterFunction {
   args: any;
   jestFn: jest.Mock;
@@ -75,10 +82,23 @@ export interface RegisterFunction {
   relativePath: string;
 }
 
+export interface RegisterComponent {
+  componentName: string;
+  dataTestId?: string;
+  implementation: RegisterComponentImplementation;
+  relativePath: string;
+}
+
+export interface RegisterComponentImplementation {
+  render: () => React.ReactNode;
+  setState: (...props: any) => void;
+}
+
 export interface RegisteredFunction<T = undefined> {
   calls: { args: any; result?: any }[];
   dataTestId?: string;
-  hooks: ComponentHooks<T>;
+  component?: ReactClassComponentLifecycle;
+  hooks?: ReactHooks<T>;
   hooksCounter: T extends undefined ? HooksCounter : never;
   jestFn: jest.Mock;
   name: string;
@@ -90,24 +110,24 @@ export interface RegisrterHook {
   relativePath: string;
 }
 
-export interface RegisterHookProps<K extends keyof ComponentHooksTypes> {
-  hooks: ComponentHooksTypes[K][];
+export interface RegisterHookProps<K extends keyof ReactHooksTypes> {
+  hooks: ReactHooksTypes[K][];
   hookType: K;
-  props: ComponentHooksTypes[K];
+  props: ReactHooksTypes[K];
   registered: RegisteredFunction;
   sequence: number;
 }
 
 export interface RegisterUseRef extends RegisrterHook {
-  props: ComponentHooksTypes["useRef"];
+  props: ReactHooksTypes["useRef"];
 }
 
 export interface RegisterUseState extends RegisrterHook {
-  props: ComponentHooksTypes["useState"];
+  props: ReactHooksTypes["useState"];
 }
 
 export interface RegisterUseWithAction<K extends "useEffect" | "useCallback">
   extends RegisrterHook {
   hookType: K;
-  props: ComponentHooksTypes[K];
+  props: ReactHooksTypes[K];
 }
