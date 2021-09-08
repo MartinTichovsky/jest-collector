@@ -1,7 +1,7 @@
 import React from "react";
 import { getCaller } from "./caller";
 import { PrivateCollector } from "./private-collector";
-import { mockReactComponent } from "./react-component";
+import { mockReactClass } from "./react-class";
 
 export const registerClone = () => {
   if (!("clone" in Function.prototype)) {
@@ -43,7 +43,7 @@ export const registerClone = () => {
           const t1 = performance.now();
 
           if (result instanceof React.Component) {
-            mockReactComponent({
+            mockReactClass({
               component: _this,
               dataTestId,
               componentName: _this.name,

@@ -1,6 +1,6 @@
 import {
   Options,
-  ReactClassComponentLifecycle,
+  ReactClassLifecycle,
   ReactHooks,
   ReactHooksTypes,
   RegisteredFunction
@@ -45,7 +45,7 @@ export abstract class ControllerAbstract {
   public abstract getReactLifecycle(
     componentName: string,
     options?: Options
-  ): ReactClassComponentLifecycle | undefined;
+  ): ReactClassLifecycle | undefined;
 
   public abstract hasFunction(
     componentName: string,

@@ -73,7 +73,7 @@ export interface Options {
   relativePath?: string;
 }
 
-export interface ReactClassComponentLifecycle {
+export interface ReactClassLifecycle {
   render: jest.Mock;
   setState: jest.Mock;
 }
@@ -93,14 +93,14 @@ export type ReactHooks<T = undefined> = {
   [K in keyof ReactHooksTypes]?: ReactHooksTypes<T>[K][];
 };
 
-export interface RegisterComponent {
+export interface RegisterReactClass {
   componentName: string;
   dataTestId?: string;
-  implementation: RegisterComponentImplementation;
+  implementation: RegisterReactClassImplementation;
   relativePath: string;
 }
 
-export interface RegisterComponentImplementation {
+export interface RegisterReactClassImplementation {
   render: () => React.ReactNode;
   setState: (...props: any) => void;
 }
@@ -111,7 +111,7 @@ export interface RegisteredFunction<T = undefined> {
   hooks?: ReactHooks<T>;
   hooksCounter: T extends undefined ? HooksCounter : never;
   jestFn: jest.Mock;
-  lifecycle?: ReactClassComponentLifecycle;
+  lifecycle?: ReactClassLifecycle;
   name: string;
   relativePath: string;
 }

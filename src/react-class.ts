@@ -1,6 +1,6 @@
 import { PrivateCollector } from "./private-collector";
 
-export const mockReactComponent = ({
+export const mockReactClass = ({
   component,
   dataTestId,
   componentName,
@@ -16,7 +16,7 @@ export const mockReactComponent = ({
   const componentPrototype = component.prototype;
   const reactPrototype = Object.getPrototypeOf(component).prototype;
 
-  const registered = privateCollector.registerClassComponent({
+  const registered = privateCollector.registerReactClass({
     componentName,
     dataTestId,
     implementation: {

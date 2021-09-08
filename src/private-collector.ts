@@ -7,9 +7,9 @@ import {
   Options,
   ReactHooks,
   ReactHooksTypes,
-  RegisterComponent,
   RegisteredFunction,
   RegisterHookProps,
+  RegisterReactClass,
   RegisterUseContext,
   RegisterUseRef,
   RegisterUseState,
@@ -267,31 +267,6 @@ export class PrivateCollector extends ControllerAbstract {
     return this.getFunction(name, options) !== undefined;
   }
 
-  public registerClassComponent({
-    componentName,
-    dataTestId,
-    implementation: { render, setState },
-    relativePath
-  }: RegisterComponent) {
-    const registered = this.getFunction(componentName, {
-      dataTestId,
-      relativePath
-    });
-
-    if (!registered) {
-      return undefined;
-    }
-
-    if (!registered.lifecycle) {
-      registered.lifecycle = {
-        render: jest.fn(render),
-        setState: jest.fn(setState)
-      };
-    }
-
-    return registered.lifecycle;
-  }
-
   private registerHook<K extends keyof ReactHooksTypes>(
     registered: RegisteredFunction,
     hookType: K
@@ -363,6 +338,31 @@ export class PrivateCollector extends ControllerAbstract {
       props,
       sequence
     });
+  }
+
+  public registerReactClass({
+    componentName,
+    dataTestId,
+    implementation: { render, setState },
+    relativePath
+  }: RegisterReactClass) {
+    const registered = this.getFunction(componentName, {
+      dataTestId,
+      relativePath
+    });
+
+    if (!registered) {
+      return undefined;
+    }
+
+    if (!registered.lifecycle) {
+      registered.lifecycle = {
+        render: jest.fn(render),
+        setState: jest.fn(setState)
+      };
+    }
+
+    return registered.lifecycle;
   }
 
   public registerUseContext({
