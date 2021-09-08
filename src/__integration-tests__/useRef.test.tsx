@@ -11,7 +11,7 @@ describe("useRef", () => {
     render(<OneUseRef />);
 
     const useRefHooks = collector
-      .getReactComponentHooks(OneUseRef.name)
+      .getReactHooks(OneUseRef.name)
       .getHooksByType("useRef");
 
     expect(useRefHooks.get(1)).not.toBeUndefined();
@@ -35,7 +35,7 @@ describe("useRef", () => {
     expect(screen.getByText(getExpectedText(0, 0))).toBeTruthy();
 
     const useRefHooks = collector
-      .getReactComponentHooks(DynamicRef.name)
+      .getReactHooks(DynamicRef.name)
       .getHooksByType("useRef");
 
     expect(useRefHooks.get(1)).not.toBeUndefined();

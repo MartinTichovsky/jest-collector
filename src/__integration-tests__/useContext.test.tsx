@@ -15,7 +15,7 @@ describe("useContext", () => {
     render(<UseContext />);
 
     const useContextHooks = collector
-      .getReactComponentHooks(UseContext.name)
+      .getReactHooks(UseContext.name)
       .getHooksByType("useContext");
 
     expect(useContextHooks.get(1)).not.toBeUndefined();
@@ -48,7 +48,7 @@ describe("useContext", () => {
     render(<UseContext />);
 
     const useContextHooks = collector
-      .getReactComponentHooks(UseContext.name)
+      .getReactHooks(UseContext.name)
       .getHooksByType("useContext");
 
     expect(screen.getByText(getExpectedText("", ""))).toBeTruthy();
@@ -101,10 +101,10 @@ describe("useContext", () => {
     );
 
     const useContextHooks1 = collector
-      .getReactComponentHooks(UseContext.name, { dataTestId: testId1 })
+      .getReactHooks(UseContext.name, { dataTestId: testId1 })
       .getHooksByType("useContext");
     const useContextHooks2 = collector
-      .getReactComponentHooks(UseContext.name, { dataTestId: testId2 })
+      .getReactHooks(UseContext.name, { dataTestId: testId2 })
       .getHooksByType("useContext");
 
     expect(

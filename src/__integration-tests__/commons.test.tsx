@@ -15,41 +15,35 @@ describe("Commons tests", () => {
     expect(collector.getCallCount("SomeComponent")).toBeUndefined();
     expect(collector.getComponent("SomeComponent")).toBeUndefined();
     expect(collector.getFunction("SomeComponent")).toBeUndefined();
+    expect(collector.getReactHooks("SomeComponent")).not.toBeUndefined();
+    expect(collector.getReactHooks("SomeComponent").getAll()).toBeUndefined();
     expect(
-      collector.getReactComponentHooks("SomeComponent")
-    ).not.toBeUndefined();
-    expect(
-      collector.getReactComponentHooks("SomeComponent").getAll()
+      collector.getReactHooks("SomeComponent").getHook("useEffect", -1)
     ).toBeUndefined();
     expect(
-      collector.getReactComponentHooks("SomeComponent").getHook("useEffect", -1)
+      collector.getReactHooks("SomeComponent").getHook("useEffect", 0)
     ).toBeUndefined();
     expect(
-      collector.getReactComponentHooks("SomeComponent").getHook("useEffect", 0)
+      collector.getReactHooks("SomeComponent").getHook("useEffect", 1)
     ).toBeUndefined();
     expect(
-      collector.getReactComponentHooks("SomeComponent").getHook("useEffect", 1)
-    ).toBeUndefined();
-    expect(
-      collector
-        .getReactComponentHooks("SomeComponent")
-        .getHooksByType("useEffect")
+      collector.getReactHooks("SomeComponent").getHooksByType("useEffect")
     ).not.toBeUndefined();
     expect(
       collector
-        .getReactComponentHooks("SomeComponent")
+        .getReactHooks("SomeComponent")
         .getHooksByType("useEffect")
         .get(-1)
     ).toBeUndefined();
     expect(
       collector
-        .getReactComponentHooks("SomeComponent")
+        .getReactHooks("SomeComponent")
         .getHooksByType("useEffect")
         .get(0)
     ).toBeUndefined();
     expect(
       collector
-        .getReactComponentHooks("SomeComponent")
+        .getReactHooks("SomeComponent")
         .getHooksByType("useEffect")
         .get(1)
     ).toBeUndefined();

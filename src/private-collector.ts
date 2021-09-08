@@ -1,13 +1,14 @@
 import { ControllerAbstract } from "./private-collector.abstract";
 import {
   ActiveDataTestId,
+  FunctionCalled,
   FunctionExecuted,
+  HookChecker,
   Options,
   ReactHooks,
   ReactHooksTypes,
   RegisterComponent,
   RegisteredFunction,
-  RegisterFunction,
   RegisterHookProps,
   RegisterUseContext,
   RegisterUseRef,
@@ -19,27 +20,13 @@ export class PrivateCollector extends ControllerAbstract {
   private activeDataTestId: ActiveDataTestId[] = [];
   private registeredFunctions: RegisteredFunction[] = [];
 
-  private deleteUnregisteredHooks(registered: RegisteredFunction) {
-    if (!registered.hooks) {
-      return;
-    }
-
-    for (let hookType in registered.hooks) {
-      for (let i = registered.hooks[hookType].length - 1; i >= 0; i--) {
-        if (!registered.hooks[hookType][i].isRegistered) {
-          registered.hooks[hookType].splice(i, 1);
-        }
-      }
-    }
-  }
-
   public functionCalled({
     args,
     dataTestId,
     jestFn,
     name,
     relativePath
-  }: RegisterFunction) {
+  }: FunctionCalled) {
     const active = this.activeDataTestId.find(
       (item) => item.name === name && item.relativePath === relativePath
     );
@@ -100,8 +87,6 @@ export class PrivateCollector extends ControllerAbstract {
     if (index < registered.calls.length) {
       registered.calls[index].result = result;
     }
-
-    this.deleteUnregisteredHooks(registered);
   }
 
   public getActiveDataTestId(name: string, relativePath: string) {
@@ -114,6 +99,16 @@ export class PrivateCollector extends ControllerAbstract {
 
   public getCallCount(name: string, options?: Options) {
     const registered = this.getFunction(name, options);
+
+    if (
+      registered &&
+      registered.lifecycle &&
+      registered.lifecycle.render &&
+      registered.lifecycle.render.mock
+    ) {
+      return registered.lifecycle.render.mock.calls.length;
+    }
+
     return registered ? registered.calls.length : undefined;
   }
 
@@ -121,8 +116,8 @@ export class PrivateCollector extends ControllerAbstract {
     if (options?.relativePath !== undefined) {
       return this.registeredFunctions.find(
         (item) =>
-          item.dataTestId === options?.dataTestId &&
           item.name === name &&
+          item.dataTestId === options?.dataTestId &&
           item.relativePath === options?.relativePath
       );
     }
@@ -133,72 +128,95 @@ export class PrivateCollector extends ControllerAbstract {
 
     if (registered.length > 1) {
       console.warn(
-        `More functions with name '${name}' and different relative path detected. Use relative path to get exact result.`
+        `More subjects with name '${name}' and different relative path detected. Use relative path to get exact result.`
       );
     }
 
     return registered.length ? registered[0] : undefined;
   }
 
-  private getHookWithoutScope(
+  private getHookWithoutScope<K extends keyof ReactHooksTypes>(
     registered: RegisteredFunction | undefined,
-    hookType: keyof ReactHooksTypes,
+    hookType: K,
     sequence: number
-  ) {
-    return registered &&
-      registered.hooks &&
-      hookType in registered.hooks &&
+  ): ReactHooksTypes<never>[K] | undefined {
+    const filtered = this.getOnlyRegisteredHooks(registered);
+
+    return filtered &&
+      filtered.hooks &&
+      hookType in filtered.hooks &&
       sequence > 0 &&
-      sequence <= registered.hooks[hookType]!.length
-      ? this.removeHelperProps(registered.hooks[hookType]![sequence - 1])
+      sequence <= filtered.hooks[hookType]!.length
+      ? this.removeHelperProps<K>(
+          filtered.hooks[hookType]![sequence - 1] as ReactHooksTypes<never>[K]
+        )
       : undefined;
   }
 
-  public getReactComponentHooks(componentName: string, options?: Options) {
+  public getOnlyRegisteredHooks(
+    registered: RegisteredFunction | undefined
+  ): RegisteredFunction | undefined {
+    if (!registered || !registered.hooks) {
+      return undefined;
+    }
+
+    const result = {};
+
+    for (let key in registered.hooks) {
+      result[key] = (registered.hooks[key] as HookChecker[]).filter(
+        (item) => item.isRegistered
+      );
+    }
+
+    return {
+      ...registered,
+      hooks: result
+    };
+  }
+
+  public getReactHooks(componentName: string, options?: Options) {
     const registered = this.getFunction(componentName, options);
 
     return {
-      getAll: <K extends keyof ReactHooksTypes>(hookType?: K) =>
-        registered && registered.hooks
+      getAll: <K extends keyof ReactHooksTypes>(hookType?: K) => {
+        const filtered = this.getOnlyRegisteredHooks(registered);
+
+        return filtered && filtered.hooks
           ? ((hookType
-              ? registered.hooks[hookType]?.map((item) => ({
-                  ...item,
-                  _originScope: undefined
-                }))
+              ? filtered.hooks[hookType]?.map((item) =>
+                  this.removeHelperProps(item)
+                )
               : this.removePropsFromAllHooks(
-                  registered.hooks
+                  filtered.hooks
                 )) as K extends undefined
               ? ReactHooks<never>
               : ReactHooks<never>[K])
-          : undefined,
+          : undefined;
+      },
       getHook: <K extends keyof ReactHooksTypes>(
         hookType: K,
         sequence: number
-      ) =>
-        this.getHookWithoutScope(registered, hookType, sequence) as
-          | ReactHooksTypes<never>[K]
-          | undefined,
+      ) => this.getHookWithoutScope(registered, hookType, sequence),
       getHooksByType: <K extends keyof ReactHooksTypes>(hookType: K) => ({
         get: (sequence: number) =>
-          this.getHookWithoutScope(registered, hookType, sequence) as
-            | ReactHooksTypes<never>[K]
-            | undefined
+          this.getHookWithoutScope(registered, hookType, sequence)
       }),
       getUseState: (sequence: number) => {
         let stateIndex = 0;
+        const filtered = this.getOnlyRegisteredHooks(registered);
 
         return {
           getState: (stateSequence: number) =>
-            registered &&
-            registered.hooks &&
-            registered.hooks["useState"] &&
+            filtered &&
+            filtered.hooks &&
+            filtered.hooks["useState"] &&
             sequence > 0 &&
-            sequence <= registered.hooks["useState"].length &&
-            registered.hooks["useState"][sequence - 1].state &&
+            sequence <= filtered.hooks["useState"].length &&
+            filtered.hooks["useState"][sequence - 1].state &&
             stateSequence > 0 &&
             stateSequence <=
-              registered.hooks["useState"][sequence - 1].state.length
-              ? registered.hooks["useState"][sequence - 1].state[
+              filtered.hooks["useState"][sequence - 1].state.length
+              ? filtered.hooks["useState"][sequence - 1].state[
                   stateSequence - 1
                 ]
               : undefined,
@@ -207,7 +225,7 @@ export class PrivateCollector extends ControllerAbstract {
               registered,
               "useState",
               sequence
-            ) as ReactHooksTypes["useState"] | undefined;
+            );
             const result = useState
               ? useState.state.slice(stateIndex, useState.state.length)
               : [];
@@ -226,10 +244,10 @@ export class PrivateCollector extends ControllerAbstract {
     };
   }
 
-  public getReactComponentLifecycle(componentName: string, options?: Options) {
+  public getReactLifecycle(componentName: string, options?: Options) {
     const registered = this.getFunction(componentName, options);
 
-    return registered?.component;
+    return registered?.lifecycle;
   }
 
   private getSequenceNumber(
@@ -262,14 +280,14 @@ export class PrivateCollector extends ControllerAbstract {
       return undefined;
     }
 
-    if (!registered.component) {
-      registered.component = {
+    if (!registered.lifecycle) {
+      registered.lifecycle = {
         render: jest.fn(render),
         setState: jest.fn(setState)
       };
     }
 
-    return registered.component;
+    return registered.lifecycle;
   }
 
   private registerHook<K extends keyof ReactHooksTypes>(
@@ -366,7 +384,7 @@ export class PrivateCollector extends ControllerAbstract {
 
     this.registerHookProps({
       registered,
-      hooks: registered.hooks![hookType] as ReactHooksTypes["useContext"][],
+      hooks: registered.hooks![hookType]!,
       hookType,
       props,
       sequence
@@ -403,7 +421,7 @@ export class PrivateCollector extends ControllerAbstract {
 
     return this.registerHookProps({
       registered,
-      hooks: registered.hooks![hookType] as ReactHooksTypes["useState"][],
+      hooks: registered.hooks![hookType]!,
       hookType,
       props,
       sequence
@@ -440,26 +458,39 @@ export class PrivateCollector extends ControllerAbstract {
 
     return this.registerHookProps({
       registered,
-      hooks: registered.hooks![hookType] as ReactHooksTypes["useRef"][],
+      hooks: registered.hooks![hookType]!,
       hookType,
       props,
       sequence
     });
   }
 
-  private removeHelperProps(item: {}) {
-    const result = {
+  private removeHelperProps<K extends keyof ReactHooksTypes>(
+    item: ReactHooksTypes[K]
+  ) {
+    const result: ReactHooksTypes<never>[K] = {
       ...item
     };
-    delete result["_originScope"];
-    delete result["_originState"];
-    delete result["isRegistered"];
+
+    if (result["_originScope"]) {
+      delete result["_originScope"];
+    }
+
+    if (result["_originState"]) {
+      delete result["_originState"];
+    }
+
+    if (result["isRegistered"]) {
+      delete result["isRegistered"];
+    }
 
     return result;
   }
 
-  private removePropsFromHook(hooks: {}[]) {
-    return hooks.map((item) => this.removeHelperProps(item));
+  private removePropsFromHook(hooks: HookChecker[]) {
+    return hooks
+      .filter((item) => item.isRegistered)
+      .map((item) => this.removeHelperProps(item));
   }
 
   public removePropsFromAllHooks(hooks?: ReactHooks) {
@@ -476,9 +507,23 @@ export class PrivateCollector extends ControllerAbstract {
     return result;
   }
 
-  public reset() {
-    this.activeDataTestId = [];
-    this.registeredFunctions = [];
+  public reset(name?: string, options?: Options) {
+    if (!name) {
+      this.activeDataTestId = [];
+      this.registeredFunctions = [];
+      return;
+    }
+
+    const index = this.registeredFunctions.findIndex(
+      (item) =>
+        item.name === name &&
+        item.dataTestId === options?.dataTestId &&
+        item.relativePath === options?.relativePath
+    );
+
+    if (index !== -1) {
+      this.registeredFunctions.splice(index, 1);
+    }
   }
 
   private unregisterAllHooks(registered: RegisteredFunction) {

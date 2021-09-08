@@ -14,7 +14,7 @@ describe("useState", () => {
   test("Component with one useState", () => {
     render(<OneUseState />);
 
-    const useState = collector.getReactComponentHooks(OneUseState.name);
+    const useState = collector.getReactHooks(OneUseState.name);
     const useStateHooks = useState.getHooksByType("useState");
 
     expect(useStateHooks.get(1)).not.toBeUndefined();
@@ -36,9 +36,7 @@ describe("useState", () => {
 
     render(<DynamicState caller={caller} />);
 
-    const useState = collector
-      .getReactComponentHooks(DynamicState.name)
-      .getUseState(1);
+    const useState = collector.getReactHooks(DynamicState.name).getUseState(1);
 
     expect(screen.getByText(getExpectedText(0))).toBeTruthy();
     expect(useState.next()).toEqual([0]);
@@ -73,7 +71,7 @@ describe("useState", () => {
 
     render(<MultipleStates caller={caller} />);
 
-    const useState = collector.getReactComponentHooks(MultipleStates.name);
+    const useState = collector.getReactHooks(MultipleStates.name);
 
     expect(useState.getAll("useState")?.length).toBe(2);
 

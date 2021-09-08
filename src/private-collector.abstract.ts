@@ -17,7 +17,7 @@ export abstract class ControllerAbstract {
     options?: Options
   ): RegisteredFunction | undefined;
 
-  public abstract getReactComponentHooks(
+  public abstract getReactHooks(
     componentName: string,
     options?: Options
   ): {
@@ -42,7 +42,7 @@ export abstract class ControllerAbstract {
     };
   };
 
-  public abstract getReactComponentLifecycle(
+  public abstract getReactLifecycle(
     componentName: string,
     options?: Options
   ): ReactClassComponentLifecycle | undefined;
@@ -52,5 +52,5 @@ export abstract class ControllerAbstract {
     options?: Options
   ): boolean;
 
-  public abstract reset(): void;
+  public abstract reset(name?: string, options?: Options): void;
 }

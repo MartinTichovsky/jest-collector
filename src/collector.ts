@@ -24,18 +24,22 @@ export class Collector extends ControllerAbstract {
   }
 
   public getFunction(name: string, options?: Options) {
-    const result = this.privateCollector.getFunction(name, options);
+    const registered = this.privateCollector.getFunction(name, options);
 
-    return result
-      ? ({
-          ...result,
-          hooks: this.privateCollector.removePropsFromAllHooks(result.hooks),
-          hooksCounter: undefined
-        } as RegisteredFunction<never> | undefined)
-      : undefined;
+    if (!registered?.hooks) {
+      return registered;
+    }
+
+    const filtered = this.privateCollector.getOnlyRegisteredHooks(registered);
+    delete (filtered as RegisteredFunction<never>)["hooksCounter"];
+
+    return {
+      ...filtered,
+      hooks: this.privateCollector.removePropsFromAllHooks(filtered!.hooks)
+    } as RegisteredFunction<never> | undefined;
   }
 
-  public getReactComponentHooks(
+  public getReactHooks(
     componentName: string,
     options?: Options
   ): {
@@ -59,14 +63,11 @@ export class Collector extends ControllerAbstract {
       reset: () => void;
     };
   } {
-    return this.privateCollector.getReactComponentHooks(componentName, options);
+    return this.privateCollector.getReactHooks(componentName, options);
   }
 
-  public getReactComponentLifecycle(componentName: string, options?: Options) {
-    return this.privateCollector.getReactComponentLifecycle(
-      componentName,
-      options
-    );
+  public getReactLifecycle(componentName: string, options?: Options) {
+    return this.privateCollector.getReactLifecycle(componentName, options);
   }
 
   public hasComponent(componentName: string, options?: Options) {
@@ -77,7 +78,7 @@ export class Collector extends ControllerAbstract {
     return this.privateCollector.hasFunction(componentName, options);
   }
 
-  public reset() {
-    this.privateCollector.reset();
+  public reset(name?: string, options?: Options) {
+    this.privateCollector.reset(name, options);
   }
 }

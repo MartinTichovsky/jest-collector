@@ -5,6 +5,15 @@ export interface ActiveDataTestId {
   dataTestIds: (string | undefined)[];
   relativePath: string;
 }
+
+export interface FunctionCalled {
+  args: any;
+  jestFn: jest.Mock;
+  dataTestId?: string;
+  name: string;
+  relativePath: string;
+}
+
 export interface FunctionExecuted {
   dataTestId?: string;
   index: number;
@@ -83,14 +92,6 @@ export type ReactHooks<T = undefined> = {
   [K in keyof ReactHooksTypes]?: ReactHooksTypes<T>[K][];
 };
 
-export interface RegisterFunction {
-  args: any;
-  jestFn: jest.Mock;
-  dataTestId?: string;
-  name: string;
-  relativePath: string;
-}
-
 export interface RegisterComponent {
   componentName: string;
   dataTestId?: string;
@@ -106,10 +107,10 @@ export interface RegisterComponentImplementation {
 export interface RegisteredFunction<T = undefined> {
   calls: { args: any; result?: any }[];
   dataTestId?: string;
-  component?: ReactClassComponentLifecycle;
   hooks?: ReactHooks<T>;
   hooksCounter: T extends undefined ? HooksCounter : never;
   jestFn: jest.Mock;
+  lifecycle?: ReactClassComponentLifecycle;
   name: string;
   relativePath: string;
 }

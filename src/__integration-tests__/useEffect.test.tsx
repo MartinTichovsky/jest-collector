@@ -25,7 +25,7 @@ const defaultTest = (callFunc: () => void, dataTestId?: string) => {
   expect(callFunc).toBeCalledTimes(1);
   expect(collector.getCallCount(OneUseEffect.name, { dataTestId })).toBe(1);
 
-  const hooks = collector.getReactComponentHooks(OneUseEffect.name, {
+  const hooks = collector.getReactHooks(OneUseEffect.name, {
     dataTestId
   });
 
@@ -89,14 +89,13 @@ describe("useEffect", () => {
 
     // check on first render
     const useEffectHooks = collector
-      .getReactComponentHooks(MoreUseEffectsInner.name)
+      .getReactHooks(MoreUseEffectsInner.name)
       .getHooksByType("useEffect");
 
     expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(1);
     expect(
-      collector
-        .getReactComponentHooks(MoreUseEffectsInner.name)
-        .getAll("useEffect")?.length
+      collector.getReactHooks(MoreUseEffectsInner.name).getAll("useEffect")
+        ?.length
     ).toBe(3);
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
@@ -113,9 +112,8 @@ describe("useEffect", () => {
 
     expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(2);
     expect(
-      collector
-        .getReactComponentHooks(MoreUseEffectsInner.name)
-        .getAll("useEffect")?.length
+      collector.getReactHooks(MoreUseEffectsInner.name).getAll("useEffect")
+        ?.length
     ).toBe(3);
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
@@ -132,9 +130,8 @@ describe("useEffect", () => {
 
     expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(3);
     expect(
-      collector
-        .getReactComponentHooks(MoreUseEffectsInner.name)
-        .getAll("useEffect")?.length
+      collector.getReactHooks(MoreUseEffectsInner.name).getAll("useEffect")
+        ?.length
     ).toBe(3);
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
@@ -157,9 +154,8 @@ describe("useEffect", () => {
 
     expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(4);
     expect(
-      collector
-        .getReactComponentHooks(MoreUseEffectsInner.name)
-        .getAll("useEffect")?.length
+      collector.getReactHooks(MoreUseEffectsInner.name).getAll("useEffect")
+        ?.length
     ).toBe(2);
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
@@ -170,6 +166,33 @@ describe("useEffect", () => {
     expect(useEffectHooks.get(1)?.action).toBeCalledTimes(2);
     expect(useEffectHooks.get(2)?.action).toBeCalledTimes(2);
     expect(useEffectHooks.get(3)).toBeUndefined();
+
+    // next render should register three effects again
+    render(
+      <MoreUseEffectsInner
+        caller={caller}
+        callFunc1={callFunc21}
+        callFunc2={callFunc22}
+        callFunc3={callFunc23}
+        secondEffect={true}
+      />
+    );
+
+    expect(collector.getCallCount(MoreUseEffectsInner.name)).toBe(5);
+    expect(
+      collector.getReactHooks(MoreUseEffectsInner.name).getAll("useEffect")
+        ?.length
+    ).toBe(3);
+    expect(callFunc11).toBeCalledTimes(1);
+    expect(callFunc12).toBeCalledTimes(1);
+    expect(callFunc13).toBeCalledTimes(1);
+    expect(callFunc21).toBeCalledTimes(2);
+    expect(callFunc22).toBeCalledTimes(1);
+    expect(callFunc23).toBeCalledTimes(2);
+    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(3);
+    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(3);
+    expect(useEffectHooks.get(4)).toBeUndefined();
   });
 
   test("Unmount registered component", () => {
@@ -181,7 +204,7 @@ describe("useEffect", () => {
     expect(collector.getComponent(WithUmount.name)).toMatchSnapshot();
 
     const useEffectHooks = collector
-      .getReactComponentHooks(WithUmount.name)
+      .getReactHooks(WithUmount.name)
       .getHooksByType("useEffect");
 
     expect(useEffectHooks?.get(1)).not.toBeUndefined();
@@ -205,7 +228,7 @@ describe("useEffect", () => {
     expect(collector.getComponent(WithDeps.name)).toMatchSnapshot();
 
     const useEffectHooks = collector
-      .getReactComponentHooks(WithDeps.name)
+      .getReactHooks(WithDeps.name)
       .getHooksByType("useEffect");
 
     expect(useEffectHooks.get(1)).not.toBeUndefined();
@@ -227,7 +250,7 @@ describe("useEffect", () => {
     render(<Renders caller={caller} />);
 
     const useEffectHooks = collector
-      .getReactComponentHooks(Renders.name)
+      .getReactHooks(Renders.name)
       .getHooksByType("useEffect");
 
     const testSuite = (num: number) => {
@@ -263,7 +286,7 @@ describe("useEffect", () => {
       `Registered template inner ${text}${num}`;
     const caller = {
       action: jest.fn(),
-      setState: ((state) => {}) as React.Dispatch<
+      setState: ((_state) => {}) as React.Dispatch<
         React.SetStateAction<{ num: number; text: string }>
       >,
       unmount: jest.fn()
@@ -272,7 +295,7 @@ describe("useEffect", () => {
     const { unmount } = render(<Template caller={caller} />);
 
     const useEffectHooks = collector
-      .getReactComponentHooks(TemplateInner.name)
+      .getReactHooks(TemplateInner.name)
       .getHooksByType("useEffect");
 
     // first render

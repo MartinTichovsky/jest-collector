@@ -18,7 +18,7 @@ describe("useCallback", () => {
     render(<OneUseCallback callFunc={callFunc} />);
 
     const useCallbackHooks = collector
-      .getReactComponentHooks(OneUseCallback.name)
+      .getReactHooks(OneUseCallback.name)
       .getHooksByType("useCallback");
 
     expect(useCallbackHooks.get(1)).not.toBeUndefined();
@@ -32,7 +32,7 @@ describe("useCallback", () => {
     render(<WithDeps deps={deps} />);
 
     const useCallbackHooks = collector
-      .getReactComponentHooks(WithDeps.name)
+      .getReactHooks(WithDeps.name)
       .getHooksByType("useCallback");
 
     expect(useCallbackHooks?.get(1)).not.toBeUndefined();
@@ -50,7 +50,7 @@ describe("useCallback", () => {
     render(<Renders caller={caller} />);
 
     const useCallbackHooks = collector
-      .getReactComponentHooks(Renders.name)
+      .getReactHooks(Renders.name)
       .getHooksByType("useCallback");
 
     const testSuite = (num: number, expectedCallCount: number) => {
@@ -84,7 +84,7 @@ describe("useCallback", () => {
     render(<OneUseCallback callFunc={callFunc} />);
 
     const useCallbackHooks = collector
-      .getReactComponentHooks(OneUseCallback.name)
+      .getReactHooks(OneUseCallback.name)
       .getHooksByType("useCallback");
 
     expect(useCallbackHooks.get(1)).not.toBeUndefined();
@@ -101,7 +101,7 @@ describe("useCallback", () => {
     render(<WithReturn caller={caller} />);
 
     const useCallbackHooks = collector
-      .getReactComponentHooks(WithReturn.name)
+      .getReactHooks(WithReturn.name)
       .getHooksByType("useCallback");
 
     expect(useCallbackHooks.get(1)?.action).not.toBeCalled();
