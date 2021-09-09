@@ -18,7 +18,7 @@ export const mockReactHooks = (
     );
 
     if (
-      !privateCollector.hasFunction(caller.name, {
+      !privateCollector.hasRegistered(caller.name, {
         dataTestId,
         relativePath: caller.relativePath
       })
@@ -78,7 +78,7 @@ export const mockReactHooks = (
     );
 
     if (
-      !privateCollector.hasFunction(caller.name, {
+      !privateCollector.hasRegistered(caller.name, {
         dataTestId,
         relativePath: caller.relativePath
       })

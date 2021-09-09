@@ -41,7 +41,7 @@ export class PrivateCollector extends ControllerAbstract {
       });
     }
 
-    const registered = this.getFunction(name, { dataTestId, relativePath });
+    const registered = this.getDataFor(name, { dataTestId, relativePath });
 
     if (registered) {
       registered.calls.push({ args, stats: { time: 0 } });
@@ -74,7 +74,7 @@ export class PrivateCollector extends ControllerAbstract {
     const active = this.activeDataTestId.find(
       (item) => item.name === name && item.relativePath === relativePath
     );
-    const registered = this.getFunction(name, { dataTestId, relativePath });
+    const registered = this.getDataFor(name, { dataTestId, relativePath });
 
     if (!active || !registered) {
       return;
@@ -100,7 +100,7 @@ export class PrivateCollector extends ControllerAbstract {
   }
 
   public getCallCount(name: string, options?: Options) {
-    const registered = this.getFunction(name, options);
+    const registered = this.getDataFor(name, options);
 
     if (
       registered &&
@@ -114,7 +114,7 @@ export class PrivateCollector extends ControllerAbstract {
     return registered ? registered.calls.length : undefined;
   }
 
-  public getFunction(name: string, options?: Options) {
+  public getDataFor(name: string, options?: Options) {
     if (options?.relativePath !== undefined) {
       return this.registeredFunctions.find(
         (item) =>
@@ -177,7 +177,7 @@ export class PrivateCollector extends ControllerAbstract {
   }
 
   public getReactHooks(componentName: string, options?: Options) {
-    const registered = this.getFunction(componentName, options);
+    const registered = this.getDataFor(componentName, options);
 
     return {
       getAll: <K extends keyof ReactHooksTypes>(hookType?: K) => {
@@ -247,7 +247,7 @@ export class PrivateCollector extends ControllerAbstract {
   }
 
   public getReactLifecycle(componentName: string, options?: Options) {
-    const registered = this.getFunction(componentName, options);
+    const registered = this.getDataFor(componentName, options);
 
     return registered?.lifecycle;
   }
@@ -263,8 +263,8 @@ export class PrivateCollector extends ControllerAbstract {
     return registered.hooksCounter[hookType]!;
   }
 
-  public hasFunction(name: string, options?: Options) {
-    return this.getFunction(name, options) !== undefined;
+  public hasRegistered(name: string, options?: Options) {
+    return this.getDataFor(name, options) !== undefined;
   }
 
   private registerHook<K extends keyof ReactHooksTypes>(
@@ -309,7 +309,7 @@ export class PrivateCollector extends ControllerAbstract {
     props,
     relativePath
   }: RegisterUseWithAction<K>) {
-    const registered = this.getFunction(componentName, {
+    const registered = this.getDataFor(componentName, {
       dataTestId: this.getActiveDataTestId(componentName, relativePath),
       relativePath
     });
@@ -346,7 +346,7 @@ export class PrivateCollector extends ControllerAbstract {
     implementation: { render, setState },
     relativePath
   }: RegisterReactClass) {
-    const registered = this.getFunction(componentName, {
+    const registered = this.getDataFor(componentName, {
       dataTestId,
       relativePath
     });
@@ -371,7 +371,7 @@ export class PrivateCollector extends ControllerAbstract {
     relativePath
   }: RegisterUseContext) {
     const hookType = "useContext";
-    const registered = this.getFunction(componentName, {
+    const registered = this.getDataFor(componentName, {
       dataTestId: this.getActiveDataTestId(componentName, relativePath),
       relativePath
     });
@@ -399,7 +399,7 @@ export class PrivateCollector extends ControllerAbstract {
     relativePath
   }: RegisterUseState) {
     const hookType = "useState";
-    const registered = this.getFunction(componentName, {
+    const registered = this.getDataFor(componentName, {
       dataTestId: this.getActiveDataTestId(componentName, relativePath),
       relativePath
     });
@@ -436,7 +436,7 @@ export class PrivateCollector extends ControllerAbstract {
     relativePath
   }: RegisterUseRef) {
     const hookType = "useRef";
-    const registered = this.getFunction(componentName, {
+    const registered = this.getDataFor(componentName, {
       dataTestId: this.getActiveDataTestId(componentName, relativePath),
       relativePath
     });
@@ -516,12 +516,13 @@ export class PrivateCollector extends ControllerAbstract {
       return;
     }
 
-    const index = this.registeredFunctions.findIndex(
-      (item) =>
-        item.name === name &&
-        item.dataTestId === options?.dataTestId &&
-        item.relativePath === options?.relativePath
-    );
+    const registered = this.getDataFor(name, options);
+
+    if (!registered) {
+      return;
+    }
+
+    const index = this.registeredFunctions.indexOf(registered);
 
     if (index !== -1) {
       this.registeredFunctions.splice(index, 1);

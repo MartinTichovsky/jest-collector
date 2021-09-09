@@ -12,7 +12,7 @@ export abstract class ControllerAbstract {
     options?: Options
   ): number | undefined;
 
-  public abstract getFunction(
+  public abstract getDataFor(
     name: string,
     options?: Options
   ): RegisteredFunction | undefined;
@@ -47,7 +47,7 @@ export abstract class ControllerAbstract {
     options?: Options
   ): ReactClassLifecycle | undefined;
 
-  public abstract hasFunction(
+  public abstract hasRegistered(
     componentName: string,
     options?: Options
   ): boolean;

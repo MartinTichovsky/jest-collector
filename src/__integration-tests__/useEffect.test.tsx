@@ -40,7 +40,7 @@ const defaultTest = (callFunc: () => void, dataTestId?: string) => {
 
   expect(
     removeStatsFromCalls(
-      collector.getComponent(OneUseEffect.name, { dataTestId })
+      collector.getComponentData(OneUseEffect.name, { dataTestId })
     )
   ).toMatchSnapshot();
 };
@@ -205,7 +205,7 @@ describe("useEffect", () => {
     expect(collector.hasComponent(WithUmount.name)).toBeTruthy();
     expect(collector.getCallCount(WithUmount.name)).toBe(1);
     expect(
-      removeStatsFromCalls(collector.getComponent(WithUmount.name))
+      removeStatsFromCalls(collector.getComponentData(WithUmount.name))
     ).toMatchSnapshot();
 
     const useEffectHooks = collector
@@ -231,7 +231,7 @@ describe("useEffect", () => {
     expect(collector.hasComponent(WithDeps.name)).toBeTruthy();
     expect(collector.getCallCount(WithDeps.name)).toBe(1);
     expect(
-      removeStatsFromCalls(collector.getComponent(WithDeps.name))
+      removeStatsFromCalls(collector.getComponentData(WithDeps.name))
     ).toMatchSnapshot();
 
     const useEffectHooks = collector
@@ -358,5 +358,23 @@ describe("useEffect", () => {
     expect(caller.unmount).toBeCalledTimes(1);
     expect(caller.action).toHaveBeenLastCalledWith("text");
     expect(caller.unmount).toHaveBeenLastCalledWith(0);
+
+    unmount();
+
+    expect(() => screen.getByText(getExpectedText("text", 5))).toThrowError();
+    expect(collector.getCallCount(Template.name)).toBe(4);
+    expect(useEffectHooks.get(1)?.deps).toEqual(["text"]);
+    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks.get(1)?.unmountAction).toBeCalledTimes(2);
+    expect(caller.action).toBeCalledTimes(2);
+    expect(caller.unmount).toBeCalledTimes(2);
+    expect(caller.action).toHaveBeenLastCalledWith("text");
+    expect(caller.unmount).toHaveBeenLastCalledWith(1);
+
+    // reset only one specific data
+    collector.reset(Template.name);
+
+    expect(collector.getCallCount(Template.name)).toBeUndefined();
+    expect(collector.getCallCount(TemplateInner.name)).toBe(4);
   });
 });

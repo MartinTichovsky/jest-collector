@@ -16,15 +16,15 @@ export class Collector extends ControllerAbstract {
     return this.privateCollector.getCallCount(name, options);
   }
 
-  public getComponent(
+  public getComponentData(
     name: string,
     options?: Options
   ): RegisteredFunction<never> | undefined {
-    return this.getFunction(name, options);
+    return this.getDataFor(name, options);
   }
 
-  public getFunction(name: string, options?: Options) {
-    const registered = this.privateCollector.getFunction(name, options);
+  public getDataFor(name: string, options?: Options) {
+    const registered = this.privateCollector.getDataFor(name, options);
 
     if (!registered?.hooks) {
       return registered;
@@ -71,11 +71,11 @@ export class Collector extends ControllerAbstract {
   }
 
   public hasComponent(componentName: string, options?: Options) {
-    return this.hasFunction(componentName, options);
+    return this.hasRegistered(componentName, options);
   }
 
-  public hasFunction(componentName: string, options?: Options) {
-    return this.privateCollector.hasFunction(componentName, options);
+  public hasRegistered(componentName: string, options?: Options) {
+    return this.privateCollector.hasRegistered(componentName, options);
   }
 
   public reset(name?: string, options?: Options) {
