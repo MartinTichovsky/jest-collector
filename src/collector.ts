@@ -1,10 +1,10 @@
 import { PrivateCollector } from "./private-collector";
 import { ControllerAbstract } from "./private-collector.abstract";
 import {
+  GetStatsOptions,
   Options,
-  ReactHooks,
-  ReactHooksTypes,
-  RegisteredFunction
+  RegisteredFunction,
+  Stats
 } from "./private-collector.types";
 
 export class Collector extends ControllerAbstract {
@@ -19,7 +19,7 @@ export class Collector extends ControllerAbstract {
   public getComponentData(
     name: string,
     options?: Options
-  ): RegisteredFunction<never> | undefined {
+  ): RegisteredFunction<unknown> | undefined {
     return this.getDataFor(name, options);
   }
 
@@ -31,43 +31,33 @@ export class Collector extends ControllerAbstract {
     }
 
     const filtered = this.privateCollector.getOnlyRegisteredHooks(registered);
-    delete (filtered as RegisteredFunction<never>)["hooksCounter"];
+    delete (filtered as RegisteredFunction<unknown>)["hooksCounter"];
 
     return {
       ...filtered,
       hooks: this.privateCollector.removePropsFromAllHooks(filtered!.hooks)
-    } as RegisteredFunction<never> | undefined;
+    } as RegisteredFunction<unknown> | undefined;
   }
 
-  public getReactHooks(
-    componentName: string,
-    options?: Options
-  ): {
-    getAll: <K extends keyof ReactHooksTypes>(
-      hookType?: K
-    ) =>
-      | (K extends undefined ? ReactHooks<never> : ReactHooks<never>[K])
-      | undefined;
-    getHook: <K extends keyof ReactHooksTypes>(
-      hookType: K,
-      sequence: number
-    ) => ReactHooksTypes<never>[K] | undefined;
-    getHooksByType: <K extends keyof ReactHooksTypes>(
-      hookType: K
-    ) => {
-      get: (sequence: number) => ReactHooksTypes<never>[K] | undefined;
-    };
-    getUseState: (sequence: number) => {
-      getState: (stateSequence: number) => unknown | undefined;
-      next: () => unknown[];
-      reset: () => void;
-    };
-  } {
+  public getReactHooks(componentName: string, options?: Options) {
     return this.privateCollector.getReactHooks(componentName, options);
   }
 
   public getReactLifecycle(componentName: string, options?: Options) {
     return this.privateCollector.getReactLifecycle(componentName, options);
+  }
+
+  public getStats(): Stats[];
+  public getStats(name: string, options?: GetStatsOptions): Stats | undefined;
+  public getStats(
+    name?: string,
+    options?: GetStatsOptions
+  ): Stats[] | Stats | undefined;
+  public getStats(
+    name?: string,
+    options?: GetStatsOptions
+  ): Stats[] | Stats | undefined {
+    return this.privateCollector.getStats(name, options);
   }
 
   public hasComponent(componentName: string, options?: Options) {

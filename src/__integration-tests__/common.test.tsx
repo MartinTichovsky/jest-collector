@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react";
 import React from "react";
+import { ClassComponent } from "./components/class-components";
 import { EmptyWithUseEffectAndUseCallback } from "./components/common.unregistered";
 import { WithDeps as UseCallbackDeps } from "./components/UseCallback";
 import { WithDeps as UseEffectDeps } from "./components/UseEffect";
@@ -8,6 +9,8 @@ import { recursiveFuntion } from "./others/recursive-function";
 
 console.warn = jest.fn();
 const ComponentName = "WithDeps";
+const dataTestId1 = "test-id-1";
+const dataTestId2 = "test-id-2";
 const useCallbackDepsRelativePath =
   "/src/__integration-tests__/components/UseCallback.tsx";
 const useEffectDepsRelativePath =
@@ -43,9 +46,6 @@ describe("Commons tests", () => {
   });
 
   test("More components with the same name and different test id", () => {
-    const dataTestId1 = "test-id-1";
-    const dataTestId2 = "test-id-2";
-
     render(
       <>
         <UseEffectDeps data-testid={dataTestId1} deps={[]} />
@@ -263,6 +263,25 @@ describe("Commons tests", () => {
     for (let i = 0; i < functionHistory!.calls.length; i++) {
       expect(functionHistory!.calls[i].result).toBe(10 - i);
     }
+  });
+
+  test("Stats", () => {
+    new TestClass();
+    render(<ClassComponent />);
+    recursiveFuntion(3, recursiveFuntion);
+    render(<EmptyWithUseEffectAndUseCallback />);
+    render(
+      <>
+        <UseEffectDeps data-testid={dataTestId1} deps={[1, 2, 3]} />
+        <UseCallbackDeps data-testid={dataTestId2} deps={[{ prop: "value" }]} />
+      </>
+    );
+
+    expect(collector.getStats()).toMatchSnapshot();
+    expect(collector.getStats(TestClass.name)).toMatchSnapshot();
+    expect(
+      collector.getStats(ComponentName, { dataTestId: dataTestId1 })
+    ).toMatchSnapshot();
   });
 
   test("Unknown function", () => {

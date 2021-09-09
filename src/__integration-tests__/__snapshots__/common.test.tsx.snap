@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Commons tests Stats 1`] = `
+Array [
+  Object {
+    "name": "TestClass",
+    "numberOfCalls": 1,
+    "path": "/src/__integration-tests__/others/class.ts",
+  },
+  Object {
+    "name": "ClassComponent",
+    "numberOfCalls": 1,
+    "path": "/src/__integration-tests__/components/class-components.tsx",
+  },
+  Object {
+    "name": "recursiveFuntion",
+    "numberOfCalls": 4,
+    "path": "/src/__integration-tests__/others/recursive-function.ts",
+  },
+  Object {
+    "name": "WithDeps",
+    "numberOfCalls": 1,
+    "path": "/src/__integration-tests__/components/UseEffect.tsx",
+  },
+  Object {
+    "name": "WithDeps",
+    "numberOfCalls": 1,
+    "path": "/src/__integration-tests__/components/UseCallback.tsx",
+  },
+]
+`;
+
+exports[`Commons tests Stats 2`] = `
+Object {
+  "name": "TestClass",
+  "numberOfCalls": 1,
+  "path": "/src/__integration-tests__/others/class.ts",
+}
+`;
+
+exports[`Commons tests Stats 3`] = `
+Object {
+  "name": "WithDeps",
+  "numberOfCalls": 1,
+  "path": "/src/__integration-tests__/components/UseEffect.tsx",
+}
+`;

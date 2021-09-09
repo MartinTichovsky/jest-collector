@@ -1,9 +1,11 @@
 import {
+  GetStatsOptions,
   Options,
   ReactClassLifecycle,
   ReactHooks,
   ReactHooksTypes,
-  RegisteredFunction
+  RegisteredFunction,
+  Stats
 } from "./private-collector.types";
 
 export abstract class ControllerAbstract {
@@ -15,7 +17,7 @@ export abstract class ControllerAbstract {
   public abstract getDataFor(
     name: string,
     options?: Options
-  ): RegisteredFunction | undefined;
+  ): RegisteredFunction<unknown> | undefined;
 
   public abstract getReactHooks(
     componentName: string,
@@ -24,16 +26,16 @@ export abstract class ControllerAbstract {
     getAll: <K extends keyof ReactHooksTypes>(
       hookType?: K
     ) =>
-      | (K extends undefined ? ReactHooks<never> : ReactHooks<never>[K])
+      | (K extends undefined ? ReactHooks<unknown> : ReactHooks<unknown>[K])
       | undefined;
     getHook: <K extends keyof ReactHooksTypes>(
       hookType: K,
       sequence: number
-    ) => ReactHooksTypes<never>[K] | undefined;
+    ) => ReactHooksTypes<unknown>[K] | undefined;
     getHooksByType: <K extends keyof ReactHooksTypes>(
       hookType: K
     ) => {
-      get: (sequence: number) => ReactHooksTypes<never>[K] | undefined;
+      get: (sequence: number) => ReactHooksTypes<unknown>[K] | undefined;
     };
     getUseState: (sequence: number) => {
       getState: (stateSequence: number) => unknown | undefined;
@@ -51,6 +53,11 @@ export abstract class ControllerAbstract {
     componentName: string,
     options?: Options
   ): boolean;
+
+  public abstract getStats(
+    name?: string,
+    options?: GetStatsOptions
+  ): Stats[] | Stats | undefined;
 
   public abstract reset(name?: string, options?: Options): void;
 }

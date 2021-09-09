@@ -3,6 +3,7 @@ import {
   ActiveDataTestId,
   FunctionCalled,
   FunctionExecuted,
+  GetStatsOptions,
   HookChecker,
   Options,
   ReactHooks,
@@ -13,7 +14,8 @@ import {
   RegisterUseContext,
   RegisterUseRef,
   RegisterUseState,
-  RegisterUseWithAction
+  RegisterUseWithAction,
+  Stats
 } from "./private-collector.types";
 
 export class PrivateCollector extends ControllerAbstract {
@@ -141,7 +143,7 @@ export class PrivateCollector extends ControllerAbstract {
     registered: RegisteredFunction | undefined,
     hookType: K,
     sequence: number
-  ): ReactHooksTypes<never>[K] | undefined {
+  ): ReactHooksTypes<unknown>[K] | undefined {
     const filtered = this.getOnlyRegisteredHooks(registered);
 
     return filtered &&
@@ -150,7 +152,7 @@ export class PrivateCollector extends ControllerAbstract {
       sequence > 0 &&
       sequence <= filtered.hooks[hookType]!.length
       ? this.removeHelperProps<K>(
-          filtered.hooks[hookType]![sequence - 1] as ReactHooksTypes<never>[K]
+          filtered.hooks[hookType]![sequence - 1] as ReactHooksTypes[K]
         )
       : undefined;
   }
@@ -176,30 +178,48 @@ export class PrivateCollector extends ControllerAbstract {
     };
   }
 
+  public getReactHooks(
+    componentName: string,
+    options?: Options
+  ): {
+    getAll: <K extends keyof ReactHooksTypes>(
+      hookType?: K
+    ) =>
+      | (K extends undefined ? ReactHooks<unknown> : ReactHooks<unknown>[K])
+      | undefined;
+    getHook: <K extends keyof ReactHooksTypes>(
+      hookType: K,
+      sequence: number
+    ) => ReactHooksTypes<unknown>[K] | undefined;
+    getHooksByType: <K extends keyof ReactHooksTypes>(
+      hookType: K
+    ) => {
+      get: (sequence: number) => ReactHooksTypes<unknown>[K] | undefined;
+    };
+    getUseState: (sequence: number) => {
+      getState: (stateSequence: number) => unknown | undefined;
+      next: () => unknown[];
+      reset: () => void;
+    };
+  };
   public getReactHooks(componentName: string, options?: Options) {
     const registered = this.getDataFor(componentName, options);
 
     return {
-      getAll: <K extends keyof ReactHooksTypes>(hookType?: K) => {
+      getAll: (hookType?: keyof ReactHooksTypes) => {
         const filtered = this.getOnlyRegisteredHooks(registered);
 
         return filtered && filtered.hooks
-          ? ((hookType
-              ? filtered.hooks[hookType]?.map((item) =>
-                  this.removeHelperProps(item)
-                )
-              : this.removePropsFromAllHooks(
-                  filtered.hooks
-                )) as K extends undefined
-              ? ReactHooks<never>
-              : ReactHooks<never>[K])
+          ? hookType
+            ? filtered.hooks[hookType]?.map((item) =>
+                this.removeHelperProps(item)
+              )
+            : this.removePropsFromAllHooks(filtered.hooks)
           : undefined;
       },
-      getHook: <K extends keyof ReactHooksTypes>(
-        hookType: K,
-        sequence: number
-      ) => this.getHookWithoutScope(registered, hookType, sequence),
-      getHooksByType: <K extends keyof ReactHooksTypes>(hookType: K) => ({
+      getHook: (hookType: keyof ReactHooksTypes, sequence: number) =>
+        this.getHookWithoutScope(registered, hookType, sequence),
+      getHooksByType: (hookType: keyof ReactHooksTypes) => ({
         get: (sequence: number) =>
           this.getHookWithoutScope(registered, hookType, sequence)
       }),
@@ -263,8 +283,38 @@ export class PrivateCollector extends ControllerAbstract {
     return registered.hooksCounter[hookType]!;
   }
 
+  public getStats(): Stats[];
+  public getStats(name: string, options?: GetStatsOptions): Stats | undefined;
+  public getStats(
+    name?: string,
+    options?: GetStatsOptions
+  ): Stats[] | Stats | undefined;
+  public getStats(
+    name?: string,
+    options?: GetStatsOptions
+  ): Stats[] | Stats | undefined {
+    return name === undefined
+      ? this.registeredFunctions.map((registered) => this.makeStats(registered))
+      : this.makeStats(this.getDataFor(name!, options));
+  }
+
   public hasRegistered(name: string, options?: Options) {
     return this.getDataFor(name, options) !== undefined;
+  }
+
+  private makeStats<T extends RegisteredFunction | undefined>(
+    registered?: T
+  ): T extends undefined ? undefined : Stats;
+  private makeStats(registered?: RegisteredFunction): Stats | undefined {
+    if (registered === undefined) {
+      return undefined;
+    }
+
+    return {
+      name: registered.name,
+      numberOfCalls: registered.calls.length,
+      path: registered.relativePath
+    };
   }
 
   private registerHook<K extends keyof ReactHooksTypes>(
@@ -470,7 +520,7 @@ export class PrivateCollector extends ControllerAbstract {
   private removeHelperProps<K extends keyof ReactHooksTypes>(
     item: ReactHooksTypes[K]
   ) {
-    const result: ReactHooksTypes<never>[K] = {
+    const result: ReactHooksTypes<unknown>[K] = {
       ...item
     };
 
@@ -500,7 +550,7 @@ export class PrivateCollector extends ControllerAbstract {
       return undefined;
     }
 
-    const result: ReactHooks<never> = {};
+    const result: ReactHooks<unknown> = {};
 
     for (let key in hooks) {
       result[key] = this.removePropsFromHook(hooks[key]);
