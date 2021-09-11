@@ -1,33 +1,6 @@
 import React from "react";
 
 /**
- * The inner cmponent used by Template component will call
- * the action in the useEffect. The useEffect is called when
- * the passed text changes.
- */
-export const TemplateInner = ({
-  action,
-  num,
-  text,
-  unmount
-}: {
-  action: (text: string) => void;
-  num: number;
-  text: string;
-  unmount: (num: number) => void;
-}) => {
-  React.useEffect(() => {
-    action(text);
-
-    return () => {
-      unmount(num);
-    };
-  }, [text]);
-
-  return <div>Registered template inner {`${text}${num}`}</div>;
-};
-
-/**
  * The component has three useEffects. The second one is created based
  * on the property `secondEffect`. The component is passing the setState
  * through the caller to be able manually set the state.
@@ -65,4 +38,31 @@ export const MultipleUseEffectsInner = ({
   }, [callFunc3]);
 
   return <div>More effects {state}</div>;
+};
+
+/**
+ * The inner cmponent used by Template component will call
+ * the action in the useEffect. The useEffect is called when
+ * the passed text changes.
+ */
+export const TemplateInner = ({
+  action,
+  num,
+  text,
+  unmount
+}: {
+  action: (text: string) => void;
+  num: number;
+  text: string;
+  unmount: (num: number) => void;
+}) => {
+  React.useEffect(() => {
+    action(text);
+
+    return () => {
+      unmount(num);
+    };
+  }, [text]);
+
+  return <div>Registered template inner {`${text}${num}`}</div>;
 };

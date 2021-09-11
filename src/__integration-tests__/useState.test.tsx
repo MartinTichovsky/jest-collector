@@ -124,68 +124,69 @@ describe("useState", () => {
     expect(useState.getUseState(2).getState(3)).toBe(getExpectedText(987));
   });
 
-  // test("Parallel states", () => {
-  //   const getExpectedText = (num: number) => `State ${num}`;
-  //   const dataTestId1 = "test-id-1";
-  //   const dataTestId2 = "test-id-2";
-  //   const caller1 = {
-  //     setState: ((_num: number) => {}) as React.Dispatch<
-  //       React.SetStateAction<number>
-  //     >
-  //   };
-  //   const caller2 = {
-  //     setState: ((_num: number) => {}) as React.Dispatch<
-  //       React.SetStateAction<number>
-  //     >
-  //   };
+  test("Parallel states", () => {
+    const getExpectedText = (num: number) => `State ${num}`;
+    const dataTestId1 = "test-id-1";
+    const dataTestId2 = "test-id-2";
+    // crete a caller objects
+    const caller1 = {
+      setState: ((_num: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+    const caller2 = {
+      setState: ((_num: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
 
-  //   render(
-  //     <>
-  //       <div data-testid={dataTestId1}>
-  //         <DynamicState caller={caller1} />
-  //       </div>
-  //       <div data-testid={dataTestId2}>
-  //         <DynamicState caller={caller2} />
-  //       </div>
-  //     </>
-  //   );
+    render(
+      <>
+        <div data-testid={dataTestId1}>
+          <DynamicState caller={caller1} />
+        </div>
+        <div data-testid={dataTestId2}>
+          <DynamicState caller={caller2} />
+        </div>
+      </>
+    );
 
-  //   expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
-  //     getExpectedText(0)
-  //   );
-  //   expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
-  //     getExpectedText(0)
-  //   );
+    // expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
+    //   getExpectedText(0)
+    // );
+    // expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
+    //   getExpectedText(0)
+    // );
 
-  //   act(() => caller1.setState(7));
+    // act(() => caller1.setState(7));
 
-  //   expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
-  //     getExpectedText(7)
-  //   );
-  //   expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
-  //     getExpectedText(0)
-  //   );
+    // expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
+    //   getExpectedText(7)
+    // );
+    // expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
+    //   getExpectedText(0)
+    // );
 
-  //   act(() => caller2.setState(11));
+    // act(() => caller2.setState(11));
 
-  //   expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
-  //     getExpectedText(7)
-  //   );
-  //   expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
-  //     getExpectedText(11)
-  //   );
+    // expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
+    //   getExpectedText(7)
+    // );
+    // expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
+    //   getExpectedText(11)
+    // );
 
-  //   expect(collector.getCallCount(DynamicState.name)).toBe(4);
-  //   expect(
-  //     collector.getReactHooks(DynamicState.name).getAll("useState")?.length
-  //   ).toBe(1);
-  //   expect(
-  //     collector
-  //       .getReactHooks(DynamicState.name)
-  //       .getHooksByType("useState")
-  //       .get(1)?.setState
-  //   ).toBeCalledTimes(2);
-  // });
+    // expect(collector.getCallCount(DynamicState.name)).toBe(4);
+    // expect(
+    //   collector.getReactHooks(DynamicState.name).getAll("useState")?.length
+    // ).toBe(1);
+    // expect(
+    //   collector
+    //     .getReactHooks(DynamicState.name)
+    //     .getHooksByType("useState")
+    //     .get(1)?.setState
+    // ).toBeCalledTimes(2);
+  });
 
   // test("Multipe calls", () => {
   //   const getExpectedText = (num: number) => `Content ${num}`;

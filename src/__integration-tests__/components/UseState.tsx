@@ -1,11 +1,5 @@
 import React from "react";
 
-export const OneUseState = () => {
-  React.useState(0);
-
-  return <div>Some content</div>;
-};
-
 export const DynamicState = ({
   caller
 }: {
@@ -51,4 +45,10 @@ export const MultipeCalls = () => {
   };
 
   return <button onClick={onClick}>Content {state1}</button>;
+};
+
+export const OneUseState = () => {
+  React.useState(0);
+
+  return <div>Some content</div>;
 };

@@ -1,5 +1,9 @@
 import { PrivateCollector } from "./private-collector";
-import { FunctionIdentity, Identity } from "./private-collector.types";
+import {
+  FunctionIdentity,
+  Identity,
+  NthChild
+} from "./private-collector.types";
 
 export interface GetUpdatedReactObjectProps {
   children?: ReactObject[] | ReactObject;
@@ -8,7 +12,7 @@ export interface GetUpdatedReactObjectProps {
 }
 
 export interface ProcessReactResult {
-  children: FunctionIdentity[];
+  children: Children[];
   name: string;
   object: ReactObject;
   parent?: Identity;
@@ -25,3 +29,5 @@ export interface ReactObject {
     name: string;
   };
 }
+
+export type Children = [ReactObject, FunctionIdentity & NthChild];

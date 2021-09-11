@@ -10,19 +10,21 @@ export interface CallStats {
   time?: number;
 }
 
-export interface FunctionCalled extends FunctionIdentity {
-  args: any;
-  jestFn: jest.Mock;
-  parent?: Identity | null;
-}
+export type FunctionCalled = FunctionIdentity &
+  NthChild & {
+    args: any;
+    jestFn: jest.Mock;
+    parent?: Identity | null;
+  };
 
-export interface FunctionExecuted extends FunctionIdentity {
-  children: FunctionIdentity[];
-  index: number;
-  parent: Identity | null;
-  result: any;
-  time: number;
-}
+export type FunctionExecuted = FunctionIdentity &
+  NthChild & {
+    children: FunctionIdentity[];
+    index: number;
+    parent: Identity | null;
+    result: any;
+    time: number;
+  };
 
 export interface FunctionIdentity {
   dataTestId?: string;
@@ -79,11 +81,18 @@ export type HookWithAction<T = undefined> = {
   action: jest.Mock;
 } & (T extends undefined ? { _originScope: string } : {});
 
-export type Identity<T = undefined> = FunctionIdentity & {
-  parent: (T extends undefined ? Identity : Partial<Identity>) | null;
-} & (T extends undefined ? { children?: FunctionIdentity[] } : {});
+export type Identity<T = undefined> = FunctionIdentity &
+  NthChild & {
+    parent: (T extends undefined ? Identity : Partial<Identity>) | null;
+  } & (T extends undefined
+    ? { children?: (FunctionIdentity & NthChild)[] }
+    : {});
 
-export interface Options {
+export interface NthChild {
+  nthChild?: number;
+}
+
+export interface Options extends NthChild {
   dataTestId?: string;
   ignoreWarning?: true;
   parent?: Partial<Identity<unknown>> | null;

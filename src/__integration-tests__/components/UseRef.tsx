@@ -1,11 +1,5 @@
 import React from "react";
 
-export const OneUseRef = () => {
-  const ref = React.useRef("text");
-
-  return <div>Any content with {ref.current}</div>;
-};
-
 export const DynamicRef = ({
   caller
 }: {
@@ -22,4 +16,10 @@ export const DynamicRef = ({
       Ref {state} - {ref.current} - {staticRef.current}
     </div>
   );
+};
+
+export const OneUseRef = () => {
+  const ref = React.useRef("text");
+
+  return <div>Any content with {ref.current}</div>;
 };

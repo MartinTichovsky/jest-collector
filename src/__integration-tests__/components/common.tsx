@@ -42,6 +42,12 @@ export const ComplexComponent = ({
   );
 };
 
+export const ComponentWithChildren = ({
+  children
+}: React.PropsWithChildren<{}>) => {
+  return <>{children}</>;
+};
+
 export const DirectComponent = ({
   templateDataTestId
 }: {
@@ -62,4 +68,8 @@ export const DirectComponent = ({
   }, []);
 
   return <Template data-testid={templateDataTestId} caller={caller} />;
+};
+
+export const SimpleComponent = ({ text }: { text?: string }) => {
+  return <p>{text}</p>;
 };

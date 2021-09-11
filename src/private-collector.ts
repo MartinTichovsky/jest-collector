@@ -56,6 +56,7 @@ export class PrivateCollector extends CollectorAbstract {
     dataTestId,
     jestFn,
     name,
+    nthChild,
     parent,
     relativePath
   }: FunctionCalled) {
@@ -71,6 +72,7 @@ export class PrivateCollector extends CollectorAbstract {
 
     const registered = this.getDataFor(name, {
       dataTestId,
+      nthChild,
       parent: parent || null,
       relativePath
     });
@@ -92,6 +94,7 @@ export class PrivateCollector extends CollectorAbstract {
         parent,
         dataTestId,
         name,
+        nthChild,
         relativePath
       };
 
@@ -114,6 +117,7 @@ export class PrivateCollector extends CollectorAbstract {
     name,
     dataTestId,
     index,
+    nthChild,
     parent,
     relativePath,
     result,
@@ -121,6 +125,7 @@ export class PrivateCollector extends CollectorAbstract {
   }: FunctionExecuted) {
     const registered = this.getDataFor(name, {
       dataTestId,
+      nthChild,
       parent: parent || null,
       relativePath
     });
@@ -178,6 +183,8 @@ export class PrivateCollector extends CollectorAbstract {
       (item) =>
         item.current.dataTestId === options?.dataTestId &&
         item.current.name === name &&
+        (options?.nthChild === undefined ||
+          item.current.nthChild === options.nthChild) &&
         (options?.parent === undefined ||
           this.findByParent(item.parent, options.parent)) &&
         (options?.relativePath === undefined ||

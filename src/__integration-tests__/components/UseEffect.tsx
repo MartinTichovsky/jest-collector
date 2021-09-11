@@ -1,14 +1,6 @@
 import React from "react";
 import { MultipleUseEffectsInner, TemplateInner } from "./UseEffect.Inner";
 
-export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
-  React.useEffect(() => {
-    callFunc();
-  }, []);
-
-  return <div>Some content</div>;
-};
-
 /**
  * The component contains multiple child div elements in a tree to force the React
  * to create multiple nested children. The component has one setState which is
@@ -52,22 +44,12 @@ export const MultipleUseEffects = ({
   );
 };
 
-export const WithUmount = () => {
+export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
   React.useEffect(() => {
-    return () => {
-      // some unmount action
-    };
+    callFunc();
   }, []);
 
-  return <div>Registered with unmount</div>;
-};
-
-export const WithDeps = ({ deps }: { deps: unknown[] }) => {
-  React.useEffect(() => {
-    // some unmount action
-  }, [...deps]);
-
-  return <div>Registered with deps</div>;
+  return <div>Some content</div>;
 };
 
 /**
@@ -119,4 +101,22 @@ export const Template = ({
       unmount={caller.unmount}
     />
   );
+};
+
+export const WithDeps = ({ deps }: { deps: unknown[] }) => {
+  React.useEffect(() => {
+    // some unmount action
+  }, [...deps]);
+
+  return <div>Registered with deps</div>;
+};
+
+export const WithUmount = () => {
+  React.useEffect(() => {
+    return () => {
+      // some unmount action
+    };
+  }, []);
+
+  return <div>Registered with unmount</div>;
 };

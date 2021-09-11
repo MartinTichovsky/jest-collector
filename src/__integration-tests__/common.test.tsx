@@ -1,7 +1,12 @@
 import { render } from "@testing-library/react";
 import React from "react";
 import { ClassComponent } from "./components/class-components";
-import { ComplexComponent, DirectComponent } from "./components/common";
+import {
+  ComplexComponent,
+  ComponentWithChildren,
+  DirectComponent,
+  SimpleComponent
+} from "./components/common";
 import { EmptyWithUseEffectAndUseCallback } from "./components/common.unregistered";
 import { WithDeps as UseCallbackDeps } from "./components/UseCallback";
 import { WithDeps as UseEffectDeps } from "./components/UseEffect";
@@ -16,6 +21,18 @@ const useCallbackDepsRelativePath =
   "/src/__integration-tests__/components/UseCallback.tsx";
 const useEffectDepsRelativePath =
   "/src/__integration-tests__/components/UseEffect.tsx";
+
+const nthChildTestSuite = () => {
+  expect(console.warn).not.toBeCalled();
+  expect(collector.getAllDataFor(SimpleComponent.name).length).toBe(2);
+  expect(
+    collector.getDataFor(SimpleComponent.name, { nthChild: 1 })
+  ).not.toBeUndefined();
+  expect(
+    collector.getDataFor(SimpleComponent.name, { nthChild: 2 })
+  ).not.toBeUndefined();
+  expect(console.warn).not.toBeCalled();
+};
 
 beforeEach(() => {
   collector.reset();
@@ -280,6 +297,53 @@ describe("Commons tests", () => {
     ).toBeUndefined();
   });
 
+  test("Nth child - use case 1", () => {
+    render(
+      <ComponentWithChildren>
+        <div>
+          <SimpleComponent />
+        </div>
+        <SimpleComponent />
+      </ComponentWithChildren>
+    );
+
+    nthChildTestSuite();
+  });
+
+  test("Nth child - use case 2", () => {
+    render(
+      <ComponentWithChildren>
+        <div>
+          <SimpleComponent />
+        </div>
+        <div>
+          <SimpleComponent />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    nthChildTestSuite();
+  });
+
+  test("Nth child - use case 3", () => {
+    render(
+      <ComponentWithChildren>
+        <div>
+          <div>
+            <span>
+              <SimpleComponent />
+            </span>
+          </div>
+        </div>
+        <div>
+          <SimpleComponent />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    nthChildTestSuite();
+  });
+
   test("Recursive function", () => {
     /*
       call the function several times, the function must be taken from import, if it is not taken 
@@ -397,6 +461,19 @@ describe("Commons tests", () => {
     */
     expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
   });
+
+  // test("Test id inheritance should be passed", () => {
+  //   render(
+  //     <>
+  //       <div data-testid={dataTestId1}>
+  //         <SimpleComponent />
+  //       </div>
+  //       <div data-testid={dataTestId2}>
+  //         <SimpleComponent />
+  //       </div>
+  //     </>
+  //   );
+  // });
 
   test("Unknown function", () => {
     // everything must return udnefined

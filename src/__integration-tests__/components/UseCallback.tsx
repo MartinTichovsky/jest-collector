@@ -13,14 +13,6 @@ export const OneUseCallback = ({
   return <div>{children}</div>;
 };
 
-export const WithDeps = ({ deps }: { deps: unknown[] }) => {
-  React.useCallback(() => {
-    // some action
-  }, [...deps]);
-
-  return <div></div>;
-};
-
 /**
  * The component passes setState to be able manually call it and test useCallback
  */
@@ -40,6 +32,14 @@ export const Renders = ({
   }, [state]);
 
   action();
+
+  return <div></div>;
+};
+
+export const WithDeps = ({ deps }: { deps: unknown[] }) => {
+  React.useCallback(() => {
+    // some action
+  }, [...deps]);
 
   return <div></div>;
 };

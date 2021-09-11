@@ -49,6 +49,7 @@ Object {
   "current": Object {
     "dataTestId": undefined,
     "name": "OneUseEffect",
+    "nthChild": undefined,
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
@@ -154,6 +155,7 @@ Object {
   "current": Object {
     "dataTestId": "test-id",
     "name": "OneUseEffect",
+    "nthChild": undefined,
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
@@ -259,6 +261,7 @@ Object {
   "current": Object {
     "dataTestId": undefined,
     "name": "WithDeps",
+    "nthChild": undefined,
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
@@ -334,6 +337,7 @@ Object {
   "current": Object {
     "dataTestId": undefined,
     "name": "WithUmount",
+    "nthChild": undefined,
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },

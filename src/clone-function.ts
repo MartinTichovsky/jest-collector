@@ -1,6 +1,7 @@
 import React from "react";
 import { getCaller } from "./caller";
 import {
+  Children,
   GetUpdatedReactObjectProps,
   ProcessReactResult,
   ReactObject
@@ -9,9 +10,36 @@ import { PrivateCollector } from "./private-collector";
 import { FunctionIdentity } from "./private-collector.types";
 import { mockReactClass } from "./react-class";
 
+const checkTheChildrenSequence = (children: Children[]) => {
+  for (let index = 0; index < children.length; index++) {
+    const leftSideIndex = children.findIndex(
+      (item, itemIndex) =>
+        itemIndex < index && isMatch(children[index][1], item[1])
+    );
+    const rightSideIndex = children.findIndex(
+      (item, itemIndex) =>
+        itemIndex > index && isMatch(children[index][1], item[1])
+    );
+
+    let nthChild: number | undefined = undefined;
+
+    if (leftSideIndex !== -1) {
+      nthChild = children[leftSideIndex][1].nthChild! + 1;
+    } else if (rightSideIndex !== -1) {
+      nthChild = 1;
+    }
+
+    if (nthChild !== undefined) {
+      children[index][0].props["__nthChild__"] = nthChild;
+      children[index][1].nthChild = nthChild;
+    }
+  }
+};
+
 const getDataFromArguments = (args: any) => {
   return {
     dataTestId: args && args[0] ? args[0]?.["data-testid"] : undefined,
+    nthChild: args && args[0] ? args[0]?.["__nthChild__"] : undefined,
     parent: args && args[0] ? args[0]?.["__parent__"] : undefined
   };
 };
@@ -57,6 +85,11 @@ const getUpdatedReactObject = (
   return updatedObject;
 };
 
+const isMatch = (leftSide: FunctionIdentity, rightSide: FunctionIdentity) =>
+  leftSide.dataTestId === rightSide.dataTestId &&
+  leftSide.name === rightSide.name &&
+  leftSide.relativePath === rightSide.relativePath;
+
 /**
  * Process the react object to add needed properties
  * for identification of the component to the props
@@ -100,12 +133,13 @@ const processReactObject = ({
     );
 
     if ((object.props.children as ReactObject).type?.__relativePath__) {
-      children.push(
+      children.push([
+        object.props.children as ReactObject,
         getFunctionIdentity(
           object.props.children as ReactObject,
           privateCollector
         )
-      );
+      ]);
     }
   } else if (
     !object.props.children &&
@@ -117,7 +151,7 @@ const processReactObject = ({
       object,
       parent
     });
-    children.push(getFunctionIdentity(object, privateCollector));
+    children.push([object, getFunctionIdentity(object, privateCollector)]);
   }
   // process all children
   else if (Array.isArray(object.props.children)) {
@@ -126,10 +160,12 @@ const processReactObject = ({
     for (let i = 0; i < object.props.children.length; i++) {
       if (object.props.children[i]?.type?.__relativePath__) {
         // if the children contains __telativePath__ it is a mocked component
-        newChildren.push(
-          getUpdatedReactObject({ object: object.props.children[i], parent })
-        );
-        children.push(getFunctionIdentity(object, privateCollector));
+        const child = getUpdatedReactObject({
+          object: object.props.children[i],
+          parent
+        });
+        newChildren.push(child);
+        children.push([child, getFunctionIdentity(child, privateCollector)]);
       } else if (React.isValidElement(object.props.children[i])) {
         /*
           if the children is a valid react element and does not contain
@@ -198,6 +234,7 @@ export const registerClone = () => {
             dataTestId: data.dataTestId,
             jestFn,
             name: _this.name,
+            nthChild: data.nthChild,
             parent: data.parent,
             relativePath
           });
@@ -216,7 +253,7 @@ export const registerClone = () => {
             Therefore to resolve the correct parent, is must be still as a active function
             in the collector.
           */
-          const children: FunctionIdentity[] = [];
+          const children: Children[] = [];
 
           /*
             the result from the react must be mocked to pass the parent 
@@ -230,6 +267,8 @@ export const registerClone = () => {
             relativePath,
             object: result
           });
+
+          checkTheChildrenSequence(children);
 
           if (result instanceof React.Component) {
             mockReactClass({
@@ -245,10 +284,11 @@ export const registerClone = () => {
 
           privateCollector.functionExecuted({
             parent: registered.parent,
-            children,
+            children: children.map((item) => item[1]),
             dataTestId: registered.dataTestId,
             index: registered.index,
             name: _this.name,
+            nthChild: registered.current.nthChild,
             relativePath,
             result,
             time: t1 - t0
