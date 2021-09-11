@@ -1,3 +1,0 @@
-describe("Collector", () => {
-  test("Default", () => {});
-});

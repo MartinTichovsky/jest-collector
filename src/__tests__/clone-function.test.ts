@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 describe("mockFunction and clone", () => {
-  test("Clone function", () => {
+  test("Clone a function", () => {
     expect(Function.prototype["clone"]).toBeUndefined();
     registerClone();
     expect(Function.prototype["clone"]).not.toBeUndefined();
@@ -45,7 +45,7 @@ describe("mockFunction and clone", () => {
     expect(mockedFunction(5, 6)).toBe(11);
   });
 
-  test("Function with object", () => {
+  test("Function with an object", () => {
     function TestFunction({ a, b }: { a: number; b: number }) {
       return a + b;
     }
@@ -61,7 +61,7 @@ describe("mockFunction and clone", () => {
     expect(new mockedFunction({ a: 1, b: 2 }).result).toBe(3);
   });
 
-  test("describeNativeComponentFrame", () => {
+  test("describeNativeComponentFrame should be skipped", () => {
     function reactCaller(...props: any) {
       function describeNativeComponentFrame(...props: any) {
         return props;

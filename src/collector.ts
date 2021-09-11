@@ -1,5 +1,5 @@
 import { PrivateCollector } from "./private-collector";
-import { ControllerAbstract } from "./private-collector.abstract";
+import { CollectorAbstract } from "./private-collector.abstract";
 import {
   GetStatsOptions,
   Options,
@@ -7,9 +7,16 @@ import {
   Stats
 } from "./private-collector.types";
 
-export class Collector extends ControllerAbstract {
+export class Collector extends CollectorAbstract {
   constructor(private privateCollector: PrivateCollector) {
     super();
+  }
+
+  public enableDataTestIdInheritance() {
+    this.privateCollector.enableDataTestIdInheritance();
+  }
+  public disableDataTestIdInheritance() {
+    this.privateCollector.disableDataTestIdInheritance();
   }
 
   public getCallCount(name: string, options?: Options) {
@@ -21,6 +28,10 @@ export class Collector extends ControllerAbstract {
     options?: Options
   ): RegisteredFunction<unknown> | undefined {
     return this.getDataFor(name, options);
+  }
+
+  public getAllDataFor(name: string, options?: Options) {
+    return this.privateCollector.getAllDataFor(name, options);
   }
 
   public getDataFor(name: string, options?: Options) {
@@ -48,16 +59,17 @@ export class Collector extends ControllerAbstract {
   }
 
   public getStats(): Stats[];
+  public getStats(options?: GetStatsOptions): Stats[];
   public getStats(name: string, options?: GetStatsOptions): Stats | undefined;
   public getStats(
     name?: string,
     options?: GetStatsOptions
   ): Stats[] | Stats | undefined;
   public getStats(
-    name?: string,
+    nameOrOptions?: string | GetStatsOptions,
     options?: GetStatsOptions
   ): Stats[] | Stats | undefined {
-    return this.privateCollector.getStats(name, options);
+    return this.privateCollector.getStats(nameOrOptions, options);
   }
 
   public hasComponent(componentName: string, options?: Options) {

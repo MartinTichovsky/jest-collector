@@ -1,10 +1,11 @@
-import { ControllerAbstract } from "./private-collector.abstract";
+import { CollectorAbstract } from "./private-collector.abstract";
 import {
-  ActiveDataTestId,
+  CallStats,
   FunctionCalled,
   FunctionExecuted,
   GetStatsOptions,
   HookChecker,
+  Identity,
   Options,
   ReactHooks,
   ReactHooksTypes,
@@ -18,74 +19,132 @@ import {
   Stats
 } from "./private-collector.types";
 
-export class PrivateCollector extends ControllerAbstract {
-  private activeDataTestId: ActiveDataTestId[] = [];
+export class PrivateCollector extends CollectorAbstract {
+  private activeFunction: Identity[] = [];
+  private dataTestIdInheritance = false;
   private registeredFunctions: RegisteredFunction[] = [];
+
+  get isDataTestIdInherited() {
+    return this.dataTestIdInheritance;
+  }
+
+  public enableDataTestIdInheritance() {
+    this.dataTestIdInheritance = true;
+  }
+  public disableDataTestIdInheritance() {
+    this.dataTestIdInheritance = false;
+  }
+
+  private findByParent(
+    item: Identity | null,
+    parent: Partial<Identity<unknown>> | null
+  ): boolean {
+    return parent === null
+      ? item === null
+      : item
+      ? (parent.dataTestId ? item.dataTestId === parent.dataTestId : true) &&
+        (parent.name ? item.name === parent.name : true) &&
+        (parent.parent
+          ? this.findByParent(item.parent, parent.parent)
+          : true) &&
+        (parent.relativePath ? item.relativePath === parent.relativePath : true)
+      : false;
+  }
 
   public functionCalled({
     args,
     dataTestId,
     jestFn,
     name,
+    parent,
     relativePath
   }: FunctionCalled) {
-    const active = this.activeDataTestId.find(
-      (item) => item.name === name && item.relativePath === relativePath
-    );
-
-    if (active) {
-      active.dataTestIds.push(dataTestId);
-    } else {
-      this.activeDataTestId.push({
-        dataTestIds: [dataTestId],
-        name,
-        relativePath
-      });
+    if (!parent) {
+      parent = this.activeFunction.length
+        ? this.activeFunction[this.activeFunction.length - 1]
+        : null;
     }
 
-    const registered = this.getDataFor(name, { dataTestId, relativePath });
+    if (dataTestId === undefined && this.isDataTestIdInherited) {
+      dataTestId = parent?.dataTestId;
+    }
+
+    const registered = this.getDataFor(name, {
+      dataTestId,
+      parent: parent || null,
+      relativePath
+    });
 
     if (registered) {
       registered.calls.push({ args, stats: { time: 0 } });
       registered.hooksCounter = {};
       this.unregisterAllHooks(registered);
+      this.activeFunction.push(registered.current);
 
-      return registered.calls.length - 1;
-    } else {
-      this.registeredFunctions.push({
-        calls: [{ args, stats: { time: 0 } }],
+      return {
+        current: registered.current,
         dataTestId,
-        hooksCounter: {},
-        jestFn,
+        index: registered.calls.length - 1,
+        parent
+      };
+    } else {
+      const current: Identity = {
+        parent,
+        dataTestId,
         name,
         relativePath
+      };
+
+      this.activeFunction.push(current);
+
+      this.registeredFunctions.push({
+        calls: [{ args, stats: { time: 0 } }],
+        current,
+        hooksCounter: {},
+        jestFn,
+        parent: parent || null
       });
 
-      return 0;
+      return { current, dataTestId, index: 0, parent };
     }
   }
 
   public functionExecuted({
+    children,
     name,
     dataTestId,
     index,
+    parent,
     relativePath,
     result,
     time
   }: FunctionExecuted) {
-    const active = this.activeDataTestId.find(
-      (item) => item.name === name && item.relativePath === relativePath
-    );
-    const registered = this.getDataFor(name, { dataTestId, relativePath });
+    const registered = this.getDataFor(name, {
+      dataTestId,
+      parent: parent || null,
+      relativePath
+    });
 
-    if (!active || !registered) {
+    if (!registered) {
       return;
     }
 
-    active.dataTestIds = active.dataTestIds.slice(
-      0,
-      active.dataTestIds.length - 1
-    );
+    if (!children.length) {
+      this.activeFunction.pop();
+    } else {
+      this.activeFunction[this.activeFunction.length - 1].children = children;
+    }
+
+    const parentIndex = parent ? this.activeFunction.indexOf(parent) : -1;
+
+    if (parentIndex !== -1 && parent!.children) {
+      parent!.children.shift();
+    }
+
+    if (parentIndex !== -1 && parent!.children && !parent!.children.length) {
+      delete parent!.children;
+      this.activeFunction.splice(parentIndex, 1);
+    }
 
     if (index < registered.calls.length) {
       registered.calls[index].result = result;
@@ -93,12 +152,10 @@ export class PrivateCollector extends ControllerAbstract {
     }
   }
 
-  public getActiveDataTestId(name: string, relativePath: string) {
-    const active = this.activeDataTestId.find(
-      (item) => item.name === name && item.relativePath === relativePath
-    );
-
-    return active?.dataTestIds[active.dataTestIds.length - 1];
+  public getActiveFunction() {
+    return this.activeFunction.length
+      ? this.activeFunction[this.activeFunction.length - 1]
+      : undefined;
   }
 
   public getCallCount(name: string, options?: Options) {
@@ -116,23 +173,26 @@ export class PrivateCollector extends ControllerAbstract {
     return registered ? registered.calls.length : undefined;
   }
 
-  public getDataFor(name: string, options?: Options) {
-    if (options?.relativePath !== undefined) {
-      return this.registeredFunctions.find(
-        (item) =>
-          item.name === name &&
-          item.dataTestId === options?.dataTestId &&
-          item.relativePath === options?.relativePath
-      );
-    }
-
+  public getAllDataFor(name: string, options?: Options) {
     const registered = this.registeredFunctions.filter(
-      (item) => item.name === name && item.dataTestId === options?.dataTestId
+      (item) =>
+        item.current.dataTestId === options?.dataTestId &&
+        item.current.name === name &&
+        (options?.parent === undefined ||
+          this.findByParent(item.parent, options.parent)) &&
+        (options?.relativePath === undefined ||
+          item.current.relativePath === options.relativePath)
     );
 
-    if (registered.length > 1) {
+    return registered;
+  }
+
+  public getDataFor(name: string, options?: Options) {
+    const registered = this.getAllDataFor(name, options);
+
+    if (!options?.ignoreWarning && registered.length > 1) {
       console.warn(
-        `More subjects with name '${name}' and different relative path detected. Use relative path to get exact result.`
+        `More subjects with name '${name}' detected. Use relative path or parent to get exact result.`
       );
     }
 
@@ -202,6 +262,7 @@ export class PrivateCollector extends ControllerAbstract {
       reset: () => void;
     };
   };
+
   public getReactHooks(componentName: string, options?: Options) {
     const registered = this.getDataFor(componentName, options);
 
@@ -283,19 +344,15 @@ export class PrivateCollector extends ControllerAbstract {
     return registered.hooksCounter[hookType]!;
   }
 
-  public getStats(): Stats[];
-  public getStats(name: string, options?: GetStatsOptions): Stats | undefined;
   public getStats(
-    name?: string,
-    options?: GetStatsOptions
-  ): Stats[] | Stats | undefined;
-  public getStats(
-    name?: string,
+    nameOrOptions?: string | GetStatsOptions,
     options?: GetStatsOptions
   ): Stats[] | Stats | undefined {
-    return name === undefined
-      ? this.registeredFunctions.map((registered) => this.makeStats(registered))
-      : this.makeStats(this.getDataFor(name!, options));
+    return nameOrOptions === undefined || typeof nameOrOptions !== "string"
+      ? this.registeredFunctions.map((registered) =>
+          this.makeStats(registered, nameOrOptions)
+        )
+      : this.makeStats(this.getDataFor(nameOrOptions, options), options);
   }
 
   public hasRegistered(name: string, options?: Options) {
@@ -303,17 +360,27 @@ export class PrivateCollector extends ControllerAbstract {
   }
 
   private makeStats<T extends RegisteredFunction | undefined>(
-    registered?: T
+    registered?: T,
+    options?: GetStatsOptions
   ): T extends undefined ? undefined : Stats;
-  private makeStats(registered?: RegisteredFunction): Stats | undefined {
+  private makeStats(
+    registered?: RegisteredFunction,
+    options?: GetStatsOptions
+  ): Stats | undefined {
     if (registered === undefined) {
       return undefined;
     }
 
     return {
-      name: registered.name,
+      calls: registered.calls.map((call) => ({
+        args: undefined,
+        stats: this.resolveStats(call.stats, options)
+      })),
+      dataTestId: registered.current.dataTestId,
+      name: registered.current.name,
       numberOfCalls: registered.calls.length,
-      path: registered.relativePath
+      parent: registered.parent,
+      path: registered.current.relativePath
     };
   }
 
@@ -359,8 +426,10 @@ export class PrivateCollector extends ControllerAbstract {
     props,
     relativePath
   }: RegisterUseWithAction<K>) {
+    const current = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      dataTestId: current?.dataTestId,
+      parent: current?.parent || null,
       relativePath
     });
 
@@ -374,12 +443,13 @@ export class PrivateCollector extends ControllerAbstract {
       registered.hooks![hookType] as ReactHooksTypes[K][]
     )?.find((item) => item._originScope === props._originScope);
 
+    const sequence = this.getSequenceNumber(registered, hookType);
+
     if (existingHook) {
       existingHook.isRegistered = true;
+      registered.hooksCounter[hookType] = sequence + 1;
       return existingHook;
     }
-
-    const sequence = this.getSequenceNumber(registered, hookType);
 
     return this.registerHookProps({
       registered,
@@ -421,8 +491,10 @@ export class PrivateCollector extends ControllerAbstract {
     relativePath
   }: RegisterUseContext) {
     const hookType = "useContext";
+    const current = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      dataTestId: current?.dataTestId,
+      parent: current?.parent || null,
       relativePath
     });
 
@@ -449,11 +521,12 @@ export class PrivateCollector extends ControllerAbstract {
     relativePath
   }: RegisterUseState) {
     const hookType = "useState";
+    const current = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      dataTestId: current?.dataTestId,
+      parent: current?.parent || null,
       relativePath
     });
-
     if (!registered) {
       return props;
     }
@@ -486,8 +559,10 @@ export class PrivateCollector extends ControllerAbstract {
     relativePath
   }: RegisterUseRef) {
     const hookType = "useRef";
+    const current = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: this.getActiveDataTestId(componentName, relativePath),
+      dataTestId: current?.dataTestId,
+      parent: current?.parent || null,
       relativePath
     });
 
@@ -561,7 +636,8 @@ export class PrivateCollector extends ControllerAbstract {
 
   public reset(name?: string, options?: Options) {
     if (!name) {
-      this.activeDataTestId = [];
+      this.activeFunction = [];
+      this.dataTestIdInheritance = false;
       this.registeredFunctions = [];
       return;
     }
@@ -577,6 +653,18 @@ export class PrivateCollector extends ControllerAbstract {
     if (index !== -1) {
       this.registeredFunctions.splice(index, 1);
     }
+  }
+
+  private resolveStats(stats: CallStats, options?: GetStatsOptions) {
+    const result = {
+      ...stats
+    };
+
+    if (options?.excludeTime) {
+      delete result.time;
+    }
+
+    return result;
   }
 
   private unregisterAllHooks(registered: RegisteredFunction) {

@@ -1,11 +1,12 @@
 import { render } from "@testing-library/react";
 import React from "react";
 import { ClassComponent } from "./components/class-components";
+import { ComplexComponent, DirectComponent } from "./components/common";
 import { EmptyWithUseEffectAndUseCallback } from "./components/common.unregistered";
 import { WithDeps as UseCallbackDeps } from "./components/UseCallback";
 import { WithDeps as UseEffectDeps } from "./components/UseEffect";
 import { TestClass } from "./others/class";
-import { recursiveFuntion } from "./others/recursive-function";
+import { recursiveFunction } from "./others/recursive-function";
 
 console.warn = jest.fn();
 const ComponentName = "WithDeps";
@@ -23,12 +24,25 @@ beforeEach(() => {
 
 describe("Commons tests", () => {
   test("Class", () => {
+    // class should not exist
     expect(collector.getDataFor(TestClass.name)).toBeUndefined();
+
+    // create new class
     const testClass = new TestClass();
+
+    // class should exist in the collector
     expect(collector.getDataFor(TestClass.name)).not.toBeUndefined();
+
+    // class should be called once
     expect(collector.getCallCount(TestClass.name)).toBe(1);
+
+    // class should be instance of the origin class
     expect(testClass instanceof TestClass).toBeTruthy();
+
+    // create new class
     new TestClass();
+
+    // class should be called twice
     expect(collector.getCallCount(TestClass.name)).toBe(2);
   });
 
@@ -45,6 +59,19 @@ describe("Commons tests", () => {
     expect(console.warn).toBeCalled();
   });
 
+  test("More components with the same name should not log a warning when it is disabled", () => {
+    render(
+      <>
+        <UseEffectDeps deps={[]} />
+        <UseCallbackDeps deps={[]} />
+      </>
+    );
+
+    expect(console.warn).not.toBeCalled();
+    collector.getDataFor(ComponentName, { ignoreWarning: true });
+    expect(console.warn).not.toBeCalled();
+  });
+
   test("More components with the same name and different test id", () => {
     render(
       <>
@@ -53,7 +80,7 @@ describe("Commons tests", () => {
       </>
     );
 
-    // check if componets exist, it should not log a warning, because functions are called with dataTestId
+    // check if the components exist, it should not log a warning, because functions are called with dataTestId
     expect(console.warn).not.toBeCalled();
     expect(collector.getDataFor(ComponentName)).toBeUndefined();
     expect(
@@ -78,7 +105,7 @@ describe("Commons tests", () => {
     // reset data only for one specific component
     collector.reset(ComponentName, { dataTestId: dataTestId2 });
 
-    // check if component has been deleted
+    // check if the component has been deleted
     expect(
       collector.getDataFor(ComponentName, { dataTestId: dataTestId1 })
     ).not.toBeUndefined();
@@ -94,8 +121,10 @@ describe("Commons tests", () => {
       </>
     );
 
-    // check the component data, it should log a warning because there are
-    // two components with the same name and test id and different path of the script
+    /* 
+      check the component data, it should log a warning because there are
+      two components with the same name and test id and different path of the script
+    */
     expect(console.warn).not.toBeCalled();
     expect(
       collector.getCallCount(ComponentName, { dataTestId: dataTestId1 })
@@ -151,7 +180,7 @@ describe("Commons tests", () => {
       </>
     );
 
-    // check if componets exist, it should not log a warning, because functions are called with relativePath
+    // check if the componets exist, it should not log a warning, because functions are called with relativePath
     expect(console.warn).not.toBeCalled();
     expect(
       collector.getDataFor(ComponentName, {
@@ -245,30 +274,46 @@ describe("Commons tests", () => {
   test("Not mocked component", () => {
     render(<EmptyWithUseEffectAndUseCallback />);
 
+    // it should not exist in the collector
     expect(
       collector.getComponentData(EmptyWithUseEffectAndUseCallback.name)
     ).toBeUndefined();
   });
 
-  test("recursiveFuntion", () => {
-    recursiveFuntion(10, recursiveFuntion);
-    expect(collector.getDataFor(recursiveFuntion.name)).not.toBeUndefined();
+  test("Recursive function", () => {
+    /*
+      call the function several times, the function must be taken from import, if it is not taken 
+      from import and called directly in the function, it will not to be catched by the collector
+    */
+    recursiveFunction(10, recursiveFunction);
 
-    const functionHistory = collector.getDataFor(recursiveFuntion.name);
+    // get data for the function
+    const functionHistory = collector.getDataFor(recursiveFunction.name, {
+      ignoreWarning: true
+    });
 
+    // recursive function must exist
+    expect(functionHistory).not.toBeUndefined();
+
+    // check global call count
     expect(functionHistory?.jestFn).not.toBeUndefined();
     expect(functionHistory?.jestFn).toBeCalledTimes(11);
-    expect(functionHistory?.calls.length).toBe(11);
 
-    for (let i = 0; i < functionHistory!.calls.length; i++) {
-      expect(functionHistory!.calls[i].result).toBe(10 - i);
+    const allFunctionsHistory = collector.getAllDataFor(recursiveFunction.name);
+
+    expect(allFunctionsHistory.length).toBe(11);
+
+    // all calls should have the correct result number
+    for (let i = 0; i < allFunctionsHistory.length; i++) {
+      expect(allFunctionsHistory[i].calls[0].result).toBe(10 - i);
     }
   });
 
   test("Stats", () => {
+    // create class, call function and render some components
     new TestClass();
     render(<ClassComponent />);
-    recursiveFuntion(3, recursiveFuntion);
+    recursiveFunction(3, recursiveFunction);
     render(<EmptyWithUseEffectAndUseCallback />);
     render(
       <>
@@ -277,11 +322,80 @@ describe("Commons tests", () => {
       </>
     );
 
-    expect(collector.getStats()).toMatchSnapshot();
-    expect(collector.getStats(TestClass.name)).toMatchSnapshot();
+    // get statistics for all, exclude time because it is always different
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
+
+    // get statistics for specific component, exclude time because it is always different
     expect(
-      collector.getStats(ComponentName, { dataTestId: dataTestId1 })
+      collector.getStats(TestClass.name, { excludeTime: true })
     ).toMatchSnapshot();
+
+    // get statistics for specific component with test id, exclude time because it is always different
+    expect(
+      collector.getStats(ComponentName, {
+        dataTestId: dataTestId1,
+        excludeTime: true
+      })
+    ).toMatchSnapshot();
+  });
+
+  test("Test id inheritance - direct component", () => {
+    // enable inheritance
+    collector.enableDataTestIdInheritance();
+    render(<DirectComponent data-testid={dataTestId1} />);
+
+    // all children and called functions inside the component must have the dataTestId1
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
+  });
+
+  test("Test id inheritance - inheritance disabled", () => {
+    const snapshotId = "inheritance disabed";
+
+    // render with test id
+    render(<ComplexComponent data-testid={dataTestId1} />);
+
+    // only ComplexComponent should have dataTestId1
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot(
+      snapshotId
+    );
+
+    collector.reset();
+
+    // enable and disable inheritance
+    collector.enableDataTestIdInheritance();
+    collector.disableDataTestIdInheritance();
+
+    // the result must be the same as in previous case
+    render(<ComplexComponent data-testid={dataTestId1} />);
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot(
+      snapshotId
+    );
+  });
+
+  test("Test id inheritance - inheritance enabled - use case 1", () => {
+    // enable inheritance
+    collector.enableDataTestIdInheritance();
+    render(<ComplexComponent data-testid={dataTestId1} />);
+
+    // all children and called functions inside the component must have the dataTestId1
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
+  });
+
+  test("Test id inheritance - inheritance enabled - use case 2", () => {
+    // enable inheritance
+    collector.enableDataTestIdInheritance();
+    render(
+      <ComplexComponent
+        data-testid={dataTestId1}
+        templateDataTestId={dataTestId2}
+      />
+    );
+
+    /*
+      all children except for Template and its children should have dataTestId1
+      Template and its childen should have dataTestId2
+    */
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
   });
 
   test("Unknown function", () => {

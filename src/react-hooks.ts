@@ -12,14 +12,12 @@ export const mockReactHooks = (
   ) {
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
-    const dataTestId = privateCollector.getActiveDataTestId(
-      caller.name,
-      caller.relativePath
-    );
+    const current = privateCollector.getActiveFunction();
 
     if (
       !privateCollector.hasRegistered(caller.name, {
-        dataTestId,
+        dataTestId: current?.dataTestId,
+        parent: current?.parent,
         relativePath: caller.relativePath
       })
     ) {
@@ -72,14 +70,12 @@ export const mockReactHooks = (
   useEffect: (action: () => () => void, deps: any[]) => {
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
-    const dataTestId = privateCollector.getActiveDataTestId(
-      caller.name,
-      caller.relativePath
-    );
+    const current = privateCollector.getActiveFunction();
 
     if (
       !privateCollector.hasRegistered(caller.name, {
-        dataTestId,
+        dataTestId: current?.dataTestId,
+        parent: current?.parent,
         relativePath: caller.relativePath
       })
     ) {
@@ -105,13 +101,13 @@ export const mockReactHooks = (
         return unmount;
       }
 
-      if (register.unmountAction === undefined) {
-        register.unmountAction = jest.fn();
+      if (register.unmount === undefined) {
+        register.unmount = jest.fn();
       }
 
-      register.unmountAction.mockImplementation(unmount);
+      register.unmount.mockImplementation(unmount);
 
-      return register.unmountAction;
+      return register.unmount;
     };
 
     register.deps = deps;
@@ -153,6 +149,7 @@ export const mockReactHooks = (
 
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
+    const current = privateCollector.getActiveFunction();
 
     const register = privateCollector.registerUseState({
       componentName: caller.name,

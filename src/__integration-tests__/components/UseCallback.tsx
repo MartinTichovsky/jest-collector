@@ -1,11 +1,16 @@
 import React from "react";
 
-export const OneUseCallback = ({ callFunc }: { callFunc: () => void }) => {
-  React.useCallback(() => {
+export const OneUseCallback = ({
+  callFunc,
+  children
+}: React.PropsWithChildren<{ callFunc: () => void }>) => {
+  const action = React.useCallback(() => {
     return callFunc;
   }, []);
 
-  return <div></div>;
+  action()();
+
+  return <div>{children}</div>;
 };
 
 export const WithDeps = ({ deps }: { deps: unknown[] }) => {
@@ -16,6 +21,9 @@ export const WithDeps = ({ deps }: { deps: unknown[] }) => {
   return <div></div>;
 };
 
+/**
+ * The component passes setState to be able manually call it and test useCallback
+ */
 export const Renders = ({
   caller
 }: {

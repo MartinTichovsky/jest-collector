@@ -1,33 +1,38 @@
 import React from "react";
 
-export interface ActiveDataTestId {
-  name: string;
-  dataTestIds: (string | undefined)[];
-  relativePath: string;
+export interface Call {
+  args: any;
+  stats: CallStats;
+  result?: any;
 }
 
 export interface CallStats {
-  time: number;
+  time?: number;
 }
 
-export interface FunctionCalled {
+export interface FunctionCalled extends FunctionIdentity {
   args: any;
   jestFn: jest.Mock;
-  dataTestId?: string;
-  name: string;
-  relativePath: string;
+  parent?: Identity | null;
 }
 
-export interface FunctionExecuted {
-  dataTestId?: string;
+export interface FunctionExecuted extends FunctionIdentity {
+  children: FunctionIdentity[];
   index: number;
-  name: string;
-  relativePath: string;
+  parent: Identity | null;
   result: any;
   time: number;
 }
 
-export interface GetStatsOptions extends Options {}
+export interface FunctionIdentity {
+  dataTestId?: string;
+  name: string;
+  relativePath: string;
+}
+
+export interface GetStatsOptions extends Options {
+  excludeTime?: boolean;
+}
 
 export type HooksCounter = { [key in keyof ReactHooksTypes]?: number };
 
@@ -49,7 +54,7 @@ export interface HookContext {
 
 export type HookEffect<T = undefined> = HookWithAction<T> & {
   deps: any[];
-  unmountAction?: jest.Mock;
+  unmount?: jest.Mock;
 };
 
 export interface HookRef {
@@ -74,8 +79,14 @@ export type HookWithAction<T = undefined> = {
   action: jest.Mock;
 } & (T extends undefined ? { _originScope: string } : {});
 
+export type Identity<T = undefined> = FunctionIdentity & {
+  parent: (T extends undefined ? Identity : Partial<Identity>) | null;
+} & (T extends undefined ? { children?: FunctionIdentity[] } : {});
+
 export interface Options {
   dataTestId?: string;
+  ignoreWarning?: true;
+  parent?: Partial<Identity<unknown>> | null;
   relativePath?: string;
 }
 
@@ -112,13 +123,12 @@ export interface RegisterReactClassImplementation {
 }
 
 export type RegisteredFunction<T = undefined> = {
-  calls: { args: any; result?: any; stats: CallStats }[];
-  dataTestId?: string;
+  calls: Call[];
+  current: Identity;
   hooks?: ReactHooks<T>;
   jestFn: jest.Mock;
   lifecycle?: ReactClassLifecycle;
-  name: string;
-  relativePath: string;
+  parent: Identity | null;
 } & (T extends undefined ? { hooksCounter: HooksCounter } : {});
 
 export interface RegisterHook {
@@ -153,8 +163,10 @@ export interface RegisterUseWithAction<K extends "useEffect" | "useCallback">
 }
 
 export interface Stats {
+  calls: Call[];
   dataTestId?: string;
   name: string;
   numberOfCalls: number;
+  parent: Identity | null;
   path: string;
 }

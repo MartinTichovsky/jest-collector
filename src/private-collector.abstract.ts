@@ -8,11 +8,19 @@ import {
   Stats
 } from "./private-collector.types";
 
-export abstract class ControllerAbstract {
+export abstract class CollectorAbstract {
+  public abstract enableDataTestIdInheritance(): void;
+  public abstract disableDataTestIdInheritance(): void;
+
   public abstract getCallCount(
     name: string,
     options?: Options
   ): number | undefined;
+
+  public abstract getAllDataFor(
+    name: string,
+    options?: Options
+  ): RegisteredFunction<unknown>[] | undefined;
 
   public abstract getDataFor(
     name: string,
@@ -55,7 +63,7 @@ export abstract class ControllerAbstract {
   ): boolean;
 
   public abstract getStats(
-    name?: string,
+    nameOrOptions?: string | GetStatsOptions,
     options?: GetStatsOptions
   ): Stats[] | Stats | undefined;
 

@@ -17,6 +17,11 @@ export const DynamicState = ({
   return <div>State {state}</div>;
 };
 
+/**
+ * The component creates two states and through useCallback and
+ * the caller provide a possibility to manually change the second
+ * state
+ */
 export const MultipleStates = ({
   caller
 }: {
@@ -35,4 +40,15 @@ export const MultipleStates = ({
   caller.action = action;
 
   return <div>{text}</div>;
+};
+
+export const MultipeCalls = () => {
+  const [state1, setState1] = React.useState(0);
+  const [state2, setState2] = React.useState(0);
+  const onClick = () => {
+    setState1(state1 + 1);
+    setState2(state2 + 1);
+  };
+
+  return <button onClick={onClick}>Content {state1}</button>;
 };

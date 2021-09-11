@@ -1,6 +1,6 @@
-export function recursiveFuntion(
+export function recursiveFunction(
   callCount: number,
-  execute: typeof recursiveFuntion
+  execute: typeof recursiveFunction
 ) {
   if (callCount > 0) {
     execute(callCount - 1, execute);

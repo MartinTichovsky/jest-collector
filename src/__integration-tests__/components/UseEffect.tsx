@@ -1,5 +1,5 @@
 import React from "react";
-import { MoreUseEffectsInner, TemplateInner } from "./UseEffect.Inner";
+import { MultipleUseEffectsInner, TemplateInner } from "./UseEffect.Inner";
 
 export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
   React.useEffect(() => {
@@ -9,7 +9,14 @@ export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
   return <div>Some content</div>;
 };
 
-export const MoreUseEffects = ({
+/**
+ * The component contains multiple child div elements in a tree to force the React
+ * to create multiple nested children. The component has one setState which is
+ * passed through the caller to be able manually set the state and force the whole
+ * component re-render. MultipleUseEffectsInner component must be imported, otherwise
+ * the collector will not catch the function (component) calls.
+ */
+export const MultipleUseEffects = ({
   caller,
   callFunc1,
   callFunc2,
@@ -18,25 +25,29 @@ export const MoreUseEffects = ({
 }: {
   caller: {
     setStateInner?: React.Dispatch<React.SetStateAction<number>>;
-    setStateParent?: React.Dispatch<React.SetStateAction<number>>;
+    setStateParent?: React.Dispatch<React.SetStateAction<undefined | boolean>>;
   };
   callFunc1: () => void;
   callFunc2: () => void;
   callFunc3: () => void;
   secondEffect: boolean;
 }) => {
-  const [, setState] = React.useState(0);
+  const [, setState] = React.useState<boolean | undefined>(undefined);
   caller.setStateParent = setState;
 
   return (
     <div>
-      <MoreUseEffectsInner
-        caller={caller}
-        callFunc1={callFunc1}
-        callFunc2={callFunc2}
-        callFunc3={callFunc3}
-        secondEffect={secondEffect}
-      />
+      <div>
+        <div>
+          <MultipleUseEffectsInner
+            caller={caller}
+            callFunc1={callFunc1}
+            callFunc2={callFunc2}
+            callFunc3={callFunc3}
+            secondEffect={secondEffect}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -59,6 +70,10 @@ export const WithDeps = ({ deps }: { deps: unknown[] }) => {
   return <div>Registered with deps</div>;
 };
 
+/**
+ * The component passes the setState to the caller to be able
+ * manually set the state and re-render the component
+ */
 export const Renders = ({
   caller
 }: {
@@ -77,19 +92,24 @@ export const Renders = ({
   return <div>Registered renders {state}</div>;
 };
 
+/**
+ * The component contains direct TemplateInner component. It should
+ * create different react object with no children. The component
+ * passes the setState to the caller to be able manually set the state.
+ */
 export const Template = ({
   caller
 }: {
   caller: {
     action: (text: string) => void;
-    setState?: React.Dispatch<
+    templateSetState?: React.Dispatch<
       React.SetStateAction<{ num: number; text: string }>
     >;
     unmount: (num: number) => void;
   };
 }) => {
   const [state, setState] = React.useState({ num: 0, text: "" });
-  caller.setState = setState;
+  caller.templateSetState = setState;
 
   return (
     <TemplateInner

@@ -167,7 +167,7 @@ describe("jestCollector", () => {
       expect(_mock).not.toBeCalled();
     });
 
-    test("Should call mocks", () => {
+    test("It should call mocks", () => {
       _getTestPath.mockReturnValue("/Some.test.ts");
       expect(() =>
         jestCollector({ exclude: ["Another.test.ts"], roots: ["src"] })

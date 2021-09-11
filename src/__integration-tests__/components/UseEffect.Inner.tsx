@@ -1,5 +1,10 @@
 import React from "react";
 
+/**
+ * The inner cmponent used by Template component will call
+ * the action in the useEffect. The useEffect is called when
+ * the passed text changes.
+ */
 export const TemplateInner = ({
   action,
   num,
@@ -22,7 +27,12 @@ export const TemplateInner = ({
   return <div>Registered template inner {`${text}${num}`}</div>;
 };
 
-export const MoreUseEffectsInner = ({
+/**
+ * The component has three useEffects. The second one is created based
+ * on the property `secondEffect`. The component is passing the setState
+ * through the caller to be able manually set the state.
+ */
+export const MultipleUseEffectsInner = ({
   caller,
   callFunc1,
   callFunc2,
@@ -31,14 +41,13 @@ export const MoreUseEffectsInner = ({
 }: {
   caller: {
     setStateInner?: React.Dispatch<React.SetStateAction<number>>;
-    setStateParent?: React.Dispatch<React.SetStateAction<number>>;
   };
   callFunc1: () => void;
   callFunc2: () => void;
   callFunc3: () => void;
   secondEffect: boolean;
 }) => {
-  const [, setState] = React.useState(0);
+  const [state, setState] = React.useState(0);
   caller.setStateInner = setState;
 
   React.useEffect(() => {
@@ -55,5 +64,5 @@ export const MoreUseEffectsInner = ({
     callFunc3();
   }, [callFunc3]);
 
-  return <div>More effects</div>;
+  return <div>More effects {state}</div>;
 };

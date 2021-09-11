@@ -46,7 +46,12 @@ Object {
       </div>,
     },
   ],
-  "dataTestId": undefined,
+  "current": Object {
+    "dataTestId": undefined,
+    "name": "OneUseEffect",
+    "parent": null,
+    "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  },
   "hooks": Object {
     "useEffect": Array [
       Object {
@@ -95,8 +100,7 @@ Object {
       },
     ],
   },
-  "name": "OneUseEffect",
-  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  "parent": null,
 }
 `;
 
@@ -147,7 +151,12 @@ Object {
       </div>,
     },
   ],
-  "dataTestId": "test-id",
+  "current": Object {
+    "dataTestId": "test-id",
+    "name": "OneUseEffect",
+    "parent": null,
+    "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  },
   "hooks": Object {
     "useEffect": Array [
       Object {
@@ -221,8 +230,7 @@ Object {
       },
     ],
   },
-  "name": "OneUseEffect",
-  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  "parent": null,
 }
 `;
 
@@ -248,7 +256,12 @@ Object {
       </div>,
     },
   ],
-  "dataTestId": undefined,
+  "current": Object {
+    "dataTestId": undefined,
+    "name": "WithDeps",
+    "parent": null,
+    "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  },
   "hooks": Object {
     "useEffect": Array [
       Object {
@@ -301,8 +314,7 @@ Object {
       },
     ],
   },
-  "name": "WithDeps",
-  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  "parent": null,
 }
 `;
 
@@ -319,7 +331,12 @@ Object {
       </div>,
     },
   ],
-  "dataTestId": undefined,
+  "current": Object {
+    "dataTestId": undefined,
+    "name": "WithUmount",
+    "parent": null,
+    "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  },
   "hooks": Object {
     "useEffect": Array [
       Object {
@@ -335,7 +352,7 @@ Object {
           ],
         },
         "deps": Array [],
-        "unmountAction": [MockFunction],
+        "unmount": [MockFunction],
       },
     ],
   },
@@ -357,7 +374,6 @@ Object {
       },
     ],
   },
-  "name": "WithUmount",
-  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+  "parent": null,
 }
 `;
