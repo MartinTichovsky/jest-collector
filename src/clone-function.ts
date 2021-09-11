@@ -6,6 +6,13 @@ import {
   ProcessReactResult,
   ReactObject
 } from "./clone-function.types";
+import {
+  DATA_TEST_ID,
+  __dataTestId__,
+  __nthChild__,
+  __parent__,
+  __relativePath__
+} from "./constants";
 import { PrivateCollector } from "./private-collector";
 import { FunctionIdentity } from "./private-collector.types";
 import { mockReactClass } from "./react-class";
@@ -30,7 +37,7 @@ const checkTheChildrenSequence = (children: Children[]) => {
     }
 
     if (nthChild !== undefined) {
-      children[index][0].props["__nthChild__"] = nthChild;
+      children[index][0].props[__nthChild__] = nthChild;
       children[index][1].nthChild = nthChild;
     }
   }
@@ -38,23 +45,26 @@ const checkTheChildrenSequence = (children: Children[]) => {
 
 const getDataFromArguments = (args: any) => {
   return {
-    dataTestId: args && args[0] ? args[0]?.["data-testid"] : undefined,
-    nthChild: args && args[0] ? args[0]?.["__nthChild__"] : undefined,
-    parent: args && args[0] ? args[0]?.["__parent__"] : undefined
+    dataTestId:
+      args && args[0]
+        ? args[0]?.[DATA_TEST_ID] || args[0]?.[__dataTestId__]
+        : undefined,
+    nthChild: args && args[0] ? args[0]?.[__nthChild__] : undefined,
+    parent: args && args[0] ? args[0]?.[__parent__] : undefined
   };
 };
 
 const getFunctionIdentity = (
   object: ReactObject,
-  privateCollector: PrivateCollector
+  isDataTestIdInherited: boolean,
+  dataTestId?: string
 ) => ({
   dataTestId:
-    object.props?.["data-testid"] ||
-    (privateCollector.isDataTestIdInherited
-      ? privateCollector.getActiveFunction()?.dataTestId
-      : undefined),
+    object.props?.[DATA_TEST_ID] ||
+    object.props?.[__dataTestId__] ||
+    (isDataTestIdInherited ? dataTestId : undefined),
   name: object.type!.name,
-  relativePath: object.type!.__relativePath__!
+  relativePath: object.type![__relativePath__]!
 });
 
 /**
@@ -62,7 +72,7 @@ const getFunctionIdentity = (
  * the needed properties
  */
 const getUpdatedReactObject = (
-  { children, object, parent }: GetUpdatedReactObjectProps,
+  { children, dataTestId, object, parent }: GetUpdatedReactObjectProps,
   defineParent: boolean = true
 ): ReactObject => {
   const objectDescriptors = Object.getOwnPropertyDescriptors(object);
@@ -74,7 +84,9 @@ const getUpdatedReactObject = (
       value: {
         ...objectDescriptors.props.value,
         ...(children ? { children } : {}),
-        ...(defineParent ? { __parent__: parent } : {})
+        ...(defineParent
+          ? { [__parent__]: parent, [__dataTestId__]: dataTestId }
+          : {})
       }
     }
   };
@@ -96,6 +108,8 @@ const isMatch = (leftSide: FunctionIdentity, rightSide: FunctionIdentity) =>
  */
 const processReactObject = ({
   children,
+  dataTestId,
+  isDataTestIdInherited,
   name,
   object,
   parent,
@@ -114,9 +128,20 @@ const processReactObject = ({
     object = getUpdatedReactObject(
       {
         children: getUpdatedReactObject({
-          object: !object.props.children.type.__relativePath__
+          dataTestId: isDataTestIdInherited
+            ? object.props[DATA_TEST_ID] ||
+              object.type[__dataTestId__] ||
+              dataTestId
+            : undefined,
+          object: !object.props.children.type[__relativePath__]
             ? processReactObject({
                 children,
+                dataTestId: isDataTestIdInherited
+                  ? object.props[DATA_TEST_ID] ||
+                    object.type[__dataTestId__] ||
+                    dataTestId
+                  : undefined,
+                isDataTestIdInherited,
                 name,
                 parent,
                 privateCollector,
@@ -126,46 +151,86 @@ const processReactObject = ({
             : object.props.children,
           parent
         }),
+        dataTestId: isDataTestIdInherited
+          ? object.props[DATA_TEST_ID] ||
+            object.type?.[__dataTestId__] ||
+            dataTestId
+          : undefined,
         object: object,
         parent
       },
       false
     );
 
-    if ((object.props.children as ReactObject).type?.__relativePath__) {
+    if ((object.props.children as ReactObject).type?.[__relativePath__]) {
       children.push([
         object.props.children as ReactObject,
         getFunctionIdentity(
           object.props.children as ReactObject,
-          privateCollector
+          isDataTestIdInherited,
+          object.props[DATA_TEST_ID] ||
+            object.type?.[__dataTestId__] ||
+            dataTestId
         )
       ]);
     }
   } else if (
     !object.props.children &&
-    object.type.__relativePath__ &&
-    (object.type.name !== name || object.type.__relativePath__ !== relativePath)
+    object.type[__relativePath__] &&
+    (object.type.name !== name ||
+      object.type[__relativePath__] !== relativePath)
   ) {
     // if the children does not exist and the react object is different from expected
     object = getUpdatedReactObject({
       object,
+      dataTestId: isDataTestIdInherited
+        ? object.props[DATA_TEST_ID] ||
+          object.type[__dataTestId__] ||
+          dataTestId
+        : undefined,
       parent
     });
-    children.push([object, getFunctionIdentity(object, privateCollector)]);
+
+    children.push([
+      object,
+      getFunctionIdentity(
+        object,
+        isDataTestIdInherited,
+        object.props[DATA_TEST_ID] ||
+          object.type?.[__dataTestId__] ||
+          dataTestId
+      )
+    ]);
   }
   // process all children
   else if (Array.isArray(object.props.children)) {
     const newChildren: ReactObject[] = [];
 
     for (let i = 0; i < object.props.children.length; i++) {
-      if (object.props.children[i]?.type?.__relativePath__) {
+      if (object.props.children[i]?.type?.[__relativePath__]) {
         // if the children contains __telativePath__ it is a mocked component
         const child = getUpdatedReactObject({
+          dataTestId: isDataTestIdInherited
+            ? object.props.children[i].props[DATA_TEST_ID] ||
+              object.props.children[i].type?.[__dataTestId__] ||
+              dataTestId
+            : undefined,
           object: object.props.children[i],
           parent
         });
+
         newChildren.push(child);
-        children.push([child, getFunctionIdentity(child, privateCollector)]);
+
+        children.push([
+          child,
+          getFunctionIdentity(
+            child,
+            isDataTestIdInherited,
+            child.props[DATA_TEST_ID] ||
+              child.type?.[__dataTestId__] ||
+              dataTestId
+          )
+        ]);
       } else if (React.isValidElement(object.props.children[i])) {
         /*
           if the children is a valid react element and does not contain
@@ -175,6 +240,12 @@ const processReactObject = ({
         newChildren.push(
           processReactObject({
             children,
+            dataTestId: isDataTestIdInherited
+              ? object.props.children[i].props[DATA_TEST_ID] ||
+                object.props.children[i].type?.[__dataTestId__] ||
+                dataTestId
+              : undefined,
+            isDataTestIdInherited,
             name,
             parent,
             privateCollector,
@@ -191,6 +262,11 @@ const processReactObject = ({
     object = getUpdatedReactObject(
       {
         children: newChildren,
+        dataTestId: isDataTestIdInherited
+          ? object.props[DATA_TEST_ID] ||
+            object.type[__dataTestId__] ||
+            dataTestId
+          : undefined,
         object: object,
         parent
       },
@@ -261,6 +337,8 @@ export const registerClone = () => {
           */
           result = processReactObject({
             children,
+            dataTestId: registered.current.dataTestId,
+            isDataTestIdInherited: privateCollector.isDataTestIdInherited,
             name: _this.name,
             privateCollector,
             parent: registered.current,
@@ -268,12 +346,16 @@ export const registerClone = () => {
             object: result
           });
 
+          /*
+            When the components are rendered parallelly, there must be an easy
+            way how to identify them. Therefore is created `nthChild` property.
+          */
           checkTheChildrenSequence(children);
 
           if (result instanceof React.Component) {
             mockReactClass({
               component: _this,
-              dataTestId: registered.dataTestId,
+              dataTestId: registered.current.dataTestId,
               componentName: _this.name,
               privateCollector,
               relativePath
@@ -285,7 +367,7 @@ export const registerClone = () => {
           privateCollector.functionExecuted({
             parent: registered.parent,
             children: children.map((item) => item[1]),
-            dataTestId: registered.dataTestId,
+            dataTestId: registered.current.dataTestId,
             index: registered.index,
             name: _this.name,
             nthChild: registered.current.nthChild,
@@ -302,7 +384,7 @@ export const registerClone = () => {
         value: _this.name
       });
 
-      Object.defineProperty(_overload[_this.name], "__relativePath__", {
+      Object.defineProperty(_overload[_this.name], __relativePath__, {
         value: relativePath
       });
 

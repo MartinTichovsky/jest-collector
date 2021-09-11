@@ -7,12 +7,15 @@ import {
 
 export interface GetUpdatedReactObjectProps {
   children?: ReactObject[] | ReactObject;
+  dataTestId?: string;
   object: ReactObject;
   parent?: Identity;
 }
 
 export interface ProcessReactResult {
   children: Children[];
+  dataTestId?: string;
+  isDataTestIdInherited: boolean;
   name: string;
   object: ReactObject;
   parent?: Identity;

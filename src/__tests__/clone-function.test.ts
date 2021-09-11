@@ -1,4 +1,5 @@
 import { mockFunction, registerClone } from "../clone-function";
+import { DATA_TEST_ID } from "../constants";
 import { PrivateCollector } from "../private-collector";
 
 const collector = new PrivateCollector();
@@ -75,10 +76,10 @@ describe("mockFunction and clone", () => {
 
   test("Passing data-testid", () => {
     function TestFunction(props: any) {
-      return props?.["data-testid"];
+      return props?.[DATA_TEST_ID];
     }
     const mockedFunction = mockFunction(TestFunction, collector, __filename);
-    expect(mockedFunction({ "data-testid": "test-id" })).toBe("test-id");
+    expect(mockedFunction({ [DATA_TEST_ID]: "test-id" })).toBe("test-id");
     expect(mockedFunction()).toBeUndefined();
     expect(mockedFunction({})).toBeUndefined();
   });

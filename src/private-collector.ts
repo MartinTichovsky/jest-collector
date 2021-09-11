@@ -85,7 +85,6 @@ export class PrivateCollector extends CollectorAbstract {
 
       return {
         current: registered.current,
-        dataTestId,
         index: registered.calls.length - 1,
         parent
       };
@@ -108,7 +107,7 @@ export class PrivateCollector extends CollectorAbstract {
         parent: parent || null
       });
 
-      return { current, dataTestId, index: 0, parent };
+      return { current, index: 0, parent };
     }
   }
 

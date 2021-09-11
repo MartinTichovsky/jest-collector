@@ -462,18 +462,27 @@ describe("Commons tests", () => {
     expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
   });
 
-  // test("Test id inheritance should be passed", () => {
-  //   render(
-  //     <>
-  //       <div data-testid={dataTestId1}>
-  //         <SimpleComponent />
-  //       </div>
-  //       <div data-testid={dataTestId2}>
-  //         <SimpleComponent />
-  //       </div>
-  //     </>
-  //   );
-  // });
+  test("Test id inheritance should be passed from not mocked elements", () => {
+    collector.enableDataTestIdInheritance();
+
+    render(
+      <ComponentWithChildren>
+        <div data-testid={dataTestId1}>
+          <SimpleComponent />
+        </div>
+        <div data-testid={dataTestId2}>
+          <SimpleComponent />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).not.toBeUndefined();
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId2 })
+    ).not.toBeUndefined();
+  });
 
   test("Unknown function", () => {
     // everything must return udnefined
