@@ -429,7 +429,7 @@ describe("useEffect", () => {
       .getReactHooks(TemplateInner.name)
       .getHooksByType("useEffect");
 
-    // check on the first render
+    // check the first render
     // the correct text should be in the document
     expect(screen.getByText(getExpectedText("", 0))).toBeTruthy();
     // the component should be called once
@@ -448,7 +448,7 @@ describe("useEffect", () => {
       caller.templateSetState({ num: 1, text: "" });
     });
 
-    // check on the second render
+    // check the second render
     // the correct text should be in the document
     expect(screen.getByText(getExpectedText("", 1))).toBeTruthy();
     // the component should be called twice
@@ -467,7 +467,7 @@ describe("useEffect", () => {
       caller.templateSetState({ num: 1, text: "text" });
     });
 
-    // check on the second render
+    // check the second render
     // the correct text should be in the document
     expect(screen.getByText(getExpectedText("text", 1))).toBeTruthy();
     // the component should be three times
@@ -487,7 +487,7 @@ describe("useEffect", () => {
       caller.templateSetState({ num: 5, text: "text" });
     });
 
-    // check on the fourth render
+    // check the fourth render
     // the correct text should be in the document
     expect(screen.getByText(getExpectedText("text", 5))).toBeTruthy();
     // the component should be four times
@@ -504,7 +504,7 @@ describe("useEffect", () => {
 
     unmount();
 
-    // check on the unmount
+    // chec the unmount
     // the text should not be in the document
     expect(() => screen.getByText(getExpectedText("text", 5))).toThrowError();
     // the component should be four times

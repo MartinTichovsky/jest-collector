@@ -9,7 +9,9 @@ import {
 } from "./private-collector.types";
 
 export abstract class CollectorAbstract {
-  public abstract enableDataTestIdInheritance(): void;
+  public abstract enableDataTestIdInheritance(
+    excludeNotMockedElements?: boolean
+  ): void;
   public abstract disableDataTestIdInheritance(): void;
 
   public abstract getCallCount(

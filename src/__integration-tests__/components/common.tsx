@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { recursiveFunction } from "../others/recursive-function";
 import { OneUseCallback } from "./UseCallback";
 import { Template } from "./UseEffect";
@@ -27,13 +27,15 @@ export const ComplexComponent = ({
   };
 
   // after render, set state in the Template, it is assigned inside Template
-  useEffect(() => {
+  React.useEffect(() => {
     caller.templateSetState({ num: 5, text: "Some text" });
   }, []);
 
   return (
     <>
-      <Template data-testid={templateDataTestId} caller={caller} />
+      <div>
+        <Template data-testid={templateDataTestId} caller={caller} />
+      </div>
       <OneUseRef />
       <OneUseCallback callFunc={caller.action}>
         <OneUseState />
@@ -63,7 +65,7 @@ export const DirectComponent = ({
   };
 
   // after render, set state in the Template, it is assigned inside Template
-  useEffect(() => {
+  React.useEffect(() => {
     caller.templateSetState({ num: 5, text: "Some text" });
   }, []);
 

@@ -5,6 +5,13 @@ import {
   NthChild
 } from "./private-collector.types";
 
+export interface GetTrueDataTestIdProps {
+  dataTestId?: string;
+  isDataTestIdInherited: boolean;
+  isNotMockedElementExcluded: boolean;
+  object: ReactObject;
+}
+
 export interface GetUpdatedReactObjectProps {
   children?: ReactObject[] | ReactObject;
   dataTestId?: string;
@@ -16,6 +23,7 @@ export interface ProcessReactResult {
   children: Children[];
   dataTestId?: string;
   isDataTestIdInherited: boolean;
+  isNotMockedElementExcluded: boolean;
   name: string;
   object: ReactObject;
   parent?: Identity;

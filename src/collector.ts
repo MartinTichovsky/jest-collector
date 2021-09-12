@@ -12,8 +12,8 @@ export class Collector extends CollectorAbstract {
     super();
   }
 
-  public enableDataTestIdInheritance() {
-    this.privateCollector.enableDataTestIdInheritance();
+  public enableDataTestIdInheritance(excludeNotMockedElements?: boolean) {
+    this.privateCollector.enableDataTestIdInheritance(excludeNotMockedElements);
   }
   public disableDataTestIdInheritance() {
     this.privateCollector.disableDataTestIdInheritance();

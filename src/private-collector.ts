@@ -22,14 +22,26 @@ import {
 export class PrivateCollector extends CollectorAbstract {
   private activeFunction: Identity[] = [];
   private dataTestIdInheritance = false;
+  private excludeNotMockedElements?: boolean = undefined;
   private registeredFunctions: RegisteredFunction[] = [];
+
+  get isNotMockedElementExcluded() {
+    return this.excludeNotMockedElements === true;
+  }
 
   get isDataTestIdInherited() {
     return this.dataTestIdInheritance;
   }
 
-  public enableDataTestIdInheritance() {
+  private clearUsecontextHooks = (registered: RegisteredFunction) => {
+    if (registered.hooks?.useContext) {
+      registered.hooks.useContext = [];
+    }
+  };
+
+  public enableDataTestIdInheritance(excludeNotMockedElements?: boolean) {
     this.dataTestIdInheritance = true;
+    this.excludeNotMockedElements = excludeNotMockedElements;
   }
   public disableDataTestIdInheritance() {
     this.dataTestIdInheritance = false;
@@ -79,6 +91,7 @@ export class PrivateCollector extends CollectorAbstract {
 
     if (registered) {
       registered.calls.push({ args, stats: { time: 0 } });
+      this.clearUsecontextHooks(registered);
       registered.hooksCounter = {};
       this.unregisterAllHooks(registered);
       this.activeFunction.push(registered.current);
@@ -510,15 +523,7 @@ export class PrivateCollector extends CollectorAbstract {
 
     this.registerHook(registered, hookType);
 
-    const sequence = this.getSequenceNumber(registered, hookType);
-
-    this.registerHookProps({
-      registered,
-      hooks: registered.hooks![hookType]!,
-      hookType,
-      props,
-      sequence
-    });
+    registered.hooks!.useContext!.push(props);
   }
 
   public registerUseState({

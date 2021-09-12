@@ -406,6 +406,7 @@ describe("Commons tests", () => {
   test("Test id inheritance - direct component", () => {
     // enable inheritance
     collector.enableDataTestIdInheritance();
+
     render(<DirectComponent data-testid={dataTestId1} />);
 
     // all children and called functions inside the component must have the dataTestId1
@@ -439,6 +440,7 @@ describe("Commons tests", () => {
   test("Test id inheritance - inheritance enabled - use case 1", () => {
     // enable inheritance
     collector.enableDataTestIdInheritance();
+
     render(<ComplexComponent data-testid={dataTestId1} />);
 
     // all children and called functions inside the component must have the dataTestId1
@@ -448,6 +450,7 @@ describe("Commons tests", () => {
   test("Test id inheritance - inheritance enabled - use case 2", () => {
     // enable inheritance
     collector.enableDataTestIdInheritance();
+
     render(
       <ComplexComponent
         data-testid={dataTestId1}
@@ -462,7 +465,21 @@ describe("Commons tests", () => {
     expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
   });
 
-  test("Test id inheritance should be passed from not mocked elements", () => {
+  test("Test id inheritance - inheritance enabled - use case 3", () => {
+    collector.enableDataTestIdInheritance();
+
+    render(
+      <ComponentWithChildren data-testid={dataTestId1}>
+        <SimpleComponent />
+      </ComponentWithChildren>
+    );
+
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).not.toBeUndefined();
+  });
+
+  test("Test id inheritance should be passed from not mocked elements - use case 1", () => {
     collector.enableDataTestIdInheritance();
 
     render(
@@ -471,6 +488,86 @@ describe("Commons tests", () => {
           <SimpleComponent />
         </div>
         <div data-testid={dataTestId2}>
+          <SimpleComponent />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).not.toBeUndefined();
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId2 })
+    ).not.toBeUndefined();
+  });
+
+  // test("Test id inheritance should be passed from not mocked elements - use case 2", () => {
+  //   collector.enableDataTestIdInheritance();
+
+  //   render(
+  //     <ComponentWithChildren>
+  //       <ElementWithSimpleComponent data-testid={dataTestId1} />
+  //     </ComponentWithChildren>
+  //   );
+
+  //   expect(
+  //     collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+  //   ).not.toBeUndefined();
+  // });
+
+  test("Test id inheritance - exclude data test id from not mocked elements - use case 1", () => {
+    collector.enableDataTestIdInheritance(true);
+
+    render(
+      <ComponentWithChildren>
+        <div data-testid={dataTestId1}>
+          <SimpleComponent />
+        </div>
+        <div data-testid={dataTestId2}>
+          <SimpleComponent />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).toBeUndefined();
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId2 })
+    ).toBeUndefined();
+  });
+
+  test("Test id inheritance - exclude data test id from not mocked elements - use case 2", () => {
+    collector.enableDataTestIdInheritance(true);
+
+    render(
+      <ComponentWithChildren data-testid={dataTestId1}>
+        <div data-testid="some-id-1">
+          <SimpleComponent />
+        </div>
+        <div data-testid="some-id-2">
+          <SimpleComponent />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+        .length
+    ).toBe(2);
+  });
+
+  test("Test id inheritance - exclude data test id from not mocked elements - use case 3", () => {
+    collector.enableDataTestIdInheritance(true);
+
+    render(
+      <ComponentWithChildren data-testid={dataTestId1}>
+        <div data-testid="some-id-1">
+          <ComponentWithChildren data-testid={dataTestId2}>
+            <SimpleComponent />
+          </ComponentWithChildren>
+        </div>
+        <div data-testid="some-id-2">
           <SimpleComponent />
         </div>
       </ComponentWithChildren>

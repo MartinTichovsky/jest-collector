@@ -1,4 +1,5 @@
 import React from "react";
+import { SimpleComponent } from "./common";
 
 export const EmptyWithUseEffectAndUseCallback = () => {
   React.useEffect(() => {
@@ -10,4 +11,17 @@ export const EmptyWithUseEffectAndUseCallback = () => {
   }, []);
 
   return <></>;
+};
+
+export const ElementWithSimpleComponent = ({ text }: { text?: string }) => {
+  React.useEffect(() => {
+    //
+  }, []);
+
+  return (
+    <>
+      <SimpleComponent text={text} />
+      <SimpleComponent text={text} />
+    </>
+  );
 };
