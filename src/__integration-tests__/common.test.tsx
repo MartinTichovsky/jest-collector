@@ -650,6 +650,41 @@ describe("Commons tests", () => {
     ).not.toBeUndefined();
   });
 
+  test("Test id inheritance - exclude data test id from not mocked elements - use case 4", () => {
+    collector.enableDataTestIdInheritance(true);
+
+    render(
+      <ComponentWithChildren>
+        <div>
+          <UnregisteredComponentWithSimpleComponent data-testid={dataTestId1} />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).toBeUndefined();
+  });
+
+  test("Test id inheritance - exclude data test id from not mocked elements - use case 5", () => {
+    collector.enableDataTestIdInheritance(true);
+
+    render(
+      <ComponentWithChildren data-testid={dataTestId1}>
+        <div>
+          <UnregisteredComponentWithSimpleComponent data-testid={dataTestId2} />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).not.toBeUndefined();
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId2 })
+    ).toBeUndefined();
+  });
+
   test("Unknown function", () => {
     // everything must return udnefined
     expect(collector.getCallCount("SomeComponent")).toBeUndefined();

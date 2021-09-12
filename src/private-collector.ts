@@ -69,6 +69,7 @@ export class PrivateCollector extends CollectorAbstract {
     jestFn,
     name,
     nthChild,
+    originMock,
     parent,
     relativePath
   }: FunctionCalled) {
@@ -78,7 +79,11 @@ export class PrivateCollector extends CollectorAbstract {
         : null;
     }
 
-    if (dataTestId === undefined && this.isDataTestIdInherited) {
+    if (
+      dataTestId === undefined &&
+      this.isDataTestIdInherited &&
+      (!this.isNotMockedElementExcluded || parent?.originMock)
+    ) {
       dataTestId = parent?.dataTestId;
     }
 
@@ -107,6 +112,7 @@ export class PrivateCollector extends CollectorAbstract {
         dataTestId,
         name,
         nthChild,
+        originMock,
         relativePath
       };
 

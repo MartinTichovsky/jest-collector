@@ -1,12 +1,13 @@
 import {
   Children,
-  GetTrueDataTestIdProps,
+  GetParentTestIdProps,
   ReactObject
 } from "./clone-function.types";
 import {
   DATA_TEST_ID,
-  __dataTestId__,
   __nthChild__,
+  __originMock__,
+  __parentTestId__,
   __parent__,
   __relativePath__
 } from "./constants";
@@ -46,12 +47,10 @@ export const checkTheChildrenSequence = (children: Children[]) => {
 
 export const getDataFromArguments = (args: any) => {
   return {
-    dataTestId:
-      args && args[0]
-        ? args[0][DATA_TEST_ID] || args[0][__dataTestId__]
-        : undefined,
+    dataTestId: args && args[0] ? args[0][DATA_TEST_ID] : undefined,
     nthChild: args && args[0] ? args[0][__nthChild__] : undefined,
-    parent: args && args[0] ? args[0][__parent__] : undefined
+    parent: args && args[0] ? args[0][__parent__] : undefined,
+    parentTestId: args && args[0] ? args[0][__parentTestId__] : undefined
   };
 };
 
@@ -62,32 +61,27 @@ export const getFunctionIdentity = (
 ) => ({
   dataTestId:
     object.props[DATA_TEST_ID] ||
-    object.props[__dataTestId__] ||
+    object.props[__parentTestId__] ||
     (isDataTestIdInherited ? dataTestId : undefined),
   name: object.type!.name,
   relativePath: object.type![__relativePath__]!
 });
 
-export const getTrueDataTestId = ({
-  dataTestId,
+export const getParentTestId = ({
   isDataTestIdInherited,
   isNotMockedElementExcluded,
-  object
-}: GetTrueDataTestIdProps) => {
+  object,
+  parentTestId
+}: GetParentTestIdProps) => {
   if (!isDataTestIdInherited) {
     return undefined;
   }
 
-  if (
-    (isNotMockedElementExcluded && object.type![__relativePath__]) ||
-    !isNotMockedElementExcluded
-  ) {
-    return (
-      object.props[DATA_TEST_ID] || object.type![__dataTestId__] || dataTestId
-    );
+  if (!isNotMockedElementExcluded || object.type![__originMock__]) {
+    return object.props[DATA_TEST_ID] || parentTestId;
   }
 
-  return dataTestId;
+  return parentTestId;
 };
 
 const isMatch = (leftSide: FunctionIdentity, rightSide: FunctionIdentity) =>

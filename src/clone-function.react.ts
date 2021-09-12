@@ -1,17 +1,14 @@
 import React from "react";
-import {
-  getFunctionIdentity,
-  getTrueDataTestId
-} from "./clone-function.helpers";
+import { getFunctionIdentity, getParentTestId } from "./clone-function.helpers";
 import {
   GetUpdatedReactObjectProps,
   MockChildrenProps,
-  ProcessReactResult,
+  ProcessReactResultProps,
   ReactObject
 } from "./clone-function.types";
 import {
   RESOLVE_PATH,
-  __dataTestId__,
+  __parentTestId__,
   __parent__,
   __relativePath__
 } from "./constants";
@@ -21,7 +18,7 @@ import {
  * the needed properties
  */
 const getUpdatedReactObject = (
-  { children, dataTestId, object, parent }: GetUpdatedReactObjectProps,
+  { children, object, parent, parentTestId }: GetUpdatedReactObjectProps,
   defineProps: boolean = true
 ): ReactObject => {
   const objectDescriptors = Object.getOwnPropertyDescriptors(object);
@@ -34,7 +31,7 @@ const getUpdatedReactObject = (
         ...objectDescriptors.props.value,
         ...(children ? { children } : {}),
         ...(defineProps
-          ? { [__parent__]: parent, [__dataTestId__]: dataTestId }
+          ? { [__parent__]: parent, [__parentTestId__]: parentTestId }
           : {})
       }
     }
@@ -52,15 +49,15 @@ const getUpdatedReactObject = (
  */
 export const processReactObject = ({
   children,
-  dataTestId,
   isDataTestIdInherited,
   isNotMockedElementExcluded,
   name,
   object,
   parent,
+  parentTestId,
   privateCollector,
   relativePath
-}: ProcessReactResult) => {
+}: ProcessReactResultProps) => {
   if (!React.isValidElement(object)) {
     return object;
   }
@@ -75,12 +72,6 @@ export const processReactObject = ({
         children: object.props.children.props.children
           ? // if the children does contain more children, update the properties
             getUpdatedReactObject({
-              dataTestId: getTrueDataTestId({
-                dataTestId,
-                isDataTestIdInherited,
-                isNotMockedElementExcluded,
-                object
-              }),
               object: !object.props.children.type[__relativePath__]
                 ? /*
                     if the children does contain more children and it is 
@@ -88,43 +79,54 @@ export const processReactObject = ({
                   */
                   processReactObject({
                     children,
-                    dataTestId: getTrueDataTestId({
-                      dataTestId,
-                      isDataTestIdInherited,
-                      isNotMockedElementExcluded,
-                      object
-                    }),
                     isDataTestIdInherited,
                     isNotMockedElementExcluded,
                     name,
                     parent,
+                    parentTestId: getParentTestId({
+                      isDataTestIdInherited,
+                      isNotMockedElementExcluded,
+                      object,
+                      parentTestId
+                    }),
                     privateCollector,
                     relativePath,
                     object: object.props.children
                   })
                 : object.props.children,
-              parent
+              parent,
+              parentTestId: getParentTestId({
+                isDataTestIdInherited,
+                isNotMockedElementExcluded,
+                object,
+                parentTestId
+              })
             })
           : !object.props.children.type[__relativePath__]
           ? // if it is a not mocked component, must be mocked
             mockReactComponent({
-              dataTestId,
               isDataTestIdInherited,
               isNotMockedElementExcluded,
               object: object.props.children,
               parent,
+              parentTestId: getParentTestId({
+                isDataTestIdInherited,
+                isNotMockedElementExcluded,
+                object,
+                parentTestId
+              }),
               privateCollector
             })
           : // otherwise update the props to pass needed data to the children
             getUpdatedReactObject({
               object: object.props.children,
-              dataTestId: getTrueDataTestId({
-                dataTestId,
+              parent,
+              parentTestId: getParentTestId({
                 isDataTestIdInherited,
                 isNotMockedElementExcluded,
-                object
-              }),
-              parent
+                object,
+                parentTestId
+              })
             }),
         object,
         parent
@@ -139,11 +141,11 @@ export const processReactObject = ({
         getFunctionIdentity(
           object.props.children as ReactObject,
           isDataTestIdInherited,
-          getTrueDataTestId({
-            dataTestId,
+          getParentTestId({
             isDataTestIdInherited,
             isNotMockedElementExcluded,
-            object
+            object,
+            parentTestId
           })
         )
       ]);
@@ -157,13 +159,13 @@ export const processReactObject = ({
   ) {
     object = getUpdatedReactObject({
       object,
-      dataTestId: getTrueDataTestId({
-        dataTestId,
+      parent,
+      parentTestId: getParentTestId({
         isDataTestIdInherited,
         isNotMockedElementExcluded,
-        object
-      }),
-      parent
+        object,
+        parentTestId
+      })
     });
 
     children.push([
@@ -171,11 +173,11 @@ export const processReactObject = ({
       getFunctionIdentity(
         object,
         isDataTestIdInherited,
-        getTrueDataTestId({
-          dataTestId,
+        getParentTestId({
           isDataTestIdInherited,
           isNotMockedElementExcluded,
-          object
+          object,
+          parentTestId
         })
       )
     ]);
@@ -188,14 +190,14 @@ export const processReactObject = ({
       if (object.props.children[i].type?.[__relativePath__]) {
         // if the children does contain __relativePath__ it is a mocked component
         const child = getUpdatedReactObject({
-          dataTestId: getTrueDataTestId({
-            dataTestId,
+          object: object.props.children[i],
+          parent,
+          parentTestId: getParentTestId({
             isDataTestIdInherited,
             isNotMockedElementExcluded,
-            object: object.props.children[i]
-          }),
-          object: object.props.children[i],
-          parent
+            object: object.props.children[i],
+            parentTestId
+          })
         });
 
         newChildren.push(child);
@@ -205,11 +207,11 @@ export const processReactObject = ({
           getFunctionIdentity(
             child,
             isDataTestIdInherited,
-            getTrueDataTestId({
-              dataTestId,
+            getParentTestId({
               isDataTestIdInherited,
               isNotMockedElementExcluded,
-              object: child
+              object: child,
+              parentTestId
             })
           )
         ]);
@@ -224,32 +226,32 @@ export const processReactObject = ({
             ? // if the children does contain other children, must be processed
               processReactObject({
                 children,
-                dataTestId: getTrueDataTestId({
-                  dataTestId,
-                  isDataTestIdInherited,
-                  isNotMockedElementExcluded,
-                  object: object.props.children[i]
-                }),
                 isDataTestIdInherited,
                 isNotMockedElementExcluded,
                 name,
                 object: object.props.children[i],
                 parent,
+                parentTestId: getParentTestId({
+                  isDataTestIdInherited,
+                  isNotMockedElementExcluded,
+                  object: object.props.children[i],
+                  parentTestId
+                }),
                 privateCollector,
                 relativePath
               })
             : // otherwise must be mocked
               mockReactComponent({
-                dataTestId: getTrueDataTestId({
-                  dataTestId,
-                  isDataTestIdInherited,
-                  isNotMockedElementExcluded,
-                  object: object.props.children[i]
-                }),
                 isDataTestIdInherited,
                 isNotMockedElementExcluded,
                 object: object.props.children[i],
                 parent,
+                parentTestId: getParentTestId({
+                  isDataTestIdInherited,
+                  isNotMockedElementExcluded,
+                  object: object.props.children[i],
+                  parentTestId
+                }),
                 privateCollector
               })
         );
@@ -274,28 +276,28 @@ export const processReactObject = ({
     !object.type[__relativePath__]
   ) {
     object = mockReactComponent({
-      dataTestId: getTrueDataTestId({
-        dataTestId,
-        isDataTestIdInherited,
-        isNotMockedElementExcluded,
-        object
-      }),
       isDataTestIdInherited,
       isNotMockedElementExcluded,
       object,
       parent,
+      parentTestId: getParentTestId({
+        isDataTestIdInherited,
+        isNotMockedElementExcluded,
+        object,
+        parentTestId
+      }),
       privateCollector
     });
 
     object = getUpdatedReactObject({
-      dataTestId: getTrueDataTestId({
-        dataTestId,
+      object,
+      parent,
+      parentTestId: getParentTestId({
         isDataTestIdInherited,
         isNotMockedElementExcluded,
-        object
-      }),
-      object,
-      parent
+        object,
+        parentTestId
+      })
     });
   }
 
@@ -310,11 +312,11 @@ export const processReactObject = ({
  * retrieve the next element.
  */
 const mockReactComponent = ({
-  dataTestId,
   isDataTestIdInherited,
   isNotMockedElementExcluded,
   object,
   parent,
+  parentTestId,
   privateCollector
 }: MockChildrenProps) => {
   if (typeof object.type !== "function") {
@@ -322,13 +324,13 @@ const mockReactComponent = ({
   }
 
   object = getUpdatedReactObject({
-    dataTestId: getTrueDataTestId({
-      dataTestId,
+    object,
+    parentTestId: getParentTestId({
       isDataTestIdInherited,
       isNotMockedElementExcluded,
-      object
+      object,
+      parentTestId
     }),
-    object,
     parent
   });
 
@@ -338,7 +340,7 @@ const mockReactComponent = ({
     ...objectDescriptors,
     type: {
       ...objectDescriptors.type,
-      value: object.type!.clone(privateCollector, RESOLVE_PATH)
+      value: object.type!.clone(privateCollector, RESOLVE_PATH, false)
     }
   };
 

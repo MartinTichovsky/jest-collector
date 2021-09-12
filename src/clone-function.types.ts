@@ -5,37 +5,37 @@ import {
   NthChild
 } from "./private-collector.types";
 
-export interface GetTrueDataTestIdProps {
-  dataTestId?: string;
+export interface GetParentTestIdProps {
   isDataTestIdInherited: boolean;
   isNotMockedElementExcluded: boolean;
   object: ReactObject;
+  parentTestId?: string;
 }
 
 export interface GetUpdatedReactObjectProps {
   children?: ReactObject[] | ReactObject;
-  dataTestId?: string;
   object: ReactObject;
   parent?: Identity;
+  parentTestId?: string;
 }
 
 export interface MockChildrenProps {
-  dataTestId?: string;
   isDataTestIdInherited: boolean;
   isNotMockedElementExcluded: boolean;
   object: ReactObject;
   parent?: Identity;
+  parentTestId?: string;
   privateCollector: PrivateCollector;
 }
 
-export interface ProcessReactResult {
+export interface ProcessReactResultProps {
   children: Children[];
-  dataTestId?: string;
   isDataTestIdInherited: boolean;
   isNotMockedElementExcluded: boolean;
   name: string;
   object: ReactObject;
   parent?: Identity;
+  parentTestId?: string;
   privateCollector: PrivateCollector;
   relativePath: string;
 }
@@ -49,7 +49,8 @@ export interface ReactObject {
     name: string;
     clone: (
       privateCollector: PrivateCollector,
-      relativePath: string
+      relativePath: string,
+      originMock: boolean
     ) => unknown;
   };
 }

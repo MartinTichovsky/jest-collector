@@ -14,6 +14,7 @@ export type FunctionCalled = FunctionIdentity &
   NthChild & {
     args: any;
     jestFn: jest.Mock;
+    originMock: boolean;
     parent?: Identity | null;
   };
 
@@ -83,6 +84,7 @@ export type HookWithAction<T = undefined> = {
 
 export type Identity<T = undefined> = FunctionIdentity &
   NthChild & {
+    originMock: boolean;
     parent: (T extends undefined ? Identity : Partial<Identity>) | null;
   } & (T extends undefined
     ? { children?: (FunctionIdentity & NthChild)[] }

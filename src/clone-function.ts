@@ -6,7 +6,7 @@ import {
 } from "./clone-function.helpers";
 import { processReactObject } from "./clone-function.react";
 import { Children } from "./clone-function.types";
-import { __relativePath__ } from "./constants";
+import { __originMock__, __relativePath__ } from "./constants";
 import { PrivateCollector } from "./private-collector";
 import { mockReactClass } from "./react-class";
 
@@ -14,7 +14,8 @@ export const registerClone = () => {
   if (!("clone" in Function.prototype)) {
     Function.prototype["clone"] = function (
       privateCollector: PrivateCollector,
-      relativePath: string
+      relativePath: string,
+      originMock: boolean = true
     ) {
       if (!this.name) {
         return this;
@@ -40,10 +41,11 @@ export const registerClone = () => {
 
           const registered = privateCollector.functionCalled({
             args: arguments,
-            dataTestId: data.dataTestId,
+            dataTestId: data.dataTestId || data.parentTestId,
             jestFn,
             name: _this.name,
             nthChild: data.nthChild,
+            originMock,
             parent: data.parent,
             relativePath
           });
@@ -70,13 +72,17 @@ export const registerClone = () => {
           */
           result = processReactObject({
             children,
-            dataTestId: registered.current.dataTestId,
             isDataTestIdInherited: privateCollector.isDataTestIdInherited,
             isNotMockedElementExcluded:
               privateCollector.isNotMockedElementExcluded,
             name: _this.name,
             privateCollector,
             parent: registered.current,
+            parentTestId: privateCollector.isDataTestIdInherited
+              ? !privateCollector.isNotMockedElementExcluded || originMock
+                ? data.dataTestId || data.parentTestId
+                : data.parentTestId
+              : undefined,
             relativePath,
             object: result
           });
@@ -122,6 +128,12 @@ export const registerClone = () => {
       Object.defineProperty(_overload[_this.name], __relativePath__, {
         value: relativePath
       });
+
+      if (originMock) {
+        Object.defineProperty(_overload[_this.name], __originMock__, {
+          value: true
+        });
+      }
 
       Object.setPrototypeOf(
         _overload[_this.name],
