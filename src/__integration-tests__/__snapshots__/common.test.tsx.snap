@@ -177,7 +177,7 @@ Object {
 }
 `;
 
-exports[`Commons tests Test id inheritance - direct component 1`] = `
+exports[`Commons tests Test id inheritance - direct component with external components 1`] = `
 Array [
   Object {
     "calls": Array [
@@ -239,6 +239,107 @@ Array [
         "nthChild": undefined,
         "parent": null,
         "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
+    },
+    "path": "/src/__integration-tests__/components/UseEffect.Inner.tsx",
+  },
+]
+`;
+
+exports[`Commons tests Test id inheritance - direct component with internal component 1`] = `
+Array [
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": "test-id-1",
+    "name": "DirectComponentInTheSameFile",
+    "numberOfCalls": 1,
+    "parent": null,
+    "path": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": "test-id-1",
+    "name": "DirectComponent",
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": "test-id-1",
+      "name": "DirectComponentInTheSameFile",
+      "nthChild": undefined,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "path": "unknown",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": "test-id-1",
+    "name": "Template",
+    "numberOfCalls": 2,
+    "parent": Object {
+      "dataTestId": "test-id-1",
+      "name": "DirectComponent",
+      "nthChild": undefined,
+      "parent": Object {
+        "dataTestId": "test-id-1",
+        "name": "DirectComponentInTheSameFile",
+        "nthChild": undefined,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "unknown",
+    },
+    "path": "/src/__integration-tests__/components/UseEffect.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": "test-id-1",
+    "name": "TemplateInner",
+    "numberOfCalls": 2,
+    "parent": Object {
+      "dataTestId": "test-id-1",
+      "name": "Template",
+      "nthChild": undefined,
+      "parent": Object {
+        "dataTestId": "test-id-1",
+        "name": "DirectComponent",
+        "nthChild": undefined,
+        "parent": Object {
+          "dataTestId": "test-id-1",
+          "name": "DirectComponentInTheSameFile",
+          "nthChild": undefined,
+          "parent": null,
+          "relativePath": "/src/__integration-tests__/components/common.tsx",
+        },
+        "relativePath": "unknown",
       },
       "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
     },
@@ -397,7 +498,7 @@ Array [
       },
     ],
     "dataTestId": undefined,
-    "name": "OneUseRef",
+    "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
     "parent": Object {
       "dataTestId": "test-id-1",
@@ -405,6 +506,31 @@ Array [
       "nthChild": undefined,
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "path": "unknown",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": undefined,
+    "name": "OneUseRef",
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": undefined,
+      "name": "UnregisteredComponentWithOneUseRef",
+      "nthChild": undefined,
+      "parent": Object {
+        "dataTestId": "test-id-1",
+        "name": "ComplexComponent",
+        "nthChild": undefined,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "unknown",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },
@@ -605,7 +731,7 @@ Array [
       },
     ],
     "dataTestId": undefined,
-    "name": "OneUseRef",
+    "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
     "parent": Object {
       "dataTestId": "test-id-1",
@@ -613,6 +739,31 @@ Array [
       "nthChild": undefined,
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "path": "unknown",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": undefined,
+    "name": "OneUseRef",
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": undefined,
+      "name": "UnregisteredComponentWithOneUseRef",
+      "nthChild": undefined,
+      "parent": Object {
+        "dataTestId": "test-id-1",
+        "name": "ComplexComponent",
+        "nthChild": undefined,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "unknown",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },
@@ -813,7 +964,7 @@ Array [
       },
     ],
     "dataTestId": "test-id-1",
-    "name": "OneUseRef",
+    "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
     "parent": Object {
       "dataTestId": "test-id-1",
@@ -821,6 +972,31 @@ Array [
       "nthChild": undefined,
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "path": "unknown",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": "test-id-1",
+    "name": "OneUseRef",
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": "test-id-1",
+      "name": "UnregisteredComponentWithOneUseRef",
+      "nthChild": undefined,
+      "parent": Object {
+        "dataTestId": "test-id-1",
+        "name": "ComplexComponent",
+        "nthChild": undefined,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "unknown",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },
@@ -1021,7 +1197,7 @@ Array [
       },
     ],
     "dataTestId": "test-id-1",
-    "name": "OneUseRef",
+    "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
     "parent": Object {
       "dataTestId": "test-id-1",
@@ -1029,6 +1205,31 @@ Array [
       "nthChild": undefined,
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "path": "unknown",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": "test-id-1",
+    "name": "OneUseRef",
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": "test-id-1",
+      "name": "UnregisteredComponentWithOneUseRef",
+      "nthChild": undefined,
+      "parent": Object {
+        "dataTestId": "test-id-1",
+        "name": "ComplexComponent",
+        "nthChild": undefined,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "unknown",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },

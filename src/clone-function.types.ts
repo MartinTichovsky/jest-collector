@@ -19,6 +19,15 @@ export interface GetUpdatedReactObjectProps {
   parent?: Identity;
 }
 
+export interface MockChildrenProps {
+  dataTestId?: string;
+  isDataTestIdInherited: boolean;
+  isNotMockedElementExcluded: boolean;
+  object: ReactObject;
+  parent?: Identity;
+  privateCollector: PrivateCollector;
+}
+
 export interface ProcessReactResult {
   children: Children[];
   dataTestId?: string;
@@ -38,6 +47,10 @@ export interface ReactObject {
   type?: {
     __relativePath__?: string;
     name: string;
+    clone: (
+      privateCollector: PrivateCollector,
+      relativePath: string
+    ) => unknown;
   };
 }
 

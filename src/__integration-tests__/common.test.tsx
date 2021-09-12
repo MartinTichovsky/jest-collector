@@ -5,9 +5,13 @@ import {
   ComplexComponent,
   ComponentWithChildren,
   DirectComponent,
+  DirectComponentInTheSameFile,
   SimpleComponent
 } from "./components/common";
-import { EmptyWithUseEffectAndUseCallback } from "./components/common.unregistered";
+import {
+  EmptyWithUseEffectAndUseCallback,
+  UnregisteredComponentWithSimpleComponent
+} from "./components/common.unregistered";
 import { WithDeps as UseCallbackDeps } from "./components/UseCallback";
 import { WithDeps as UseEffectDeps } from "./components/UseEffect";
 import { TestClass } from "./others/class";
@@ -61,6 +65,60 @@ describe("Commons tests", () => {
 
     // class should be called twice
     expect(collector.getCallCount(TestClass.name)).toBe(2);
+  });
+
+  test("Complex test - it must pass", () => {
+    render(
+      <ComponentWithChildren>
+        <div>
+          <UnregisteredComponentWithSimpleComponent data-testid={dataTestId1} />
+        </div>
+        <div>text</div>
+        <div />
+        <SimpleComponent />
+        <div>
+          <SimpleComponent />
+        </div>
+      </ComponentWithChildren>
+    );
+
+    render(
+      <>
+        <div />
+        <div>text</div>
+        <ComponentWithChildren>
+          <div>
+            <UnregisteredComponentWithSimpleComponent />
+          </div>
+          <div>text</div>
+          <div />
+        </ComponentWithChildren>
+        <ComponentWithChildren>
+          <div />
+        </ComponentWithChildren>
+        <ComponentWithChildren>
+          <p>text</p>
+        </ComponentWithChildren>
+        <SimpleComponent />
+        <div>
+          <SimpleComponent />
+        </div>
+      </>
+    );
+
+    render(<SimpleComponent />);
+
+    render(
+      <ComponentWithChildren>
+        <div />
+      </ComponentWithChildren>
+    );
+
+    render(
+      <ComponentWithChildren>
+        <p>text</p>
+      </ComponentWithChildren>
+    );
   });
 
   test("More components with the same name should log a warning", () => {
@@ -403,11 +461,20 @@ describe("Commons tests", () => {
     ).toMatchSnapshot();
   });
 
-  test("Test id inheritance - direct component", () => {
+  test("Test id inheritance - direct component with external components", () => {
     // enable inheritance
     collector.enableDataTestIdInheritance();
 
     render(<DirectComponent data-testid={dataTestId1} />);
+
+    // all children and called functions inside the component must have the dataTestId1
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
+  });
+
+  test("Test id inheritance - direct component with internal component", () => {
+    collector.enableDataTestIdInheritance();
+
+    render(<DirectComponentInTheSameFile data-testid={dataTestId1} />);
 
     // all children and called functions inside the component must have the dataTestId1
     expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
@@ -501,19 +568,21 @@ describe("Commons tests", () => {
     ).not.toBeUndefined();
   });
 
-  // test("Test id inheritance should be passed from not mocked elements - use case 2", () => {
-  //   collector.enableDataTestIdInheritance();
+  test("Test id inheritance should be passed from not mocked elements - use case 2", () => {
+    collector.enableDataTestIdInheritance();
 
-  //   render(
-  //     <ComponentWithChildren>
-  //       <ElementWithSimpleComponent data-testid={dataTestId1} />
-  //     </ComponentWithChildren>
-  //   );
+    render(
+      <ComponentWithChildren>
+        <div>
+          <UnregisteredComponentWithSimpleComponent data-testid={dataTestId1} />
+        </div>
+      </ComponentWithChildren>
+    );
 
-  //   expect(
-  //     collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
-  //   ).not.toBeUndefined();
-  // });
+    expect(
+      collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).not.toBeUndefined();
+  });
 
   test("Test id inheritance - exclude data test id from not mocked elements - use case 1", () => {
     collector.enableDataTestIdInheritance(true);

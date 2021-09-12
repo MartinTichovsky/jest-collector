@@ -1,8 +1,11 @@
 import React from "react";
 import { recursiveFunction } from "../others/recursive-function";
+import {
+  UnregisteredComponentWithChildren,
+  UnregisteredComponentWithOneUseRef
+} from "./common.unregistered";
 import { OneUseCallback } from "./UseCallback";
 import { Template } from "./UseEffect";
-import { OneUseRef } from "./UseRef";
 import { OneUseState } from "./UseState";
 
 /**
@@ -34,9 +37,11 @@ export const ComplexComponent = ({
   return (
     <>
       <div>
-        <Template data-testid={templateDataTestId} caller={caller} />
+        <UnregisteredComponentWithChildren>
+          <Template data-testid={templateDataTestId} caller={caller} />
+        </UnregisteredComponentWithChildren>
       </div>
-      <OneUseRef />
+      <UnregisteredComponentWithOneUseRef />
       <OneUseCallback callFunc={caller.action}>
         <OneUseState />
       </OneUseCallback>
@@ -71,6 +76,12 @@ export const DirectComponent = ({
 
   return <Template data-testid={templateDataTestId} caller={caller} />;
 };
+
+export const DirectComponentInTheSameFile = ({
+  templateDataTestId
+}: {
+  templateDataTestId?: string;
+}) => <DirectComponent templateDataTestId={templateDataTestId} />;
 
 export const SimpleComponent = ({ text }: { text?: string }) => {
   return <p>{text}</p>;
