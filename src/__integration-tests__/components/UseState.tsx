@@ -38,13 +38,14 @@ export const MultipleStates = ({
 
 export const MultipeCalls = () => {
   const [state1, setState1] = React.useState(0);
-  const [state2, setState2] = React.useState(0);
+  const [state2, setState2] = React.useState(1);
+
   const onClick = () => {
     setState1(state1 + 1);
     setState2(state2 + 1);
   };
 
-  return <button onClick={onClick}>Content {state1}</button>;
+  return <button onClick={onClick}>Content {state2}</button>;
 };
 
 export const OneUseState = () => {

@@ -1,8 +1,10 @@
 import "@testing-library/jest-dom";
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
+import { ComponentWithChildren } from "./components/common";
 import {
   DynamicState,
+  MultipeCalls,
   MultipleStates,
   OneUseState
 } from "./components/UseState";
@@ -140,60 +142,68 @@ describe("useState", () => {
       >
     };
 
+    console.warn = jest.fn();
+
     render(
-      <>
+      <ComponentWithChildren>
         <div data-testid={dataTestId1}>
           <DynamicState caller={caller1} />
         </div>
         <div data-testid={dataTestId2}>
           <DynamicState caller={caller2} />
         </div>
-      </>
+      </ComponentWithChildren>
     );
 
-    // expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
-    //   getExpectedText(0)
-    // );
-    // expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
-    //   getExpectedText(0)
-    // );
+    expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
+      getExpectedText(0)
+    );
+    expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
+      getExpectedText(0)
+    );
 
-    // act(() => caller1.setState(7));
+    act(() => caller1.setState(7));
 
-    // expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
-    //   getExpectedText(7)
-    // );
-    // expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
-    //   getExpectedText(0)
-    // );
+    expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
+      getExpectedText(7)
+    );
+    expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
+      getExpectedText(0)
+    );
 
-    // act(() => caller2.setState(11));
+    act(() => caller2.setState(11));
 
-    // expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
-    //   getExpectedText(7)
-    // );
-    // expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
-    //   getExpectedText(11)
-    // );
+    expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
+      getExpectedText(7)
+    );
+    expect(screen.getByTestId(dataTestId2)).toHaveTextContent(
+      getExpectedText(11)
+    );
 
-    // expect(collector.getCallCount(DynamicState.name)).toBe(4);
-    // expect(
-    //   collector.getReactHooks(DynamicState.name).getAll("useState")?.length
-    // ).toBe(1);
-    // expect(
-    //   collector
-    //     .getReactHooks(DynamicState.name)
-    //     .getHooksByType("useState")
-    //     .get(1)?.setState
-    // ).toBeCalledTimes(2);
+    const dynamicState1Hooks = collector.getReactHooks(DynamicState.name, {
+      nthChild: 1
+    });
+    const dynamicState2Hooks = collector.getReactHooks(DynamicState.name, {
+      nthChild: 2
+    });
+
+    expect(collector.getCallCount(DynamicState.name)).toBe(4);
+    expect(dynamicState1Hooks.getAll("useState")?.length).toBe(1);
+    expect(dynamicState2Hooks.getAll("useState")?.length).toBe(1);
+    expect(
+      dynamicState1Hooks.getHooksByType("useState").get(1)?.setState
+    ).toBeCalledTimes(1);
+    expect(
+      dynamicState2Hooks.getHooksByType("useState").get(1)?.setState
+    ).toBeCalledTimes(1);
   });
 
-  // test("Multipe calls", () => {
-  //   const getExpectedText = (num: number) => `Content ${num}`;
-  //   render(<MultipeCalls />);
-  //   //expect(screen.getByRole("button")).toHaveTextContent(getExpectedText(0));
-  //   fireEvent.click(screen.getByRole("button"));
-  //   //expect(screen.getByRole("button")).toHaveTextContent(getExpectedText(2));
-  //   expect(collector.getCallCount(MultipeCalls.name)).toBe(2);
-  // });
+  test("Multipe calls", () => {
+    const getExpectedText = (num: number) => `Content ${num}`;
+    render(<MultipeCalls />);
+    expect(screen.getByRole("button")).toHaveTextContent(getExpectedText(1));
+    fireEvent.click(screen.getByRole("button"));
+    expect(screen.getByRole("button")).toHaveTextContent(getExpectedText(2));
+    expect(collector.getCallCount(MultipeCalls.name)).toBe(2);
+  });
 });

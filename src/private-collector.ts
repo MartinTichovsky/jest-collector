@@ -492,6 +492,7 @@ export class PrivateCollector extends CollectorAbstract {
     const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
       dataTestId: active?.current.dataTestId,
+      nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
     });
@@ -557,6 +558,7 @@ export class PrivateCollector extends CollectorAbstract {
     const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
       dataTestId: active?.current.dataTestId,
+      nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
     });
@@ -579,6 +581,7 @@ export class PrivateCollector extends CollectorAbstract {
     const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
       dataTestId: active?.current.dataTestId,
+      nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
     });
@@ -619,6 +622,7 @@ export class PrivateCollector extends CollectorAbstract {
     const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
       dataTestId: active?.current.dataTestId,
+      nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
     });
@@ -657,6 +661,7 @@ export class PrivateCollector extends CollectorAbstract {
     const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
       dataTestId: active?.current.dataTestId,
+      nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
     });
