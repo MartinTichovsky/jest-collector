@@ -590,6 +590,10 @@ describe("Commons tests", () => {
     ).toMatchSnapshot();
   });
 
+  test("Unregistered function", () => {
+    expect(collector.getStats("unknown")).toBeUndefined();
+  });
+
   test("Unknown function", () => {
     // everything must return udnefined
     expect(collector.getCallCount("SomeComponent")).toBeUndefined();

@@ -25,6 +25,7 @@ export const mockReactHooks = (
       !privateCollector.hasRegistered(caller.name, {
         dataTestId: active?.current.dataTestId,
         parent: active?.parent,
+        nthChild: active?.current.nthChild,
         relativePath: caller.relativePath
       })
     ) {
@@ -67,6 +68,7 @@ export const mockReactHooks = (
       !privateCollector.hasRegistered(caller.name, {
         dataTestId: active?.current.dataTestId,
         parent: active?.parent,
+        nthChild: active?.current.nthChild,
         relativePath: caller.relativePath
       })
     ) {
@@ -94,6 +96,7 @@ export const mockReactHooks = (
       !privateCollector.hasRegistered(caller.name, {
         dataTestId: active?.current.dataTestId,
         parent: active?.parent,
+        nthChild: active?.current.nthChild,
         relativePath: caller.relativePath
       })
     ) {
@@ -142,6 +145,7 @@ export const mockReactHooks = (
       !privateCollector.hasRegistered(caller.name, {
         dataTestId: active?.current.dataTestId,
         parent: active?.parent,
+        nthChild: active?.current.nthChild,
         relativePath: caller.relativePath
       })
     ) {
@@ -189,6 +193,7 @@ export const mockReactHooks = (
       !privateCollector.hasRegistered(caller.name, {
         dataTestId: active?.current.dataTestId,
         parent: active?.parent,
+        nthChild: active?.current.nthChild,
         relativePath: caller.relativePath
       })
     ) {
@@ -224,6 +229,7 @@ export const mockReactHooks = (
     if (
       !privateCollector.hasRegistered(caller.name, {
         dataTestId: active?.current.dataTestId,
+        nthChild: active?.current.nthChild,
         parent: active?.parent,
         relativePath: caller.relativePath
       })
@@ -264,6 +270,7 @@ export const mockReactHooks = (
     if (
       !privateCollector.hasRegistered(caller.name, {
         dataTestId: active?.current.dataTestId,
+        nthChild: active?.current.nthChild,
         parent: active?.parent,
         relativePath: caller.relativePath
       })

@@ -496,11 +496,7 @@ export class PrivateCollector extends CollectorAbstract {
       nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
-    });
-
-    if (!registered) {
-      return props;
-    }
+    })!;
 
     this.registerHook(registered, hookType);
 
@@ -534,11 +530,7 @@ export class PrivateCollector extends CollectorAbstract {
     const registered = this.getDataFor(componentName, {
       dataTestId,
       relativePath
-    });
-
-    if (!registered) {
-      return undefined;
-    }
+    })!;
 
     if (!registered.lifecycle) {
       registered.lifecycle = {
@@ -562,11 +554,7 @@ export class PrivateCollector extends CollectorAbstract {
       nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
-    });
-
-    if (!registered) {
-      return props;
-    }
+    })!;
 
     this.registerHook(registered, hookType);
 
@@ -585,11 +573,7 @@ export class PrivateCollector extends CollectorAbstract {
       nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
-    });
-
-    if (!registered) {
-      return props;
-    }
+    })!;
 
     this.registerHook(registered, hookType);
 
@@ -626,10 +610,7 @@ export class PrivateCollector extends CollectorAbstract {
       nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
-    });
-    if (!registered) {
-      return props;
-    }
+    })!;
 
     this.registerHook(registered, hookType);
 
@@ -665,11 +646,7 @@ export class PrivateCollector extends CollectorAbstract {
       nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
-    });
-
-    if (!registered) {
-      return props;
-    }
+    })!;
 
     this.registerHook(registered, hookType);
 
@@ -705,11 +682,7 @@ export class PrivateCollector extends CollectorAbstract {
       nthChild: active?.current.nthChild,
       parent: active?.parent || null,
       relativePath
-    });
-
-    if (!registered) {
-      return props;
-    }
+    })!;
 
     this.registerHook(registered, hookType);
 
