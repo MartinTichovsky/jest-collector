@@ -37,6 +37,7 @@ export class PrivateCollector extends CollectorAbstract {
   }
 
   private checkRegisteredLength(
+    name: string,
     registered: RegisteredFunction[],
     options?: Options
   ) {
@@ -219,7 +220,7 @@ export class PrivateCollector extends CollectorAbstract {
   public getCallCount(name: string, options?: Options) {
     const registered = this.getAllDataFor(name, options);
 
-    this.checkRegisteredLength(registered, options);
+    this.checkRegisteredLength(name, registered, options);
 
     return registered.length
       ? registered.reduceRight(
@@ -238,7 +239,7 @@ export class PrivateCollector extends CollectorAbstract {
   public getDataFor(name: string, options?: Options) {
     const registered = this.getAllDataFor(name, options);
 
-    this.checkRegisteredLength(registered, options);
+    this.checkRegisteredLength(name, registered, options);
 
     return registered.length ? registered[0] : undefined;
   }
