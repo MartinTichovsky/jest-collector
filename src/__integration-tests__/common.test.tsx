@@ -431,12 +431,25 @@ describe("Commons tests", () => {
       context: string,
       callbackResult: string,
       memo: string,
-      ref: string
+      ref: string,
+      reducerState: number
     ) =>
-      `state:${state},context:${context},callback:${callbackResult},memo:${memo},ref:${ref}`;
+      `state:${state},context:${context},callback:${callbackResult},memo:${memo},ref:${ref},reducer:${reducerState}`;
 
     const action = jest.fn();
     const unmount = jest.fn();
+
+    const reducer = (
+      state: { count: number },
+      action: { type: "increment" }
+    ) => {
+      switch (action.type) {
+        case "increment":
+          return { count: state.count + 1 };
+        default:
+          throw new Error();
+      }
+    };
 
     const reactCoontext = React.createContext("context");
 
@@ -448,20 +461,35 @@ describe("Commons tests", () => {
       }, [state]);
       const memo = React.useMemo(() => `result${state}`, [state]);
       const ref = React.useRef(`ref${state}`);
+      const [reducerState, dispatch] = React.useReducer(reducer, { count: 8 });
 
       React.useEffect(() => {
         action();
         return unmount;
       }, [state]);
 
-      const onClick = () => {
-        setState((prevValue) => prevValue + 1);
-      };
-
       return (
         <div>
-          <button onClick={onClick}>
-            {getExpectedText(state, context, callback(), memo, ref.current)}
+          <button
+            data-testid="state"
+            onClick={() => {
+              setState((prevValue) => prevValue + 1);
+            }}
+          >
+            {getExpectedText(
+              state,
+              context,
+              callback(),
+              memo,
+              ref.current,
+              reducerState.count
+            )}
+          </button>
+          <button
+            data-testid="reducer"
+            onClick={() => dispatch({ type: "increment" })}
+          >
+            Increment
           </button>
         </div>
       );
@@ -470,8 +498,8 @@ describe("Commons tests", () => {
     render(<Component />);
 
     // the text must be in the document
-    expect(screen.getByRole("button")).toHaveTextContent(
-      getExpectedText(5, "context", "text5", "result5", "ref5")
+    expect(screen.getByTestId("state")).toHaveTextContent(
+      getExpectedText(5, "context", "text5", "result5", "ref5", 8)
     );
     // action should be called once
     expect(action).toBeCalledTimes(1);
@@ -479,10 +507,23 @@ describe("Commons tests", () => {
     expect(unmount).not.toBeCalled();
 
     // click on the button and set the state to re-render the component
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByTestId("state"));
 
-    expect(screen.getByRole("button")).toHaveTextContent(
-      getExpectedText(6, "context", "text6", "result6", "ref5")
+    // the text must be in the document
+    expect(screen.getByTestId("state")).toHaveTextContent(
+      getExpectedText(6, "context", "text6", "result6", "ref5", 8)
+    );
+    // action should be called once
+    expect(action).toBeCalledTimes(2);
+    // unmount should not be called
+    expect(unmount).toBeCalledTimes(1);
+
+    // increment the state of the reducer
+    fireEvent.click(screen.getByTestId("reducer"));
+
+    // the text must be in the document
+    expect(screen.getByTestId("state")).toHaveTextContent(
+      getExpectedText(6, "context", "text6", "result6", "ref5", 9)
     );
     // action should be called once
     expect(action).toBeCalledTimes(2);

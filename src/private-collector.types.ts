@@ -68,6 +68,13 @@ export type HookOriginScope<T = undefined> = T extends undefined
   ? { _originScope: string }
   : {};
 
+export interface HookReducer {
+  dispatch: jest.Mock;
+  initialState: unknown;
+  reducer: unknown;
+  state: unknown;
+}
+
 export interface HookRef {
   args: any;
   ref: {
@@ -127,7 +134,7 @@ export interface ReactHooksTypes<T = undefined> {
   useImperativeHandle: HookResult & HookChecker<T>;
   useMemo: HookMemo & HookChecker<T>;
   useRef: HookRef & HookChecker<T>;
-  useReducer: HookResult & HookChecker<T>;
+  useReducer: HookReducer & HookChecker<T>;
   useState: HookState<T> & HookChecker<T>;
 }
 
@@ -172,6 +179,10 @@ export interface RegisterHookProps<K extends keyof ReactHooksTypes> {
 
 export interface RegisterUseContext extends RegisterHook {
   props: ReactHooksTypes["useContext"];
+}
+
+export interface RegisterUseReducer extends RegisterHook {
+  props: ReactHooksTypes["useReducer"];
 }
 
 export interface RegisterUseRef extends RegisterHook {

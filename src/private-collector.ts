@@ -15,6 +15,7 @@ import {
   RegisterReactClass,
   RegisterUseContext,
   RegisterUseMemo,
+  RegisterUseReducer,
   RegisterUseRef,
   RegisterUseState,
   RegisterUseWithAction,
@@ -634,6 +635,46 @@ export class PrivateCollector extends CollectorAbstract {
 
     const existingHook = registered.hooks![hookType]?.find(
       (item) => item._originState === props._originState
+    );
+
+    if (existingHook) {
+      existingHook.isRegistered = true;
+      return existingHook;
+    }
+
+    const sequence = this.getSequenceNumber(registered, hookType);
+
+    return this.registerHookProps({
+      registered,
+      hooks: registered.hooks![hookType]!,
+      hookType,
+      props,
+      sequence
+    });
+  }
+
+  public registerUseReducer({
+    componentName,
+    props,
+    relativePath
+  }: RegisterUseReducer) {
+    const hookType = "useReducer";
+    const active = this.getActiveFunction();
+    const registered = this.getDataFor(componentName, {
+      dataTestId: active?.current.dataTestId,
+      nthChild: active?.current.nthChild,
+      parent: active?.parent || null,
+      relativePath
+    });
+
+    if (!registered) {
+      return props;
+    }
+
+    this.registerHook(registered, hookType);
+
+    const existingHook = registered.hooks![hookType]?.find(
+      (item) => item.reducer === props.reducer
     );
 
     if (existingHook) {
