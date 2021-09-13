@@ -1,8 +1,9 @@
 import { PrivateCollector } from "./private-collector";
-import { CollectorAbstract } from "./private-collector.abstract";
+import { CollectorAbstract, GetAllHooks } from "./private-collector.abstract";
 import {
   GetStatsOptions,
   Options,
+  ReactClassLifecycle,
   RegisteredFunction,
   Stats
 } from "./private-collector.types";
@@ -15,60 +16,74 @@ export class Collector extends CollectorAbstract {
   /**
    * Enable data-testid inheritance
    *
-   * @param excludeNotMockedElements If is set to true, not mocked component will not pass the data-testid
+   * @param {boolean} excludeNotMockedElements If is set to true, not mocked component will not pass the data-testid
    */
-  public enableDataTestIdInheritance(excludeNotMockedElements?: boolean) {
+  public enableDataTestIdInheritance(excludeNotMockedElements?: boolean): void {
     this.privateCollector.enableDataTestIdInheritance(excludeNotMockedElements);
   }
 
   /**
    * Disable data-testid inheritance
    */
-  public disableDataTestIdInheritance() {
+  public disableDataTestIdInheritance(): void {
     this.privateCollector.disableDataTestIdInheritance();
   }
 
   /**
    * Get number of calls for the function or a react component
    *
-   * @param name Name of a function or a react component
-   * @param options Options
-   * @returns Number of calls
+   * @param {String} name Name of a function or a react component
+   * @param {object} options Options
+   * @returns {number|undefined} Number of all calls
    */
-  public getCallCount(name: string, options?: Options) {
+  public getCallCount(name: string, options?: Options): number | undefined {
     return this.privateCollector.getCallCount(name, options);
   }
 
   /**
+   * Get data for a component. The function is the same as `getDataFor`.
+   * If more componets with the same name or name and options are detected,
+   * a warning will be logged. Use more option properties to get exact result.
    *
-   * @param name Name of a function or a react component
-   * @param options Options
-   * @returns
+   * @param {string} componentName Component name
+   * @param {object} options Options
+   * @returns {object} Data
    */
   public getComponentData(
-    name: string,
+    componentName: string,
     options?: Options
   ): RegisteredFunction<unknown> | undefined {
-    return this.getDataFor(name, options);
+    return this.getDataFor(componentName, options);
   }
 
   /**
+   * Get all data for a function or a react component. If there will
+   * be more data for a name or specified options, all will be returned.
    *
-   * @param name Name of a function or a react component
-   * @param options
-   * @returns
+   * @param {string} name Name of a function or a react component
+   * @param {object} options Options
+   * @returns {array} An array of data
    */
-  public getAllDataFor(name: string, options?: Options) {
+  public getAllDataFor(
+    name: string,
+    options?: Options
+  ): RegisteredFunction<unknown>[] {
     return this.privateCollector.getAllDataFor(name, options);
   }
 
   /**
+   * Get data for a function or for a react component. If more componets
+   * with the same name or name and options are detected, a warning will
+   * be logged. Use more option properties to get exact result.
    *
-   * @param name Name of a function or a react component
-   * @param options
-   * @returns
+   * @param {string} name Name of a function or a react component
+   * @param {object} options Options
+   * @returns {object} Data
    */
-  public getDataFor(name: string, options?: Options) {
+  public getDataFor(
+    name: string,
+    options?: Options
+  ): RegisteredFunction<unknown> | undefined {
     const registered = this.privateCollector.getDataFor(name, options);
 
     if (!registered?.hooks) {
@@ -85,49 +100,55 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
+   * Get react hooks of a component
    *
-   * @param componentName
-   * @param options
-   * @returns
+   * @param {string} componentName Component name
+   * @param {object} options Options
+   * @returns {object} An object with methods
    */
-  public getReactHooks(componentName: string, options?: Options) {
+  public getReactHooks(componentName: string, options?: Options): GetAllHooks {
     return this.privateCollector.getReactHooks(componentName, options);
   }
 
   /**
+   * Get react lifecycle for a react class component
    *
-   * @param componentName
-   * @param options
-   * @returns
+   * @param {string} componentName Component name
+   * @param {object} options Options
+   * @returns {object} An object with lifecycle properties and their results
    */
-  public getReactLifecycle(componentName: string, options?: Options) {
+  public getReactLifecycle(
+    componentName: string,
+    options?: Options
+  ): ReactClassLifecycle | undefined {
     return this.privateCollector.getReactLifecycle(componentName, options);
   }
 
   /**
+   * Get all statistics of the registered functions
    *
+   * @returns {array} An array of statistics sorted in order how the were called
    */
   public getStats(): Stats[];
+
   /**
+   * Get all statistics of the registered functions
    *
-   * @param options
+   * @param {object} options Options
+   * @returns {array} An array of statistics sorted in order how the were called
    */
   public getStats(options?: GetStatsOptions): Stats[];
+
   /**
+   * Get statistics of a specfic function
    *
-   * @param name Name of a function or a react component
-   * @param options
+   * @param {string} name Name of a function or a react component
+   * @param {object} options Options
+   * @returns {object} An object with statistics
    */
   public getStats(name: string, options?: GetStatsOptions): Stats | undefined;
-  /**
-   *
-   * @param name Name of a function or a react component
-   * @param options
-   */
-  public getStats(
-    name?: string,
-    options?: GetStatsOptions
-  ): Stats[] | Stats | undefined;
+
+  /* @implementation */
   public getStats(
     nameOrOptions?: string | GetStatsOptions,
     options?: GetStatsOptions
@@ -136,31 +157,47 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
+   * Checking if the collector has registered specific component.
+   * The function is the same as `hasRegistered`.
    *
-   * @param componentName
-   * @param options
-   * @returns
+   * @param {string} componentName Component name
+   * @param {object} options Options
+   * @returns {boolean} True if the component is registered in the collector
    */
-  public hasComponent(componentName: string, options?: Options) {
+  public hasComponent(componentName: string, options?: Options): boolean {
     return this.hasRegistered(componentName, options);
   }
 
   /**
+   * Checking if the collector has registered specific function.
    *
-   * @param componentName
-   * @param options
-   * @returns
+   * @param {string} name Name of a function or a react component
+   * @param {object} options Options
+   * @returns {boolean} True if the function is registered in the collector
    */
-  public hasRegistered(componentName: string, options?: Options) {
-    return this.privateCollector.hasRegistered(componentName, options);
+  public hasRegistered(name: string, options?: Options): boolean {
+    return this.privateCollector.hasRegistered(name, options);
   }
 
   /**
+   * Reset all data in the collector and set everything to default
    *
    * @param name Name of a function or a react component
-   * @param options
+   * @param options Options
    */
-  public reset(name?: string, options?: Options) {
+  public reset(): void;
+
+  /**
+   * Delete data for a specific function or a react component. The function
+   * will be no more registered in the collector until next render.
+   *
+   * @param name Name of a function or a react component
+   * @param options Options
+   */
+  public reset(name: string, options?: Options): void;
+
+  /* @implementation */
+  public reset(name?: string, options?: Options): void {
     this.privateCollector.reset(name, options);
   }
 }
