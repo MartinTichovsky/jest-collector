@@ -6,6 +6,13 @@ export const mockReactHooks = (
   privateCollector: PrivateCollector
 ) => ({
   ...origin,
+  createElement: (...props: any[]) => {
+    if (privateCollector.reactCreateElementDebug) {
+      throw new Error("debug");
+    } else {
+      return origin.createElement(...props);
+    }
+  },
   useCallback: function useCallback(
     action: (...props: any[]) => void,
     deps: any[]

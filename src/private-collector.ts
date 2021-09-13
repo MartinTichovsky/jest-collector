@@ -25,6 +25,8 @@ export class PrivateCollector extends CollectorAbstract {
   private excludeNotMockedElements?: boolean = undefined;
   private registeredFunctions: RegisteredFunction[] = [];
 
+  public reactCreateElementDebug = false;
+
   get isNotMockedElementExcluded() {
     return this.excludeNotMockedElements === true;
   }

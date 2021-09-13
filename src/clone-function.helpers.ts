@@ -1,3 +1,4 @@
+import { getCallerFromStack } from "./caller";
 import {
   Children,
   GetParentTestIdProps,
@@ -5,12 +6,14 @@ import {
 } from "./clone-function.types";
 import {
   DATA_TEST_ID,
+  RESOLVE_PATH,
   __nthChild__,
   __originMock__,
   __parentTestId__,
   __parent__,
   __relativePath__
 } from "./constants";
+import { PrivateCollector } from "./private-collector";
 import { FunctionIdentity } from "./private-collector.types";
 
 /**
@@ -82,6 +85,26 @@ export const getParentTestId = ({
   }
 
   return parentTestId;
+};
+
+export const getRelativePathForUnknown = (
+  func: any,
+  privateCollector: PrivateCollector
+): string => {
+  let relativePath = RESOLVE_PATH;
+
+  privateCollector.reactCreateElementDebug = true;
+
+  try {
+    func.apply(undefined);
+  } catch (ex: any) {
+    const caller = getCallerFromStack(ex.stack, 0);
+    relativePath = caller.relativePath;
+  }
+
+  privateCollector.reactCreateElementDebug = false;
+
+  return relativePath;
 };
 
 const isMatch = (leftSide: FunctionIdentity, rightSide: FunctionIdentity) =>

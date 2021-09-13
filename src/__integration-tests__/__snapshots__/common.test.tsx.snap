@@ -289,7 +289,7 @@ Array [
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
     },
-    "path": "unknown",
+    "path": "/src/__integration-tests__/components/common.tsx",
   },
   Object {
     "calls": Array [
@@ -318,7 +318,7 @@ Array [
         "parent": null,
         "relativePath": "/src/__integration-tests__/components/common.tsx",
       },
-      "relativePath": "unknown",
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
     },
     "path": "/src/__integration-tests__/components/UseEffect.tsx",
   },
@@ -354,7 +354,7 @@ Array [
           "parent": null,
           "relativePath": "/src/__integration-tests__/components/common.tsx",
         },
-        "relativePath": "unknown",
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
       },
       "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
     },
@@ -532,7 +532,7 @@ Array [
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
     },
-    "path": "unknown",
+    "path": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
   Object {
     "calls": Array [
@@ -557,7 +557,7 @@ Array [
         "parent": null,
         "relativePath": "/src/__integration-tests__/components/common.tsx",
       },
-      "relativePath": "unknown",
+      "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },
@@ -780,7 +780,7 @@ Array [
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
     },
-    "path": "unknown",
+    "path": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
   Object {
     "calls": Array [
@@ -805,7 +805,7 @@ Array [
         "parent": null,
         "relativePath": "/src/__integration-tests__/components/common.tsx",
       },
-      "relativePath": "unknown",
+      "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },
@@ -1028,7 +1028,7 @@ Array [
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
     },
-    "path": "unknown",
+    "path": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
   Object {
     "calls": Array [
@@ -1053,7 +1053,7 @@ Array [
         "parent": null,
         "relativePath": "/src/__integration-tests__/components/common.tsx",
       },
-      "relativePath": "unknown",
+      "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },
@@ -1276,7 +1276,7 @@ Array [
       "parent": null,
       "relativePath": "/src/__integration-tests__/components/common.tsx",
     },
-    "path": "unknown",
+    "path": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
   Object {
     "calls": Array [
@@ -1301,7 +1301,7 @@ Array [
         "parent": null,
         "relativePath": "/src/__integration-tests__/components/common.tsx",
       },
-      "relativePath": "unknown",
+      "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
     },
     "path": "/src/__integration-tests__/components/UseRef.tsx",
   },

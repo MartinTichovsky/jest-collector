@@ -1,17 +1,16 @@
 import React from "react";
-import { getFunctionIdentity, getParentTestId } from "./clone-function.helpers";
+import {
+  getFunctionIdentity,
+  getParentTestId,
+  getRelativePathForUnknown
+} from "./clone-function.helpers";
 import {
   GetUpdatedReactObjectProps,
   MockChildrenProps,
   ProcessReactResultProps,
   ReactObject
 } from "./clone-function.types";
-import {
-  RESOLVE_PATH,
-  __parentTestId__,
-  __parent__,
-  __relativePath__
-} from "./constants";
+import { __parentTestId__, __parent__, __relativePath__ } from "./constants";
 
 /**
  * Re-create the react object to be able passing
@@ -335,12 +334,13 @@ const mockReactComponent = ({
   });
 
   const objectDescriptors = Object.getOwnPropertyDescriptors(object);
+  const relativePath = getRelativePathForUnknown(object.type, privateCollector);
 
   const updatedObjectDescriptors = {
     ...objectDescriptors,
     type: {
       ...objectDescriptors.type,
-      value: object.type!.clone(privateCollector, RESOLVE_PATH, false)
+      value: object.type!.clone(privateCollector, relativePath, false)
     }
   };
 
