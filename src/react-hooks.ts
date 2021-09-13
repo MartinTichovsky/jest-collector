@@ -28,7 +28,7 @@ export const mockReactHooks = (
         relativePath: caller.relativePath
       })
     ) {
-      return origin.useEffect(action, deps);
+      return origin.useCallback(action, deps);
     }
 
     const register = privateCollector.registerHookWithAction({

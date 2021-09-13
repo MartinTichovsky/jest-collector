@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import { ClassComponent } from "./components/class-components";
 import {
@@ -422,6 +423,71 @@ describe("Commons tests", () => {
     );
 
     nthChildTestSuite();
+  });
+
+  test("Not mocked copmponent should work correctly", () => {
+    const getExpectedText = (
+      state: number,
+      context: string,
+      callbackResult: string,
+      memo: string,
+      ref: string
+    ) =>
+      `state:${state},context:${context},callback:${callbackResult},memo:${memo},ref:${ref}`;
+
+    const action = jest.fn();
+    const unmount = jest.fn();
+
+    const reactCoontext = React.createContext("context");
+
+    const Component = () => {
+      const [state, setState] = React.useState(5);
+      const context = React.useContext(reactCoontext);
+      const callback = React.useCallback(() => {
+        return `text${state}`;
+      }, [state]);
+      const memo = React.useMemo(() => `result${state}`, [state]);
+      const ref = React.useRef(`ref${state}`);
+
+      React.useEffect(() => {
+        action();
+        return unmount;
+      }, [state]);
+
+      const onClick = () => {
+        setState((prevValue) => prevValue + 1);
+      };
+
+      return (
+        <div>
+          <button onClick={onClick}>
+            {getExpectedText(state, context, callback(), memo, ref.current)}
+          </button>
+        </div>
+      );
+    };
+
+    render(<Component />);
+
+    // the text must be in the document
+    expect(screen.getByRole("button")).toHaveTextContent(
+      getExpectedText(5, "context", "text5", "result5", "ref5")
+    );
+    // action should be called once
+    expect(action).toBeCalledTimes(1);
+    // unmount should not be called
+    expect(unmount).not.toBeCalled();
+
+    // click on the button and set the state to re-render the component
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(screen.getByRole("button")).toHaveTextContent(
+      getExpectedText(6, "context", "text6", "result6", "ref5")
+    );
+    // action should be called once
+    expect(action).toBeCalledTimes(2);
+    // unmount should not be called
+    expect(unmount).toBeCalledTimes(1);
   });
 
   test("Recursive function", () => {
