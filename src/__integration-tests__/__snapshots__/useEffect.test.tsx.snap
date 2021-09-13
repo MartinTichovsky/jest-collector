@@ -51,7 +51,6 @@ Object {
     "name": "OneUseEffect",
     "nthChild": undefined,
     "originMock": true,
-    "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
   "hooks": Object {
@@ -158,7 +157,6 @@ Object {
     "name": "OneUseEffect",
     "nthChild": undefined,
     "originMock": true,
-    "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
   "hooks": Object {
@@ -265,7 +263,6 @@ Object {
     "name": "WithDeps",
     "nthChild": undefined,
     "originMock": true,
-    "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
   "hooks": Object {
@@ -342,7 +339,6 @@ Object {
     "name": "WithUmount",
     "nthChild": undefined,
     "originMock": true,
-    "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
   "hooks": Object {

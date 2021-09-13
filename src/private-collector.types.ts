@@ -15,14 +15,14 @@ export type FunctionCalled = FunctionIdentity &
     args: any;
     jestFn: jest.Mock;
     originMock: boolean;
-    parent?: Identity | null;
+    parent?: RegisteredFunction | null;
   };
 
 export type FunctionExecuted = FunctionIdentity &
   NthChild & {
     children: FunctionIdentity[];
     index: number;
-    parent: Identity | null;
+    parent: RegisteredFunction | null;
     result: any;
     time: number;
   };
@@ -82,13 +82,14 @@ export type HookWithAction<T = undefined> = {
   action: jest.Mock;
 } & (T extends undefined ? { _originScope: string } : {});
 
-export type Identity<T = undefined> = FunctionIdentity &
+export type Identity = FunctionIdentity &
   NthChild & {
     originMock: boolean;
-    parent: (T extends undefined ? Identity : Partial<Identity>) | null;
-  } & (T extends undefined
-    ? { children?: (FunctionIdentity & NthChild)[] }
-    : {});
+  };
+
+export type IdentityWithParent = Identity & {
+  parent: IdentityWithParent | null;
+};
 
 export interface NthChild {
   nthChild?: number;
@@ -97,9 +98,13 @@ export interface NthChild {
 export interface Options extends NthChild {
   dataTestId?: string;
   ignoreWarning?: true;
-  parent?: Partial<Identity<unknown>> | null;
+  parent?: OptionsParent | null;
   relativePath?: string;
 }
+
+export type OptionsParent = Partial<Identity> & {
+  parent?: OptionsParent | null;
+};
 
 export interface ReactClassLifecycle {
   render: jest.Mock;
@@ -139,8 +144,9 @@ export type RegisteredFunction<T = undefined> = {
   hooks?: ReactHooks<T>;
   jestFn: jest.Mock;
   lifecycle?: ReactClassLifecycle;
-  parent: Identity | null;
-} & (T extends undefined ? { hooksCounter: HooksCounter } : {});
+  parent: RegisteredFunction | null;
+} & (T extends undefined ? { hooksCounter: HooksCounter } : {}) &
+  (T extends undefined ? { children?: (FunctionIdentity & NthChild)[] } : {});
 
 export interface RegisterHook {
   componentName: string;
@@ -178,6 +184,6 @@ export interface Stats {
   dataTestId?: string;
   name: string;
   numberOfCalls: number;
-  parent: Identity | null;
+  parent: IdentityWithParent | null;
   path: string;
 }

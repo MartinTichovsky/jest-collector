@@ -13,7 +13,7 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Enable data=testid inheritance
+   * Enable data-testid inheritance
    *
    * @param excludeNotMockedElements If is set to true, not mocked component will not pass the data-testid
    */
@@ -22,17 +22,18 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   *
+   * Disable data-testid inheritance
    */
   public disableDataTestIdInheritance() {
     this.privateCollector.disableDataTestIdInheritance();
   }
 
   /**
+   * Get number of calls for the function or a react component
    *
-   * @param name
-   * @param options
-   * @returns
+   * @param name Name of a function or a react component
+   * @param options Options
+   * @returns Number of calls
    */
   public getCallCount(name: string, options?: Options) {
     return this.privateCollector.getCallCount(name, options);
@@ -41,7 +42,7 @@ export class Collector extends CollectorAbstract {
   /**
    *
    * @param name Name of a function or a react component
-   * @param options
+   * @param options Options
    * @returns
    */
   public getComponentData(

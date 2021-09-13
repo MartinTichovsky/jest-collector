@@ -6,7 +6,8 @@ import {
   ComponentWithChildren,
   DirectComponent,
   DirectComponentInTheSameFile,
-  SimpleComponent
+  SimpleComponent,
+  SimpleComponentInTheSameFile
 } from "./components/common";
 import {
   EmptyWithUseEffectAndUseCallback,
@@ -42,7 +43,6 @@ beforeEach(() => {
   collector.reset();
   jest.clearAllMocks();
 });
-
 describe("Commons tests", () => {
   test("Class", () => {
     // class should not exist
@@ -119,6 +119,31 @@ describe("Commons tests", () => {
         <p>text</p>
       </ComponentWithChildren>
     );
+  });
+
+  test("Component from the same file", () => {
+    const text1 = "text-1";
+    const text2 = "text-2";
+
+    render(
+      <>
+        <SimpleComponentInTheSameFile text={text1} />
+        <SimpleComponent text={text2} />
+      </>
+    );
+
+    // it should be called twice, each with different parent
+    expect(collector.getAllDataFor(SimpleComponent.name).length).toBe(2);
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        relativePath: "/src/__integration-tests__/components/common.tsx"
+      }).length
+    ).toBe(2);
+    expect(
+      collector.getCallCount(SimpleComponent.name, {
+        relativePath: "/src/__integration-tests__/components/common.tsx"
+      })
+    ).toBe(2);
   });
 
   test("More components with the same name should log a warning", () => {
@@ -203,7 +228,7 @@ describe("Commons tests", () => {
     expect(console.warn).not.toBeCalled();
     expect(
       collector.getCallCount(ComponentName, { dataTestId: dataTestId1 })
-    ).toBe(2);
+    ).toBe(3);
     expect(
       collector.getComponentData(ComponentName, { dataTestId: dataTestId1 })
     ).not.toBeUndefined();
@@ -423,7 +448,7 @@ describe("Commons tests", () => {
 
     const allFunctionsHistory = collector.getAllDataFor(recursiveFunction.name);
 
-    expect(allFunctionsHistory.length).toBe(11);
+    expect(allFunctionsHistory.length).toBe(2);
 
     // all calls should have the correct result number
     for (let i = 0; i < allFunctionsHistory.length; i++) {

@@ -5,8 +5,9 @@ import {
   FunctionExecuted,
   GetStatsOptions,
   HookChecker,
-  Identity,
+  IdentityWithParent,
   Options,
+  OptionsParent,
   ReactHooks,
   ReactHooksTypes,
   RegisteredFunction,
@@ -20,7 +21,7 @@ import {
 } from "./private-collector.types";
 
 export class PrivateCollector extends CollectorAbstract {
-  private activeFunction: Identity[] = [];
+  private activeFunction: RegisteredFunction[] = [];
   private dataTestIdInheritance = false;
   private excludeNotMockedElements?: boolean = undefined;
   private registeredFunctions: RegisteredFunction[] = [];
@@ -33,6 +34,17 @@ export class PrivateCollector extends CollectorAbstract {
 
   get isDataTestIdInherited() {
     return this.dataTestIdInheritance;
+  }
+
+  private checkRegisteredLength(
+    registered: RegisteredFunction[],
+    options?: Options
+  ) {
+    if (!options?.ignoreWarning && registered.length > 1) {
+      console.warn(
+        `More subjects with name '${name}' detected. Use relative path or parent to get exact result.`
+      );
+    }
   }
 
   private clearUsecontextHooks = (registered: RegisteredFunction) => {
@@ -50,18 +62,22 @@ export class PrivateCollector extends CollectorAbstract {
   }
 
   private findByParent(
-    item: Identity | null,
-    parent: Partial<Identity<unknown>> | null
+    item: RegisteredFunction | null,
+    parent: OptionsParent | null
   ): boolean {
     return parent === null
       ? item === null
       : item
-      ? (parent.dataTestId ? item.dataTestId === parent.dataTestId : true) &&
-        (parent.name ? item.name === parent.name : true) &&
+      ? (parent.dataTestId
+          ? item.current.dataTestId === parent.dataTestId
+          : true) &&
+        (parent.name ? item.current.name === parent.name : true) &&
         (parent.parent
           ? this.findByParent(item.parent, parent.parent)
           : true) &&
-        (parent.relativePath ? item.relativePath === parent.relativePath : true)
+        (parent.relativePath
+          ? item.current.relativePath === parent.relativePath
+          : true)
       : false;
   }
 
@@ -84,15 +100,15 @@ export class PrivateCollector extends CollectorAbstract {
     if (
       dataTestId === undefined &&
       this.isDataTestIdInherited &&
-      (!this.isNotMockedElementExcluded || parent?.originMock)
+      (!this.isNotMockedElementExcluded || parent?.current.originMock)
     ) {
-      dataTestId = parent?.dataTestId;
+      dataTestId = parent?.current.dataTestId;
     }
 
     const registered = this.getDataFor(name, {
       dataTestId,
       nthChild,
-      parent: parent || null,
+      parent: parent?.current || null,
       relativePath
     });
 
@@ -101,16 +117,15 @@ export class PrivateCollector extends CollectorAbstract {
       this.clearUsecontextHooks(registered);
       registered.hooksCounter = {};
       this.unregisterAllHooks(registered);
-      this.activeFunction.push(registered.current);
+      this.activeFunction.push(registered);
 
       return {
-        current: registered.current,
+        current: registered,
         index: registered.calls.length - 1,
         parent
       };
     } else {
-      const current: Identity = {
-        parent,
+      const current = {
         dataTestId,
         name,
         nthChild,
@@ -118,17 +133,19 @@ export class PrivateCollector extends CollectorAbstract {
         relativePath
       };
 
-      this.activeFunction.push(current);
-
-      this.registeredFunctions.push({
+      const registered = {
         calls: [{ args, stats: { time: 0 } }],
         current,
         hooksCounter: {},
         jestFn,
         parent: parent || null
-      });
+      };
 
-      return { current, index: 0, parent };
+      this.activeFunction.push(registered);
+
+      this.registeredFunctions.push(registered);
+
+      return { current: registered, index: 0, parent };
     }
   }
 
@@ -183,21 +200,6 @@ export class PrivateCollector extends CollectorAbstract {
       : undefined;
   }
 
-  public getCallCount(name: string, options?: Options) {
-    const registered = this.getDataFor(name, options);
-
-    if (
-      registered &&
-      registered.lifecycle &&
-      registered.lifecycle.render &&
-      registered.lifecycle.render.mock
-    ) {
-      return registered.lifecycle.render.mock.calls.length;
-    }
-
-    return registered ? registered.calls.length : undefined;
-  }
-
   public getAllDataFor(name: string, options?: Options) {
     const registered = this.registeredFunctions.filter(
       (item) =>
@@ -214,14 +216,29 @@ export class PrivateCollector extends CollectorAbstract {
     return registered;
   }
 
+  public getCallCount(name: string, options?: Options) {
+    const registered = this.getAllDataFor(name, options);
+
+    this.checkRegisteredLength(registered, options);
+
+    return registered.length
+      ? registered.reduceRight(
+          (previousValue, item) =>
+            previousValue +
+            (item.lifecycle &&
+            item.lifecycle.render &&
+            item.lifecycle.render.mock
+              ? item.lifecycle.render.mock.calls.length
+              : item.calls.length),
+          0
+        )
+      : undefined;
+  }
+
   public getDataFor(name: string, options?: Options) {
     const registered = this.getAllDataFor(name, options);
 
-    if (!options?.ignoreWarning && registered.length > 1) {
-      console.warn(
-        `More subjects with name '${name}' detected. Use relative path or parent to get exact result.`
-      );
-    }
+    this.checkRegisteredLength(registered, options);
 
     return registered.length ? registered[0] : undefined;
   }
@@ -242,6 +259,23 @@ export class PrivateCollector extends CollectorAbstract {
           filtered.hooks[hookType]![sequence - 1] as ReactHooksTypes[K]
         )
       : undefined;
+  }
+
+  private getIdentityFromParent(
+    parent: RegisteredFunction | null
+  ): IdentityWithParent | null {
+    if (parent === null) {
+      return null;
+    }
+
+    return {
+      dataTestId: parent.current.dataTestId,
+      name: parent.current.name,
+      nthChild: parent.current.nthChild,
+      originMock: parent.current.originMock,
+      parent: this.getIdentityFromParent(parent.parent),
+      relativePath: parent.current.relativePath
+    };
   }
 
   public getOnlyRegisteredHooks(
@@ -406,7 +440,7 @@ export class PrivateCollector extends CollectorAbstract {
       dataTestId: registered.current.dataTestId,
       name: registered.current.name,
       numberOfCalls: registered.calls.length,
-      parent: registered.parent,
+      parent: this.getIdentityFromParent(registered.parent),
       path: registered.current.relativePath
     };
   }
@@ -453,10 +487,10 @@ export class PrivateCollector extends CollectorAbstract {
     props,
     relativePath
   }: RegisterUseWithAction<K>) {
-    const current = this.getActiveFunction();
+    const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: current?.dataTestId,
-      parent: current?.parent || null,
+      dataTestId: active?.current.dataTestId,
+      parent: active?.parent || null,
       relativePath
     });
 
@@ -518,10 +552,10 @@ export class PrivateCollector extends CollectorAbstract {
     relativePath
   }: RegisterUseContext) {
     const hookType = "useContext";
-    const current = this.getActiveFunction();
+    const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: current?.dataTestId,
-      parent: current?.parent || null,
+      dataTestId: active?.current.dataTestId,
+      parent: active?.parent || null,
       relativePath
     });
 
@@ -540,10 +574,10 @@ export class PrivateCollector extends CollectorAbstract {
     relativePath
   }: RegisterUseState) {
     const hookType = "useState";
-    const current = this.getActiveFunction();
+    const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: current?.dataTestId,
-      parent: current?.parent || null,
+      dataTestId: active?.current.dataTestId,
+      parent: active?.parent || null,
       relativePath
     });
     if (!registered) {
@@ -578,10 +612,10 @@ export class PrivateCollector extends CollectorAbstract {
     relativePath
   }: RegisterUseRef) {
     const hookType = "useRef";
-    const current = this.getActiveFunction();
+    const active = this.getActiveFunction();
     const registered = this.getDataFor(componentName, {
-      dataTestId: current?.dataTestId,
-      parent: current?.parent || null,
+      dataTestId: active?.current.dataTestId,
+      parent: active?.parent || null,
       relativePath
     });
 

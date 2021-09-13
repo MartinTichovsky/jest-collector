@@ -19,12 +19,12 @@ export const mockReactHooks = (
   ) {
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
-    const current = privateCollector.getActiveFunction();
+    const active = privateCollector.getActiveFunction();
 
     if (
       !privateCollector.hasRegistered(caller.name, {
-        dataTestId: current?.dataTestId,
-        parent: current?.parent,
+        dataTestId: active?.current.dataTestId,
+        parent: active?.parent,
         relativePath: caller.relativePath
       })
     ) {
@@ -77,12 +77,12 @@ export const mockReactHooks = (
   useEffect: (action: () => () => void, deps: any[]) => {
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
-    const current = privateCollector.getActiveFunction();
+    const active = privateCollector.getActiveFunction();
 
     if (
       !privateCollector.hasRegistered(caller.name, {
-        dataTestId: current?.dataTestId,
-        parent: current?.parent,
+        dataTestId: active?.current.dataTestId,
+        parent: active?.parent,
         relativePath: caller.relativePath
       })
     ) {

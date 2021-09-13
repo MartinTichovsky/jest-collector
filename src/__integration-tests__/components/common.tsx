@@ -83,6 +83,10 @@ export const DirectComponentInTheSameFile = ({
   templateDataTestId?: string;
 }) => <DirectComponent templateDataTestId={templateDataTestId} />;
 
+export const SimpleComponentInTheSameFile = ({ text }: { text?: string }) => (
+  <SimpleComponent text={text} />
+);
+
 export const SimpleComponent = ({ text }: { text?: string }) => {
   return <p>{text}</p>;
 };

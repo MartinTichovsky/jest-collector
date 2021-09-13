@@ -96,7 +96,7 @@ export const registerClone = () => {
           if (result instanceof React.Component) {
             mockReactClass({
               component: _this,
-              dataTestId: registered.current.dataTestId,
+              dataTestId: registered.current.current.dataTestId,
               componentName: _this.name,
               privateCollector,
               relativePath
@@ -108,10 +108,10 @@ export const registerClone = () => {
           privateCollector.functionExecuted({
             parent: registered.parent,
             children: children.map((item) => item[1]),
-            dataTestId: registered.current.dataTestId,
+            dataTestId: registered.current.current.dataTestId,
             index: registered.index,
             name: _this.name,
-            nthChild: registered.current.nthChild,
+            nthChild: registered.current.current.nthChild,
             relativePath,
             result,
             time: t1 - t0

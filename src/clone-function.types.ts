@@ -1,8 +1,8 @@
 import { PrivateCollector } from "./private-collector";
 import {
   FunctionIdentity,
-  Identity,
-  NthChild
+  NthChild,
+  RegisteredFunction
 } from "./private-collector.types";
 
 export interface GetParentTestIdProps {
@@ -15,7 +15,7 @@ export interface GetParentTestIdProps {
 export interface GetUpdatedReactObjectProps {
   children?: ReactObject[] | ReactObject;
   object: ReactObject;
-  parent?: Identity;
+  parent?: RegisteredFunction | null;
   parentTestId?: string;
 }
 
@@ -23,7 +23,7 @@ export interface MockChildrenProps {
   isDataTestIdInherited: boolean;
   isNotMockedElementExcluded: boolean;
   object: ReactObject;
-  parent?: Identity;
+  parent?: RegisteredFunction | null;
   parentTestId?: string;
   privateCollector: PrivateCollector;
 }
@@ -34,7 +34,7 @@ export interface ProcessReactResultProps {
   isNotMockedElementExcluded: boolean;
   name: string;
   object: ReactObject;
-  parent?: Identity;
+  parent?: RegisteredFunction | null;
   parentTestId?: string;
   privateCollector: PrivateCollector;
   relativePath: string;
