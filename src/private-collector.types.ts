@@ -40,7 +40,6 @@ export interface GetStatsOptions extends Options {
 export type HooksCounter = { [key in keyof ReactHooksTypes]?: number };
 
 export type HookCallback<T = undefined> = HookWithAction<T> & {
-  deps: any[];
   hasBeenChanged: boolean;
 };
 
@@ -56,9 +55,18 @@ export interface HookContext {
 }
 
 export type HookEffect<T = undefined> = HookWithAction<T> & {
-  deps: any[];
   unmount?: jest.Mock;
 };
+
+export type HookMemo<T = undefined> = {
+  deps: any[];
+  hasBeenChanged: boolean;
+  result: jest.Mock | unknown;
+} & HookOriginScope<T>;
+
+export type HookOriginScope<T = undefined> = T extends undefined
+  ? { _originScope: string }
+  : {};
 
 export interface HookRef {
   args: any;
@@ -80,7 +88,8 @@ export type HookState<T = undefined> = {
 
 export type HookWithAction<T = undefined> = {
   action: jest.Mock;
-} & (T extends undefined ? { _originScope: string } : {});
+  deps: any[];
+} & HookOriginScope<T>;
 
 export type Identity = FunctionIdentity &
   NthChild & {
@@ -116,10 +125,10 @@ export interface ReactHooksTypes<T = undefined> {
   useContext: HookContext & HookChecker<T>;
   useEffect: HookEffect<T> & HookChecker<T>;
   useImperativeHandle: HookResult & HookChecker<T>;
+  useMemo: HookMemo & HookChecker<T>;
   useRef: HookRef & HookChecker<T>;
   useReducer: HookResult & HookChecker<T>;
   useState: HookState<T> & HookChecker<T>;
-  useMemo: HookResult & HookChecker<T>;
 }
 
 export type ReactHooks<T = undefined> = {
@@ -167,6 +176,10 @@ export interface RegisterUseContext extends RegisterHook {
 
 export interface RegisterUseRef extends RegisterHook {
   props: ReactHooksTypes["useRef"];
+}
+
+export interface RegisterUseMemo extends RegisterHook {
+  props: ReactHooksTypes["useMemo"];
 }
 
 export interface RegisterUseState extends RegisterHook {

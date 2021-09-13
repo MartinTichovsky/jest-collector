@@ -61,6 +61,17 @@ export const mockReactHooks = (
 
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
+    const active = privateCollector.getActiveFunction();
+
+    if (
+      !privateCollector.hasRegistered(caller.name, {
+        dataTestId: active?.current.dataTestId,
+        parent: active?.parent,
+        relativePath: caller.relativePath
+      })
+    ) {
+      return origin.useContext(args);
+    }
 
     privateCollector.registerUseContext({
       componentName: caller.name,
@@ -122,11 +133,69 @@ export const mockReactHooks = (
 
     return origin.useEffect(register.action, deps);
   },
+  useMemo: function useMemo(action: () => unknown, deps: any[]) {
+    // get caller function name from error stack since Funcion.caller is deprecated
+    const caller = getCaller();
+    const active = privateCollector.getActiveFunction();
+
+    if (
+      !privateCollector.hasRegistered(caller.name, {
+        dataTestId: active?.current.dataTestId,
+        parent: active?.parent,
+        relativePath: caller.relativePath
+      })
+    ) {
+      return origin.useMemo(action, deps);
+    }
+
+    const result = origin.useMemo(action, deps);
+
+    const register = privateCollector.registerUseMemo({
+      componentName: caller.name,
+      props: {
+        _originScope: action.toString(),
+        deps,
+        hasBeenChanged: false,
+        isRegistered: true,
+        result: typeof result === "function" ? jest.fn(result) : result
+      },
+      relativePath: caller.relativePath
+    });
+
+    if (
+      typeof register.result === "function"
+        ? (register.result as jest.Mock).getMockImplementation() !== result
+        : register.result !== result
+    ) {
+      register.hasBeenChanged = true;
+    } else {
+      register.hasBeenChanged = false;
+    }
+
+    if (typeof register.result === "function") {
+      (register.result as jest.Mock).mockImplementation(result);
+    } else {
+      register.result = result;
+    }
+
+    return register.result;
+  },
   useRef: function useRef(args: unknown) {
     const ref = origin.useRef(args);
 
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
+    const active = privateCollector.getActiveFunction();
+
+    if (
+      !privateCollector.hasRegistered(caller.name, {
+        dataTestId: active?.current.dataTestId,
+        parent: active?.parent,
+        relativePath: caller.relativePath
+      })
+    ) {
+      return origin.useRef(args);
+    }
 
     const register = privateCollector.registerUseRef({
       componentName: caller.name,
@@ -156,7 +225,17 @@ export const mockReactHooks = (
 
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
-    const current = privateCollector.getActiveFunction();
+    const active = privateCollector.getActiveFunction();
+
+    if (
+      !privateCollector.hasRegistered(caller.name, {
+        dataTestId: active?.current.dataTestId,
+        parent: active?.parent,
+        relativePath: caller.relativePath
+      })
+    ) {
+      return origin.useState(initialValue);
+    }
 
     const register = privateCollector.registerUseState({
       componentName: caller.name,

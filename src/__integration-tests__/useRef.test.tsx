@@ -55,7 +55,7 @@ describe("useRef", () => {
     expect(useRefHooks.get(2)?.ref.current).toEqual(0);
     expect(useRefHooks.get(2)?.hasBeenChanged).toBeFalsy();
 
-    // manualy set state
+    // manualy set the state
     act(() => {
       caller.setState(7);
     });
