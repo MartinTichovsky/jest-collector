@@ -34,7 +34,7 @@ export class Collector extends CollectorAbstract {
    *
    * @param {String} name Name of a function or a react component
    * @param {object} options Options
-   * @returns {number|undefined} Number of all calls
+   * @returns {number|undefined} Number of all calls or undefined
    */
   public getCallCount(name: string, options?: Options): number | undefined {
     return this.privateCollector.getCallCount(name, options);
@@ -47,7 +47,7 @@ export class Collector extends CollectorAbstract {
    *
    * @param {string} componentName Component name
    * @param {object} options Options
-   * @returns {object} Data
+   * @returns {object|undefined} Data or undefined
    */
   public getComponentData(
     componentName: string,
@@ -78,7 +78,7 @@ export class Collector extends CollectorAbstract {
    *
    * @param {string} name Name of a function or a react component
    * @param {object} options Options
-   * @returns {object} Data
+   * @returns {object|undefined} Data or undefined
    */
   public getDataFor(
     name: string,
@@ -86,17 +86,18 @@ export class Collector extends CollectorAbstract {
   ): RegisteredFunction<unknown> | undefined {
     const registered = this.privateCollector.getDataFor(name, options);
 
-    if (!registered?.hooks) {
+    if (!(registered && "hooks" in registered)) {
       return registered;
     }
 
     const filtered = this.privateCollector.getOnlyRegisteredHooks(registered);
     delete (filtered as RegisteredFunction<unknown>)["hooksCounter"];
 
-    return {
-      ...filtered,
-      hooks: this.privateCollector.removePropsFromAllHooks(filtered!.hooks)
-    } as RegisteredFunction<unknown> | undefined;
+    filtered.hooks = this.privateCollector.removePropsFromAllHooks(
+      filtered!.hooks!
+    );
+
+    return filtered;
   }
 
   /**
@@ -104,9 +105,12 @@ export class Collector extends CollectorAbstract {
    *
    * @param {string} componentName Component name
    * @param {object} options Options
-   * @returns {object} An object with methods
+   * @returns {object|undefined} An object with methods or undefined
    */
-  public getReactHooks(componentName: string, options?: Options): GetAllHooks {
+  public getReactHooks(
+    componentName: string,
+    options?: Options
+  ): GetAllHooks | undefined {
     return this.privateCollector.getReactHooks(componentName, options);
   }
 
@@ -115,7 +119,7 @@ export class Collector extends CollectorAbstract {
    *
    * @param {string} componentName Component name
    * @param {object} options Options
-   * @returns {object} An object with lifecycle properties and their results
+   * @returns {object|undefined} An object with lifecycle properties and their results or undefined
    */
   public getReactLifecycle(
     componentName: string,

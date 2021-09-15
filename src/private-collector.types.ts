@@ -123,8 +123,8 @@ export type OptionsParent = Partial<Identity> & {
 };
 
 export interface ReactClassLifecycle {
-  render: jest.Mock;
-  setState: jest.Mock;
+  render?: jest.Mock;
+  setState?: jest.Mock;
 }
 
 export interface ReactHooksTypes<T = undefined> {
@@ -141,6 +141,19 @@ export interface ReactHooksTypes<T = undefined> {
 export type ReactHooks<T = undefined> = {
   [K in keyof ReactHooksTypes]?: ReactHooksTypes<T>[K][];
 };
+
+export interface RegisterHook {
+  componentName: string;
+  relativePath: string;
+}
+
+export interface RegisterHookProps<K extends keyof ReactHooksTypes> {
+  hooks: ReactHooksTypes[K][];
+  hookType: K;
+  props: ReactHooksTypes[K];
+  registered: RegisteredFunction;
+  sequence: number;
+}
 
 export interface RegisterReactClass {
   componentName: string;
@@ -161,21 +174,8 @@ export type RegisteredFunction<T = undefined> = {
   jestFn: jest.Mock;
   lifecycle?: ReactClassLifecycle;
   parent: RegisteredFunction | null;
-} & (T extends undefined ? { hooksCounter: HooksCounter } : {}) &
+} & (T extends undefined ? { hooksCounter?: HooksCounter } : {}) &
   (T extends undefined ? { children?: (FunctionIdentity & NthChild)[] } : {});
-
-export interface RegisterHook {
-  componentName: string;
-  relativePath: string;
-}
-
-export interface RegisterHookProps<K extends keyof ReactHooksTypes> {
-  hooks: ReactHooksTypes[K][];
-  hookType: K;
-  props: ReactHooksTypes[K];
-  registered: RegisteredFunction;
-  sequence: number;
-}
 
 export interface RegisterUseContext extends RegisterHook {
   props: ReactHooksTypes["useContext"];

@@ -20,14 +20,14 @@ describe("useCallback", () => {
     // get useCallback hooks
     const useCallbackHooks = collector
       .getReactHooks(OneUseCallback.name)
-      .getHooksByType("useCallback");
+      ?.getHooksByType("useCallback");
 
     // check the hooks
-    expect(useCallbackHooks.get(1)).not.toBeUndefined();
-    expect(useCallbackHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useCallbackHooks.get(1)?.action()).toEqual(callFunc);
+    expect(useCallbackHooks?.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useCallbackHooks?.get(1)?.action()).toEqual(callFunc);
     expect(callFunc).toBeCalledTimes(1);
-    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useCallbackHooks?.get(1)?.hasBeenChanged).toBeFalsy();
   });
 
   test("Deps in the component", () => {
@@ -39,7 +39,7 @@ describe("useCallback", () => {
     // get useCallback hooks
     const useCallbackHooks = collector
       .getReactHooks(WithDeps.name)
-      .getHooksByType("useCallback");
+      ?.getHooksByType("useCallback");
 
     // hook should have passed deps
     expect(useCallbackHooks?.get(1)).not.toBeUndefined();
@@ -60,7 +60,7 @@ describe("useCallback", () => {
     // get the useCallback hooks
     const useCallbackHooks = collector
       .getReactHooks(Renders.name)
-      .getHooksByType("useCallback");
+      ?.getHooksByType("useCallback");
 
     // manually set the state
     act(() => {
@@ -68,10 +68,10 @@ describe("useCallback", () => {
     });
 
     // test expected result
-    expect(useCallbackHooks.get(1)).not.toBeUndefined();
-    expect(useCallbackHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useCallbackHooks.get(1)?.action()).toEqual(caller.action);
-    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useCallbackHooks?.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useCallbackHooks?.get(1)?.action()).toEqual(caller.action);
+    expect(useCallbackHooks?.get(1)?.hasBeenChanged).toBeFalsy();
 
     // manually set the state
     act(() => {
@@ -79,10 +79,10 @@ describe("useCallback", () => {
     });
 
     // test expected result
-    expect(useCallbackHooks.get(1)).not.toBeUndefined();
-    expect(useCallbackHooks.get(1)?.action).toBeCalledTimes(3);
-    expect(useCallbackHooks.get(1)?.action()).toEqual(caller.action);
-    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeTruthy();
+    expect(useCallbackHooks?.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks?.get(1)?.action).toBeCalledTimes(3);
+    expect(useCallbackHooks?.get(1)?.action()).toEqual(caller.action);
+    expect(useCallbackHooks?.get(1)?.hasBeenChanged).toBeTruthy();
 
     // manually set the state
     act(() => {
@@ -90,10 +90,10 @@ describe("useCallback", () => {
     });
 
     // test expected result
-    expect(useCallbackHooks.get(1)).not.toBeUndefined();
-    expect(useCallbackHooks.get(1)?.action).toBeCalledTimes(5);
-    expect(useCallbackHooks.get(1)?.action()).toEqual(caller.action);
-    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeTruthy();
+    expect(useCallbackHooks?.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks?.get(1)?.action).toBeCalledTimes(5);
+    expect(useCallbackHooks?.get(1)?.action()).toEqual(caller.action);
+    expect(useCallbackHooks?.get(1)?.hasBeenChanged).toBeTruthy();
 
     // manually set the state
     act(() => {
@@ -101,10 +101,10 @@ describe("useCallback", () => {
     });
 
     // test expected result
-    expect(useCallbackHooks.get(1)).not.toBeUndefined();
-    expect(useCallbackHooks.get(1)?.action).toBeCalledTimes(7);
-    expect(useCallbackHooks.get(1)?.action()).toEqual(caller.action);
-    expect(useCallbackHooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useCallbackHooks?.get(1)).not.toBeUndefined();
+    expect(useCallbackHooks?.get(1)?.action).toBeCalledTimes(7);
+    expect(useCallbackHooks?.get(1)?.action()).toEqual(caller.action);
+    expect(useCallbackHooks?.get(1)?.hasBeenChanged).toBeFalsy();
   });
 
   test("Return from the useCallback", () => {
@@ -117,16 +117,16 @@ describe("useCallback", () => {
     // get the useCallback hooks
     const useCallbackHooks = collector
       .getReactHooks(WithReturn.name)
-      .getHooksByType("useCallback");
+      ?.getHooksByType("useCallback");
 
     // the action should not to be called
-    expect(useCallbackHooks.get(1)?.action).not.toBeCalled();
+    expect(useCallbackHooks?.get(1)?.action).not.toBeCalled();
 
     // mnually call the action
     caller.action(56);
 
     // it should have the correct result
-    expect(useCallbackHooks.get(1)?.action).lastCalledWith(56);
-    expect(useCallbackHooks.get(1)?.action).toReturnWith("Call 56");
+    expect(useCallbackHooks?.get(1)?.action).lastCalledWith(56);
+    expect(useCallbackHooks?.get(1)?.action).toReturnWith("Call 56");
   });
 });

@@ -2,11 +2,11 @@ import React from "react";
 import { SimpleComponent } from "./common";
 import { OneUseRef } from "./UseRef";
 
-export const UnregisteredComponentWithChildren = ({
-  children
-}: React.PropsWithChildren<{}>) => {
-  return <>{children}</>;
-};
+export class UnregisteredClassComponent extends React.Component {
+  render() {
+    return <div>Class component content</div>;
+  }
+}
 
 export const EmptyWithUseEffectAndUseCallback = () => {
   React.useEffect(() => {
@@ -30,6 +30,12 @@ export const UnregisteredComponentWithSimpleComponent = ({
   text?: string;
 }) => {
   return <SimpleComponent text={text} />;
+};
+
+export const UnregisteredComponentWithChildren = ({
+  children
+}: React.PropsWithChildren<{}>) => {
+  return <>{children}</>;
 };
 
 export const UnregisteredComponentWithOneUseRef = () => {

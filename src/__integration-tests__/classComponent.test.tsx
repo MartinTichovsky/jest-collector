@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import { ClassComponent } from "./components/class-components";
+import { UnregisteredClassComponent } from "./components/common.unregistered";
 
 beforeEach(() => {
   collector.reset();
@@ -40,5 +41,17 @@ describe("Class component", () => {
 
     // setState should be called once
     expect(lifecycle?.setState).toBeCalledTimes(1);
+
+    // new render with the same component
+    render(<ClassComponent />);
+
+    // component should be called three times
+    expect(collector.getCallCount(ClassComponent.name)).toBe(3);
+  });
+
+  test("Unregistered class", () => {
+    render(<UnregisteredClassComponent />);
+
+    expect(screen.getByText("Class component content")).toBeTruthy();
   });
 });

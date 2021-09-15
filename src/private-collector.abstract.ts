@@ -111,7 +111,7 @@ export abstract class CollectorAbstract {
   public abstract getReactHooks(
     componentName: string,
     options?: Options
-  ): GetAllHooks;
+  ): GetAllHooks | undefined;
 
   public abstract getReactLifecycle(
     componentName: string,

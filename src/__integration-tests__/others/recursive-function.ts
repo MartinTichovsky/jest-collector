@@ -8,3 +8,7 @@ export function recursiveFunction(
   }
   return callCount;
 }
+
+export function regularFunction(param: any) {
+  return param;
+}

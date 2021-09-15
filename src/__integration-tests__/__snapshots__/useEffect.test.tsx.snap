@@ -25,7 +25,7 @@ exports[`useEffect Default - Component with one useEffect 2`] = `
 Object {
   "calls": Array [
     Object {
-      "args": Arguments [
+      "args": Array [
         Object {
           "callFunc": [MockFunction] {
             "calls": Array [
@@ -130,7 +130,7 @@ exports[`useEffect Default with test id - Component with one useEffect 2`] = `
 Object {
   "calls": Array [
     Object {
-      "args": Arguments [
+      "args": Array [
         Object {
           "callFunc": [MockFunction] {
             "calls": Array [
@@ -240,7 +240,7 @@ exports[`useEffect Deps in the component 1`] = `
 Object {
   "calls": Array [
     Object {
-      "args": Arguments [
+      "args": Array [
         Object {
           "deps": Array [
             1,
@@ -325,7 +325,7 @@ exports[`useEffect Unmount registered component 1`] = `
 Object {
   "calls": Array [
     Object {
-      "args": Arguments [
+      "args": Array [
         Object {},
         Object {},
       ],

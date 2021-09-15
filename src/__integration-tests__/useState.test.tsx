@@ -20,18 +20,18 @@ describe("useState", () => {
     // get all hooks
     const useState = collector.getReactHooks(OneUseState.name);
     // get useState hooks
-    const useStateHooks = useState.getHooksByType("useState");
+    const useStateHooks = useState?.getHooksByType("useState");
 
     // the useState hook should exist
-    expect(useStateHooks.get(1)).not.toBeUndefined();
-    expect(useStateHooks.get(2)).toBeUndefined();
-    expect(useStateHooks.get(1)?.setState).not.toBeCalled();
-    expect(useStateHooks.get(1)?.state).toEqual([0]);
+    expect(useStateHooks?.get(1)).not.toBeUndefined();
+    expect(useStateHooks?.get(2)).toBeUndefined();
+    expect(useStateHooks?.get(1)?.setState).not.toBeCalled();
+    expect(useStateHooks?.get(1)?.state).toEqual([0]);
 
     // testing the state results
-    expect(useState.getUseState(1).getState(1)).toEqual(0);
-    expect(useState.getUseState(2).getState(1)).toBeUndefined();
-    expect(useState.getUseState(1).getState(2)).toBeUndefined();
+    expect(useState?.getUseState(1).getState(1)).toEqual(0);
+    expect(useState?.getUseState(2).getState(1)).toBeUndefined();
+    expect(useState?.getUseState(1).getState(2)).toBeUndefined();
   });
 
   test("Dynamic state changing", () => {
@@ -46,12 +46,12 @@ describe("useState", () => {
     render(<DynamicState caller={caller} />);
 
     // get the first useState hook
-    const useState = collector.getReactHooks(DynamicState.name).getUseState(1);
+    const useState = collector.getReactHooks(DynamicState.name)?.getUseState(1);
 
     // correct text should be in the document
     expect(screen.getByText(getExpectedText(0))).toBeTruthy();
     // it should contain the correct state result
-    expect(useState.next()).toEqual([0]);
+    expect(useState?.next()).toEqual([0]);
 
     // manually set the state
     act(() => {
@@ -61,7 +61,7 @@ describe("useState", () => {
     // correct text should be in the document
     expect(screen.getByText(getExpectedText(1))).toBeTruthy();
     // it should contain the correct state result
-    expect(useState.next()).toEqual([1]);
+    expect(useState?.next()).toEqual([1]);
 
     // manually set the state
     act(() => {
@@ -77,13 +77,13 @@ describe("useState", () => {
     });
 
     // it should contain correct state results since last calling the useState.next()
-    expect(useState.next()).toEqual([3, 8]);
+    expect(useState?.next()).toEqual([3, 8]);
 
     // reset the state itterator
-    useState.reset();
+    useState?.reset();
 
     // check all states created since render
-    expect(useState.next()).toEqual([0, 1, 3, 8]);
+    expect(useState?.next()).toEqual([0, 1, 3, 8]);
   });
 
   test("Multiple states with dynamic changing", () => {
@@ -102,7 +102,7 @@ describe("useState", () => {
     const useState = collector.getReactHooks(MultipleStates.name);
 
     // two useState hooks shoul exist
-    expect(useState.getAll("useState")?.length).toBe(2);
+    expect(useState?.getAll("useState")?.length).toBe(2);
 
     // manually set the state
     act(() => {
@@ -121,9 +121,9 @@ describe("useState", () => {
     expect(screen.getByText(getExpectedText(987))).toBeTruthy();
 
     // all states in the render sequence should contain the correct value
-    expect(useState.getUseState(2).getState(1)).toBe("");
-    expect(useState.getUseState(2).getState(2)).toBe(getExpectedText(123));
-    expect(useState.getUseState(2).getState(3)).toBe(getExpectedText(987));
+    expect(useState?.getUseState(2).getState(1)).toBe("");
+    expect(useState?.getUseState(2).getState(2)).toBe(getExpectedText(123));
+    expect(useState?.getUseState(2).getState(3)).toBe(getExpectedText(987));
   });
 
   test("Parallel states", () => {
@@ -188,13 +188,13 @@ describe("useState", () => {
     });
 
     expect(collector.getCallCount(DynamicState.name)).toBe(4);
-    expect(dynamicState1Hooks.getAll("useState")?.length).toBe(1);
-    expect(dynamicState2Hooks.getAll("useState")?.length).toBe(1);
+    expect(dynamicState1Hooks?.getAll("useState")?.length).toBe(1);
+    expect(dynamicState2Hooks?.getAll("useState")?.length).toBe(1);
     expect(
-      dynamicState1Hooks.getHooksByType("useState").get(1)?.setState
+      dynamicState1Hooks?.getHooksByType("useState").get(1)?.setState
     ).toBeCalledTimes(1);
     expect(
-      dynamicState2Hooks.getHooksByType("useState").get(1)?.setState
+      dynamicState2Hooks?.getHooksByType("useState").get(1)?.setState
     ).toBeCalledTimes(1);
   });
 

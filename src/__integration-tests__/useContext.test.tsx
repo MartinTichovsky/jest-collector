@@ -33,24 +33,24 @@ describe("useContext", () => {
     // get useCallback hooks
     const useContextHooks1 = collector
       .getReactHooks(UseContext.name, { dataTestId: testId1 })
-      .getHooksByType("useContext");
+      ?.getHooksByType("useContext");
     const useContextHooks2 = collector
       .getReactHooks(UseContext.name, { dataTestId: testId2 })
-      .getHooksByType("useContext");
+      ?.getHooksByType("useContext");
 
     // every context should have correct value passed from the provider
     expect(
       screen.getByText(getExpectedText("Provider1-A", "Provider2-A"))
     ).toBeTruthy();
     expect(screen.getByText(getExpectedText("Provider-0", ""))).toBeTruthy();
-    expect(useContextHooks1.get(1)?.args).toEqual(reactContext1);
-    expect(useContextHooks1.get(1)?.context).toBe("Provider1-A");
-    expect(useContextHooks1.get(2)?.args).toEqual(reactContext2);
-    expect(useContextHooks1.get(2)?.context).toEqual({ text: "Provider2-A" });
-    expect(useContextHooks2.get(1)?.args).toEqual(reactContext1);
-    expect(useContextHooks2.get(1)?.context).toBe("Provider-0");
-    expect(useContextHooks2.get(2)?.args).toEqual(reactContext2);
-    expect(useContextHooks2.get(2)?.context).toEqual({});
+    expect(useContextHooks1?.get(1)?.args).toEqual(reactContext1);
+    expect(useContextHooks1?.get(1)?.context).toBe("Provider1-A");
+    expect(useContextHooks1?.get(2)?.args).toEqual(reactContext2);
+    expect(useContextHooks1?.get(2)?.context).toEqual({ text: "Provider2-A" });
+    expect(useContextHooks2?.get(1)?.args).toEqual(reactContext1);
+    expect(useContextHooks2?.get(1)?.context).toBe("Provider-0");
+    expect(useContextHooks2?.get(2)?.args).toEqual(reactContext2);
+    expect(useContextHooks2?.get(2)?.context).toEqual({});
   });
 
   test("Render a component without and with context provider", () => {
@@ -59,17 +59,17 @@ describe("useContext", () => {
     // get useContext hooks
     const useContextHooks = collector
       .getReactHooks(UseContext.name)
-      .getHooksByType("useContext");
+      ?.getHooksByType("useContext");
 
     // the contexts should have default value
     expect(screen.getByText(getExpectedText("", ""))).toBeTruthy();
-    expect(useContextHooks.get(1)).not.toBeUndefined();
-    expect(useContextHooks.get(2)).not.toBeUndefined();
-    expect(useContextHooks.get(3)).toBeUndefined();
-    expect(useContextHooks.get(1)?.args).toEqual(reactContext1);
-    expect(useContextHooks.get(1)?.context).toBeUndefined;
-    expect(useContextHooks.get(2)?.args).toEqual(reactContext2);
-    expect(useContextHooks.get(2)?.context).toEqual({});
+    expect(useContextHooks?.get(1)).not.toBeUndefined();
+    expect(useContextHooks?.get(2)).not.toBeUndefined();
+    expect(useContextHooks?.get(3)).toBeUndefined();
+    expect(useContextHooks?.get(1)?.args).toEqual(reactContext1);
+    expect(useContextHooks?.get(1)?.context).toBeUndefined;
+    expect(useContextHooks?.get(2)?.args).toEqual(reactContext2);
+    expect(useContextHooks?.get(2)?.context).toEqual({});
 
     // render with reactContext1 provider only
     render(
@@ -80,10 +80,10 @@ describe("useContext", () => {
 
     // only the first context should have the passed value from the provider
     expect(screen.getByText(getExpectedText("Provider1", ""))).toBeTruthy();
-    expect(useContextHooks.get(1)?.args).toEqual(reactContext1);
-    expect(useContextHooks.get(1)?.context).toBe("Provider1");
-    expect(useContextHooks.get(2)?.args).toEqual(reactContext2);
-    expect(useContextHooks.get(2)?.context).toEqual({});
+    expect(useContextHooks?.get(1)?.args).toEqual(reactContext1);
+    expect(useContextHooks?.get(1)?.context).toBe("Provider1");
+    expect(useContextHooks?.get(2)?.args).toEqual(reactContext2);
+    expect(useContextHooks?.get(2)?.context).toEqual({});
 
     // render with both providers
     render(
@@ -98,9 +98,9 @@ describe("useContext", () => {
     expect(
       screen.getByText(getExpectedText("Provider1", "Provider2"))
     ).toBeTruthy();
-    expect(useContextHooks.get(1)?.args).toEqual(reactContext1);
-    expect(useContextHooks.get(1)?.context).toBe("Provider1");
-    expect(useContextHooks.get(2)?.args).toEqual(reactContext2);
-    expect(useContextHooks.get(2)?.context).toEqual({ text: "Provider2" });
+    expect(useContextHooks?.get(1)?.args).toEqual(reactContext1);
+    expect(useContextHooks?.get(1)?.context).toBe("Provider1");
+    expect(useContextHooks?.get(2)?.args).toEqual(reactContext2);
+    expect(useContextHooks?.get(2)?.context).toEqual({ text: "Provider2" });
   });
 });

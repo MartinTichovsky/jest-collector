@@ -89,14 +89,14 @@ describe("useEffect", () => {
     // get the useEffect hooks
     const useEffectHooks = collector
       .getReactHooks(WithDeps.name)
-      .getHooksByType("useEffect");
+      ?.getHooksByType("useEffect");
 
     // deps must mutch the passed value
-    expect(useEffectHooks.get(1)).not.toBeUndefined();
-    expect(useEffectHooks.get(2)).toBeUndefined();
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(1)?.deps).toEqual(deps);
-    expect(useEffectHooks.get(1)?.unmount).toBeUndefined();
+    expect(useEffectHooks?.get(1)).not.toBeUndefined();
+    expect(useEffectHooks?.get(2)).toBeUndefined();
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.deps).toEqual(deps);
+    expect(useEffectHooks?.get(1)?.unmount).toBeUndefined();
   });
 
   test("Dynamic render", () => {
@@ -114,17 +114,17 @@ describe("useEffect", () => {
     // get useEffect hooks
     const useEffectHooks = collector
       .getReactHooks(Renders.name)
-      .getHooksByType("useEffect");
+      ?.getHooksByType("useEffect");
 
     // check if the render is correct and contains correct text
     expect(screen.getByText(getExpectedText(0))).toBeTruthy();
     // the component should be called once
     expect(collector.getCallCount(Renders.name)).toBe(1);
     // the action should be called once
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
     expect(caller.action).toBeCalledTimes(1);
     // no more actions should be defined
-    expect(useEffectHooks.get(2)).toBeUndefined();
+    expect(useEffectHooks?.get(2)).toBeUndefined();
 
     // manually set the state
     act(() => {
@@ -136,10 +136,10 @@ describe("useEffect", () => {
     // the component should be called twice
     expect(collector.getCallCount(Renders.name)).toBe(2);
     // the action should be called once
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
     expect(caller.action).toBeCalledTimes(1);
     // no more actions should be defined
-    expect(useEffectHooks.get(2)).toBeUndefined();
+    expect(useEffectHooks?.get(2)).toBeUndefined();
 
     // manually set the state
     act(() => {
@@ -151,10 +151,10 @@ describe("useEffect", () => {
     // the component should be called three times
     expect(collector.getCallCount(Renders.name)).toBe(3);
     // the action should be called once
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
     expect(caller.action).toBeCalledTimes(1);
     // no more actions should be defined
-    expect(useEffectHooks.get(2)).toBeUndefined();
+    expect(useEffectHooks?.get(2)).toBeUndefined();
   });
 
   test("Multiple useEffects", () => {
@@ -190,7 +190,7 @@ describe("useEffect", () => {
     // get useEffect hooks
     const useEffectHooks = collector
       .getReactHooks(MultipleUseEffectsInner.name)
-      .getHooksByType("useEffect");
+      ?.getHooksByType("useEffect");
 
     // the correct text must be in the document
     expect(screen.getByText(getExpectedText(0))).toBeTruthy();
@@ -200,17 +200,17 @@ describe("useEffect", () => {
     expect(collector.getCallCount(MultipleUseEffectsInner.name)).toBe(1);
     // the inner component should have three useEffect hooks
     expect(
-      collector.getReactHooks(MultipleUseEffectsInner.name).getAll("useEffect")
+      collector.getReactHooks(MultipleUseEffectsInner.name)?.getAll("useEffect")
         ?.length
     ).toBe(3);
     // check the actions, each must be called once
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(1);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(4)).toBeUndefined();
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(3)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(4)).toBeUndefined();
 
     // manually set the state of the inner component - second render
     act(() => {
@@ -225,17 +225,17 @@ describe("useEffect", () => {
     expect(collector.getCallCount(MultipleUseEffectsInner.name)).toBe(2);
     // the inner component should have three useEffect hooks
     expect(
-      collector.getReactHooks(MultipleUseEffectsInner.name).getAll("useEffect")
+      collector.getReactHooks(MultipleUseEffectsInner.name)?.getAll("useEffect")
         ?.length
     ).toBe(3);
     // check the actions, each must be called once
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(1);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(4)).toBeUndefined();
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(3)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(4)).toBeUndefined();
 
     // manually set the state of the inner component - third render
     act(() => {
@@ -250,17 +250,17 @@ describe("useEffect", () => {
     expect(collector.getCallCount(MultipleUseEffectsInner.name)).toBe(3);
     // the inner component should have three useEffect hooks
     expect(
-      collector.getReactHooks(MultipleUseEffectsInner.name).getAll("useEffect")
+      collector.getReactHooks(MultipleUseEffectsInner.name)?.getAll("useEffect")
         ?.length
     ).toBe(3);
     // check the actions, each must be called once
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(1);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(4)).toBeUndefined();
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(3)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(4)).toBeUndefined();
 
     // call the parent component and force to rerender all
     act(() => {
@@ -275,17 +275,17 @@ describe("useEffect", () => {
     expect(collector.getCallCount(MultipleUseEffectsInner.name)).toBe(4);
     // the inner component should have three useEffect hooks
     expect(
-      collector.getReactHooks(MultipleUseEffectsInner.name).getAll("useEffect")
+      collector.getReactHooks(MultipleUseEffectsInner.name)?.getAll("useEffect")
         ?.length
     ).toBe(3);
     // check the actions, each must be called once
     expect(callFunc11).toBeCalledTimes(1);
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(1);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(3)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(4)).toBeUndefined();
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(3)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(4)).toBeUndefined();
 
     // render the component again an force the component to register only two useEffect hooks
     render(
@@ -306,7 +306,7 @@ describe("useEffect", () => {
     expect(collector.getCallCount(MultipleUseEffectsInner.name)).toBe(5);
     // the inner component should have two useEffect hooks
     expect(
-      collector.getReactHooks(MultipleUseEffectsInner.name).getAll("useEffect")
+      collector.getReactHooks(MultipleUseEffectsInner.name)?.getAll("useEffect")
         ?.length
     ).toBe(2);
     // check the actions, except for the second function others must be called twice
@@ -314,9 +314,9 @@ describe("useEffect", () => {
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(2);
     // the useEffects changed the order, because the second useEffect was not created
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(2);
-    expect(useEffectHooks.get(2)?.action).toBeCalledTimes(2);
-    expect(useEffectHooks.get(3)).toBeUndefined();
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks?.get(2)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks?.get(3)).toBeUndefined();
 
     /*
       render directly the inner component, it should register less effects
@@ -336,7 +336,7 @@ describe("useEffect", () => {
     // get the useEffect hooks for the specific component with parent=null
     const useEffectHooksForSecondRender = collector
       .getReactHooks(MultipleUseEffectsInner.name, { parent: null })
-      .getHooksByType("useEffect");
+      ?.getHooksByType("useEffect");
 
     // there must be two MultipleUseEffectsInner components registered in the collector
     expect(collector.getAllDataFor(MultipleUseEffectsInner.name).length).toBe(
@@ -351,7 +351,7 @@ describe("useEffect", () => {
     expect(
       collector
         .getReactHooks(MultipleUseEffectsInner.name, { parent: null })
-        .getAll("useEffect")?.length
+        ?.getAll("useEffect")?.length
     ).toBe(2);
     // the functions passed in the first wave of test must still have the same call count
     expect(callFunc11).toBeCalledTimes(2);
@@ -362,9 +362,9 @@ describe("useEffect", () => {
     expect(callFunc22).not.toBeCalled();
     expect(callFunc23).toBeCalledTimes(1);
     // there are two effects only, because the second one is skipped
-    expect(useEffectHooksForSecondRender.get(1)?.action).toBeCalledTimes(1);
-    expect(useEffectHooksForSecondRender.get(2)?.action).toBeCalledTimes(1);
-    expect(useEffectHooksForSecondRender.get(3)).toBeUndefined();
+    expect(useEffectHooksForSecondRender?.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooksForSecondRender?.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooksForSecondRender?.get(3)).toBeUndefined();
 
     // one more render of the inner component, this time with the second useEffect to be called
     render(
@@ -389,7 +389,7 @@ describe("useEffect", () => {
     expect(
       collector
         .getReactHooks(MultipleUseEffectsInner.name, { parent: null })
-        .getAll("useEffect")?.length
+        ?.getAll("useEffect")?.length
     ).toBe(3);
 
     // the functions passed in the first wave of test must still have the same call count
@@ -404,10 +404,10 @@ describe("useEffect", () => {
       now the second useEffect from the previous render becomes the third one 
       because the second useEffect is now registered
     */
-    expect(useEffectHooksForSecondRender.get(1)?.action).toBeCalledTimes(2);
-    expect(useEffectHooksForSecondRender.get(2)?.action).toBeCalledTimes(1);
-    expect(useEffectHooksForSecondRender.get(3)?.action).toBeCalledTimes(2);
-    expect(useEffectHooksForSecondRender.get(4)).toBeUndefined();
+    expect(useEffectHooksForSecondRender?.get(1)?.action).toBeCalledTimes(2);
+    expect(useEffectHooksForSecondRender?.get(2)?.action).toBeCalledTimes(1);
+    expect(useEffectHooksForSecondRender?.get(3)?.action).toBeCalledTimes(2);
+    expect(useEffectHooksForSecondRender?.get(4)).toBeUndefined();
   });
 
   test("Parent render test", () => {
@@ -427,7 +427,7 @@ describe("useEffect", () => {
     // get the useEffect hooks
     const useEffectHooks = collector
       .getReactHooks(TemplateInner.name)
-      .getHooksByType("useEffect");
+      ?.getHooksByType("useEffect");
 
     // check the first render
     // the correct text should be in the document
@@ -435,8 +435,8 @@ describe("useEffect", () => {
     // the component should be called once
     expect(collector.getCallCount(TemplateInner.name)).toBe(1);
     // the component should contain the correct data
-    expect(useEffectHooks.get(1)?.deps).toEqual([""]);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.deps).toEqual([""]);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
     expect(useEffectHooks?.get(1)?.unmount).not.toBeCalled();
     // check the actions
     expect(caller.action).toBeCalledTimes(1);
@@ -454,9 +454,9 @@ describe("useEffect", () => {
     // the component should be called twice
     expect(collector.getCallCount(TemplateInner.name)).toBe(2);
     // the component should contain the correct data
-    expect(useEffectHooks.get(1)?.deps).toEqual([""]);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(1);
-    expect(useEffectHooks.get(1)?.unmount).not.toBeCalled();
+    expect(useEffectHooks?.get(1)?.deps).toEqual([""]);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.unmount).not.toBeCalled();
     // check the actions
     expect(caller.action).toBeCalledTimes(1);
     expect(caller.unmount).not.toBeCalled();
@@ -473,9 +473,9 @@ describe("useEffect", () => {
     // the component should be three times
     expect(collector.getCallCount(TemplateInner.name)).toBe(3);
     // the component should contain the correct data
-    expect(useEffectHooks.get(1)?.deps).toEqual(["text"]);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(2);
-    expect(useEffectHooks.get(1)?.unmount).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.deps).toEqual(["text"]);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks?.get(1)?.unmount).toBeCalledTimes(1);
     // check the actions
     expect(caller.action).toBeCalledTimes(2);
     expect(caller.unmount).toBeCalledTimes(1);
@@ -493,9 +493,9 @@ describe("useEffect", () => {
     // the component should be four times
     expect(collector.getCallCount(Template.name)).toBe(4);
     // the component should contain the correct data
-    expect(useEffectHooks.get(1)?.deps).toEqual(["text"]);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(2);
-    expect(useEffectHooks.get(1)?.unmount).toBeCalledTimes(1);
+    expect(useEffectHooks?.get(1)?.deps).toEqual(["text"]);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks?.get(1)?.unmount).toBeCalledTimes(1);
     // check the actions
     expect(caller.action).toBeCalledTimes(2);
     expect(caller.unmount).toBeCalledTimes(1);
@@ -510,9 +510,9 @@ describe("useEffect", () => {
     // the component should be four times
     expect(collector.getCallCount(Template.name)).toBe(4);
     // the component should contain the correct data and the unmount should be called twice
-    expect(useEffectHooks.get(1)?.deps).toEqual(["text"]);
-    expect(useEffectHooks.get(1)?.action).toBeCalledTimes(2);
-    expect(useEffectHooks.get(1)?.unmount).toBeCalledTimes(2);
+    expect(useEffectHooks?.get(1)?.deps).toEqual(["text"]);
+    expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(2);
+    expect(useEffectHooks?.get(1)?.unmount).toBeCalledTimes(2);
     // check the actions
     expect(caller.action).toBeCalledTimes(2);
     expect(caller.unmount).toBeCalledTimes(2);
@@ -544,7 +544,7 @@ describe("useEffect", () => {
     // get useEffect hooks
     const useEffectHooks = collector
       .getReactHooks(WithUmount.name)
-      .getHooksByType("useEffect");
+      ?.getHooksByType("useEffect");
 
     // the unmount action should not be called
     expect(useEffectHooks?.get(1)).not.toBeUndefined();

@@ -20,13 +20,13 @@ describe("useMemo", () => {
     // get the useRef hooks
     const useMemoHooks = collector
       .getReactHooks(OneUseMemo.name)
-      .getHooksByType("useMemo");
+      ?.getHooksByType("useMemo");
 
     // the useRef should create an object with the default value
-    expect(useMemoHooks.get(1)).not.toBeUndefined();
-    expect(useMemoHooks.get(2)).toBeUndefined();
-    expect(useMemoHooks.get(1)?.result).toEqual("text");
-    expect(useMemoHooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useMemoHooks?.get(1)).not.toBeUndefined();
+    expect(useMemoHooks?.get(2)).toBeUndefined();
+    expect(useMemoHooks?.get(1)?.result).toEqual("text");
+    expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
   });
 
   test("The useMemo should change when change the state", () => {
@@ -51,16 +51,16 @@ describe("useMemo", () => {
     // get useRef hooks
     const useMemoHooks = collector
       .getReactHooks(DynamicMemo.name)
-      .getHooksByType("useMemo");
+      ?.getHooksByType("useMemo");
 
     // the useMemo should return a number from state, first memo state+1 and second memo state+2
-    expect(useMemoHooks.get(1)).not.toBeUndefined();
-    expect(useMemoHooks.get(2)).not.toBeUndefined();
-    expect(useMemoHooks.get(3)).toBeUndefined();
-    expect(useMemoHooks.get(1)?.result).toEqual(1);
-    expect(useMemoHooks.get(1)?.hasBeenChanged).toBeFalsy();
-    expect(useMemoHooks.get(2)?.result).toEqual(12);
-    expect(useMemoHooks.get(2)?.hasBeenChanged).toBeFalsy();
+    expect(useMemoHooks?.get(1)).not.toBeUndefined();
+    expect(useMemoHooks?.get(2)).not.toBeUndefined();
+    expect(useMemoHooks?.get(3)).toBeUndefined();
+    expect(useMemoHooks?.get(1)?.result).toEqual(1);
+    expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useMemoHooks?.get(2)?.result).toEqual(12);
+    expect(useMemoHooks?.get(2)?.hasBeenChanged).toBeFalsy();
 
     // manualy set the state
     act(() => {
@@ -71,10 +71,10 @@ describe("useMemo", () => {
     expect(screen.getByText(getExpectedText(0, 11))).toBeTruthy();
 
     // only the second memo should chnge
-    expect(useMemoHooks.get(1)?.result).toEqual(1);
-    expect(useMemoHooks.get(1)?.hasBeenChanged).toBeFalsy();
-    expect(useMemoHooks.get(2)?.result).toEqual(13);
-    expect(useMemoHooks.get(2)?.hasBeenChanged).toBeTruthy();
+    expect(useMemoHooks?.get(1)?.result).toEqual(1);
+    expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useMemoHooks?.get(2)?.result).toEqual(13);
+    expect(useMemoHooks?.get(2)?.hasBeenChanged).toBeTruthy();
 
     // manualy set the state
     act(() => {
@@ -85,10 +85,10 @@ describe("useMemo", () => {
     expect(screen.getByText(getExpectedText(25, 11))).toBeTruthy();
 
     // only the first memo should chnge
-    expect(useMemoHooks.get(1)?.result).toEqual(26);
-    expect(useMemoHooks.get(1)?.hasBeenChanged).toBeTruthy();
-    expect(useMemoHooks.get(2)?.result).toEqual(13);
-    expect(useMemoHooks.get(2)?.hasBeenChanged).toBeFalsy();
+    expect(useMemoHooks?.get(1)?.result).toEqual(26);
+    expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeTruthy();
+    expect(useMemoHooks?.get(2)?.result).toEqual(13);
+    expect(useMemoHooks?.get(2)?.hasBeenChanged).toBeFalsy();
   });
 
   test("UseMemo return a function", () => {
@@ -112,14 +112,14 @@ describe("useMemo", () => {
     // get useRef hooks
     const useMemoHooks = collector
       .getReactHooks(UseMemoWithAction.name)
-      .getHooksByType("useMemo");
+      ?.getHooksByType("useMemo");
 
     // the useMemo should return a function and the function should be mocked
-    expect(useMemoHooks.get(1)).not.toBeUndefined();
-    expect(useMemoHooks.get(2)).toBeUndefined();
-    expect(useMemoHooks.get(1)?.result).toBeCalledTimes(1);
-    expect(useMemoHooks.get(1)?.result).lastReturnedWith(9);
-    expect(useMemoHooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useMemoHooks?.get(1)).not.toBeUndefined();
+    expect(useMemoHooks?.get(2)).toBeUndefined();
+    expect(useMemoHooks?.get(1)?.result).toBeCalledTimes(1);
+    expect(useMemoHooks?.get(1)?.result).lastReturnedWith(9);
+    expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
 
     // manualy set the state
     act(() => {
@@ -130,11 +130,11 @@ describe("useMemo", () => {
     expect(screen.getByText(getExpectedText(9))).toBeTruthy();
 
     // the useMemo should return the same value
-    expect(useMemoHooks.get(1)).not.toBeUndefined();
-    expect(useMemoHooks.get(2)).toBeUndefined();
-    expect(useMemoHooks.get(1)?.result).toBeCalledTimes(2);
-    expect(useMemoHooks.get(1)?.result).lastReturnedWith(9);
-    expect(useMemoHooks.get(1)?.hasBeenChanged).toBeFalsy();
+    expect(useMemoHooks?.get(1)).not.toBeUndefined();
+    expect(useMemoHooks?.get(2)).toBeUndefined();
+    expect(useMemoHooks?.get(1)?.result).toBeCalledTimes(2);
+    expect(useMemoHooks?.get(1)?.result).lastReturnedWith(9);
+    expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
 
     // manualy set the state
     act(() => {
@@ -145,10 +145,10 @@ describe("useMemo", () => {
     expect(screen.getByText(getExpectedText(15))).toBeTruthy();
 
     // the useMemo should return new value
-    expect(useMemoHooks.get(1)).not.toBeUndefined();
-    expect(useMemoHooks.get(2)).toBeUndefined();
-    expect(useMemoHooks.get(1)?.result).toBeCalledTimes(3);
-    expect(useMemoHooks.get(1)?.result).lastReturnedWith(15);
-    expect(useMemoHooks.get(1)?.hasBeenChanged).toBeTruthy();
+    expect(useMemoHooks?.get(1)).not.toBeUndefined();
+    expect(useMemoHooks?.get(2)).toBeUndefined();
+    expect(useMemoHooks?.get(1)?.result).toBeCalledTimes(3);
+    expect(useMemoHooks?.get(1)?.result).lastReturnedWith(15);
+    expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeTruthy();
   });
 });

@@ -9,12 +9,17 @@ import {
 } from "./components/common";
 import {
   EmptyWithUseEffectAndUseCallback,
+  UnregisteredClassComponent,
   UnregisteredComponentWithSimpleComponent
 } from "./components/common.unregistered";
 import { WithDeps as UseCallbackDeps } from "./components/UseCallback";
 import { WithDeps as UseEffectDeps } from "./components/UseEffect";
+import { OneUseRef } from "./components/UseRef";
 import { TestClass } from "./others/class";
-import { recursiveFunction } from "./others/recursive-function";
+import {
+  recursiveFunction,
+  regularFunction
+} from "./others/recursive-function";
 
 console.warn = jest.fn();
 const ComponentName = "WithDeps";
@@ -42,6 +47,29 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 describe("Commons tests", () => {
+  test("Calling hooks with non react component function", () => {
+    regularFunction("123");
+
+    expect(collector.getCallCount(regularFunction.name)).toBe(1);
+    expect(collector.getDataFor(regularFunction.name)?.calls[0].args).toEqual([
+      "123"
+    ]);
+    expect(collector.getDataFor(regularFunction.name)?.calls[0].result).toBe(
+      "123"
+    );
+
+    // hooks does not exist
+    const hooks = collector.getReactHooks(regularFunction.name);
+
+    expect(hooks).not.toBeUndefined();
+    expect(hooks?.getAll()).toBeUndefined();
+    expect(hooks?.getAll("useEffect")).toBeUndefined();
+    expect(hooks?.getHook("useEffect", 1)).toBeUndefined();
+    expect(hooks?.getHooksByType("useEffect").get(1)).toBeUndefined();
+    expect(hooks?.getUseState(1).getState(1)).toBeUndefined();
+    expect(hooks?.getUseState(1).next()).toEqual([]);
+  });
+
   test("Class", () => {
     // class should not exist
     expect(collector.getDataFor(TestClass.name)).toBeUndefined();
@@ -77,6 +105,7 @@ describe("Commons tests", () => {
         <div>
           <SimpleComponent />
         </div>
+        <UnregisteredClassComponent />
       </ComponentWithChildren>
     );
 
@@ -117,6 +146,8 @@ describe("Commons tests", () => {
         <p>text</p>
       </ComponentWithChildren>
     );
+
+    render(<UnregisteredClassComponent />);
   });
 
   test("Component from the same file", () => {
@@ -531,6 +562,28 @@ describe("Commons tests", () => {
     expect(unmount).toBeCalledTimes(1);
   });
 
+  test("Other hooks than ref should be undefined", () => {
+    render(<OneUseRef />);
+
+    expect(collector.getDataFor(OneUseRef.name)).not.toBeUndefined();
+    expect(collector.getReactHooks(OneUseRef.name)).not.toBeUndefined();
+    expect(
+      collector.getReactHooks(OneUseRef.name)?.getAll("useEffect")
+    ).toBeUndefined();
+    expect(
+      collector.getReactHooks(OneUseRef.name)?.getHook("useEffect", 1)
+    ).toBeUndefined();
+    expect(
+      collector
+        .getReactHooks(OneUseRef.name)
+        ?.getHooksByType("useEffect")
+        .get(1)
+    ).toBeUndefined();
+    expect(
+      collector.getReactHooks(OneUseRef.name)?.getUseState(1).getState(1)
+    ).toBeUndefined();
+  });
+
   test("Recursive function", () => {
     /*
       call the function several times, the function must be taken from import, if it is not taken 
@@ -581,6 +634,12 @@ describe("Commons tests", () => {
       collector.getStats(TestClass.name, { excludeTime: true })
     ).toMatchSnapshot();
 
+    // time should not be zero
+    expect(
+      collector.getStats(TestClass.name)?.calls[0].stats.time
+    ).not.toBeUndefined();
+    expect(collector.getStats(TestClass.name)?.calls[0].stats.time).not.toBe(0);
+
     // get statistics for specific component with test id, exclude time because it is always different
     expect(
       collector.getStats(ComponentName, {
@@ -592,6 +651,7 @@ describe("Commons tests", () => {
 
   test("Unregistered function", () => {
     expect(collector.getStats("unknown")).toBeUndefined();
+    collector.reset("unknown");
   });
 
   test("Unknown function", () => {
@@ -599,37 +659,41 @@ describe("Commons tests", () => {
     expect(collector.getCallCount("SomeComponent")).toBeUndefined();
     expect(collector.getComponentData("SomeComponent")).toBeUndefined();
     expect(collector.getDataFor("SomeComponent")).toBeUndefined();
-    expect(collector.getReactHooks("SomeComponent")).not.toBeUndefined();
-    expect(collector.getReactHooks("SomeComponent").getAll()).toBeUndefined();
+    expect(collector.getReactHooks("SomeComponent")).toBeUndefined();
+    expect(collector.getReactHooks("SomeComponent")?.getAll()).toBeUndefined();
     expect(
-      collector.getReactHooks("SomeComponent").getHook("useEffect", -1)
+      collector.getReactHooks("SomeComponent")?.getHook("useEffect", -1)
     ).toBeUndefined();
     expect(
-      collector.getReactHooks("SomeComponent").getHook("useEffect", 0)
+      collector.getReactHooks("SomeComponent")?.getHook("useEffect", 0)
     ).toBeUndefined();
     expect(
-      collector.getReactHooks("SomeComponent").getHook("useEffect", 1)
+      collector.getReactHooks("SomeComponent")?.getHook("useEffect", 1)
     ).toBeUndefined();
     expect(
-      collector.getReactHooks("SomeComponent").getHooksByType("useEffect")
-    ).not.toBeUndefined();
+      collector.getReactHooks("SomeComponent")?.getHooksByType("useEffect")
+    ).toBeUndefined();
     expect(
       collector
         .getReactHooks("SomeComponent")
-        .getHooksByType("useEffect")
+        ?.getHooksByType("useEffect")
         .get(-1)
     ).toBeUndefined();
     expect(
       collector
         .getReactHooks("SomeComponent")
-        .getHooksByType("useEffect")
+        ?.getHooksByType("useEffect")
         .get(0)
     ).toBeUndefined();
     expect(
       collector
         .getReactHooks("SomeComponent")
-        .getHooksByType("useEffect")
+        ?.getHooksByType("useEffect")
         .get(1)
     ).toBeUndefined();
+
+    expect(collector.getReactLifecycle("SomeComponent")).toBeUndefined;
+
+    collector.reset("SomeComponent");
   });
 });
