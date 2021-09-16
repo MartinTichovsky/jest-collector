@@ -53,3 +53,15 @@ export const OneUseState = () => {
 
   return <div>Some content</div>;
 };
+
+export const OneUseStateWithChildren = ({
+  caller,
+  children
+}: React.PropsWithChildren<{
+  caller: { setState: React.Dispatch<React.SetStateAction<number>> };
+}>) => {
+  const [, setState] = React.useState(0);
+  caller.setState = setState;
+
+  return <div>{children}</div>;
+};

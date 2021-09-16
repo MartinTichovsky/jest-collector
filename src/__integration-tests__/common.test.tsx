@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import { ClassComponent } from "./components/class-components";
 import {
@@ -15,6 +15,7 @@ import {
 import { WithDeps as UseCallbackDeps } from "./components/UseCallback";
 import { WithDeps as UseEffectDeps } from "./components/UseEffect";
 import { OneUseRef } from "./components/UseRef";
+import { OneUseStateWithChildren } from "./components/UseState";
 import { TestClass } from "./others/class";
 import {
   recursiveFunction,
@@ -173,6 +174,46 @@ describe("Commons tests", () => {
         relativePath: "/src/__integration-tests__/components/common.tsx"
       })
     ).toBe(2);
+  });
+
+  test("dynamicRender", () => {
+    const testId = "test-id";
+    let num = 0;
+    const TestComponent = () => {
+      return <div data-testid={testId}>{++num}</div>;
+    };
+    // create a caller object to be able manually call the useState
+    const caller = {
+      setState: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+
+    render(
+      <OneUseStateWithChildren caller={caller}>
+        <TestComponent />
+      </OneUseStateWithChildren>
+    );
+
+    expect(screen.getByTestId(testId)).toHaveTextContent("1");
+
+    act(() => {
+      caller.setState(1);
+    });
+
+    expect(screen.getByTestId(testId)).toHaveTextContent("2");
+
+    act(() => {
+      caller.setState(2);
+    });
+
+    expect(screen.getByTestId(testId)).toHaveTextContent("3");
+
+    act(() => {
+      caller.setState(3);
+    });
+
+    expect(screen.getByTestId(testId)).toHaveTextContent("4");
   });
 
   test("More components with the same name should log a warning", () => {
