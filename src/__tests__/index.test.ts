@@ -1,5 +1,5 @@
 import { mockFunction } from "../clone-function";
-import { jestCollector } from "../index";
+import { createCollector } from "../create-collector";
 import { getTestPath, mock, resolveReact } from "../jest-globals";
 import { mockReactHooks } from "../react-hooks";
 
@@ -66,11 +66,11 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("jestCollector", () => {
+describe("Create Collector", () => {
   test("Default", () => {
     expect(collector).toBeNull();
     expect(_mock).not.toBeCalled();
-    expect(() => jestCollector({ roots: ["src"] })).not.toThrowError();
+    expect(() => createCollector({ roots: ["src"] })).not.toThrowError();
     expect(collector).not.toBeNull();
     expect(_mock).toBeCalled();
     expect(_mock.mock.calls).toMatchSnapshot();
@@ -78,17 +78,17 @@ describe("jestCollector", () => {
 
   describe("Errors", () => {
     test("Error - roots", () => {
-      expect(() => jestCollector({} as any)).toThrowError();
-      expect(() => jestCollector({ roots: [] })).toThrowError();
+      expect(() => createCollector({} as any)).toThrowError();
+      expect(() => createCollector({ roots: [] })).toThrowError();
       nonArrayValues.forEach((value: any) => {
-        expect(() => jestCollector({ roots: value })).toThrowError();
+        expect(() => createCollector({ roots: value })).toThrowError();
       });
     });
 
     test("Error - exclude", () => {
       nonArrayValues.forEach((value: any) => {
         expect(() =>
-          jestCollector({ exclude: value, roots: ["src"] })
+          createCollector({ exclude: value, roots: ["src"] })
         ).toThrowError();
       });
     });
@@ -96,7 +96,7 @@ describe("jestCollector", () => {
     test("Error - exclude imports", () => {
       nonArrayValues.forEach((value: any) => {
         expect(() =>
-          jestCollector({ excludeImports: value, roots: ["src"] })
+          createCollector({ excludeImports: value, roots: ["src"] })
         ).toThrowError();
       });
     });
@@ -104,7 +104,7 @@ describe("jestCollector", () => {
     test("Error - extensions", () => {
       nonArrayValues.forEach((value: any) => {
         expect(() =>
-          jestCollector({ extensions: value, roots: ["src"] })
+          createCollector({ extensions: value, roots: ["src"] })
         ).toThrowError();
       });
     });
@@ -112,7 +112,7 @@ describe("jestCollector", () => {
     test("Error - include", () => {
       nonArrayValues.forEach((value: any) => {
         expect(() =>
-          jestCollector({ include: value, roots: ["src"] })
+          createCollector({ include: value, roots: ["src"] })
         ).toThrowError();
       });
     });
@@ -120,7 +120,7 @@ describe("jestCollector", () => {
     test("Error - include imports", () => {
       nonArrayValues.forEach((value: any) => {
         expect(() =>
-          jestCollector({ includeImports: value, roots: ["src"] })
+          createCollector({ includeImports: value, roots: ["src"] })
         ).toThrowError();
       });
     });
@@ -129,7 +129,7 @@ describe("jestCollector", () => {
   describe("Roots", () => {
     test("Multiple", () => {
       expect(() =>
-        jestCollector({ roots: ["src", "utils"] })
+        createCollector({ roots: ["src", "utils"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
@@ -138,21 +138,21 @@ describe("jestCollector", () => {
   describe("Extensions", () => {
     test("Include all ts files", () => {
       expect(() =>
-        jestCollector({ extensions: [".ts"], roots: ["src", "utils"] })
+        createCollector({ extensions: [".ts"], roots: ["src", "utils"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Include all js files", () => {
       expect(() =>
-        jestCollector({ extensions: [".js"], roots: ["src", "utils"] })
+        createCollector({ extensions: [".js"], roots: ["src", "utils"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Include all files", () => {
       expect(() =>
-        jestCollector({ extensions: [], roots: ["src"] })
+        createCollector({ extensions: [], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
@@ -162,7 +162,7 @@ describe("jestCollector", () => {
     test("Should not call mocks", () => {
       _getTestPath.mockReturnValue("/Some.test.ts");
       expect(() =>
-        jestCollector({ exclude: ["Some.test.ts"], roots: ["src"] })
+        createCollector({ exclude: ["Some.test.ts"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock).not.toBeCalled();
     });
@@ -170,7 +170,7 @@ describe("jestCollector", () => {
     test("It should call mocks", () => {
       _getTestPath.mockReturnValue("/Some.test.ts");
       expect(() =>
-        jestCollector({ exclude: ["Another.test.ts"], roots: ["src"] })
+        createCollector({ exclude: ["Another.test.ts"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock).toBeCalled();
     });
@@ -179,14 +179,14 @@ describe("jestCollector", () => {
   describe("Exclude From Imports", () => {
     test("Exclude everything starts with SelectOption", () => {
       expect(() =>
-        jestCollector({ excludeImports: ["SelectOption*"], roots: ["src"] })
+        createCollector({ excludeImports: ["SelectOption*"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Exclude utils.ts from src and index.ts from utils", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           excludeImports: ["/src/utils.ts", "/utils/index.ts"],
           roots: ["src", "utils"]
         })
@@ -196,14 +196,17 @@ describe("jestCollector", () => {
 
     test("Exclude everything with name SelectOption.tsx", () => {
       expect(() =>
-        jestCollector({ excludeImports: ["SelectOption.tsx"], roots: ["src"] })
+        createCollector({
+          excludeImports: ["SelectOption.tsx"],
+          roots: ["src"]
+        })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Exclude ts and tsx extensions", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           excludeImports: ["**/*.(tsx?)"],
           extensions: [],
           roots: ["src"]
@@ -214,28 +217,34 @@ describe("jestCollector", () => {
 
     test("Exclude all files ending with .types.ts or .types.tsx", () => {
       expect(() =>
-        jestCollector({ excludeImports: ["**/*.types.(tsx?)"], roots: ["src"] })
+        createCollector({
+          excludeImports: ["**/*.types.(tsx?)"],
+          roots: ["src"]
+        })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Exclude everything", () => {
       expect(() =>
-        jestCollector({ excludeImports: ["**/*"], roots: ["src"] })
+        createCollector({ excludeImports: ["**/*"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Exclude SelectOption.tsx in root", () => {
       expect(() =>
-        jestCollector({ excludeImports: ["/SelectOption.tsx"], roots: ["src"] })
+        createCollector({
+          excludeImports: ["/SelectOption.tsx"],
+          roots: ["src"]
+        })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Exclude SelectOption.tsx in first dir", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           excludeImports: ["/*/SelectOption.tsx"],
           roots: ["src"]
         })
@@ -245,7 +254,7 @@ describe("jestCollector", () => {
 
     test("Exclude SelectOption.tsx in root or first dir", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           excludeImports: ["/**/SelectOption.tsx"],
           roots: ["src"]
         })
@@ -255,7 +264,7 @@ describe("jestCollector", () => {
 
     test("Exclude SelectOption.tsx in second dir", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           excludeImports: ["/*/*/SelectOption.tsx"],
           roots: ["src"]
         })
@@ -265,7 +274,7 @@ describe("jestCollector", () => {
 
     test("Exclude all from folders", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           excludeImports: ["components/**/*"],
           roots: ["src"]
         })
@@ -278,7 +287,7 @@ describe("jestCollector", () => {
     test("Should call mocks", () => {
       _getTestPath.mockReturnValue("/Some.test.ts");
       expect(() =>
-        jestCollector({ include: ["Some.test.ts"], roots: ["src"] })
+        createCollector({ include: ["Some.test.ts"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock).toBeCalled();
     });
@@ -286,7 +295,7 @@ describe("jestCollector", () => {
     test("Should not call mocks", () => {
       _getTestPath.mockReturnValue("/Some.test.ts");
       expect(() =>
-        jestCollector({ include: ["Another.test.ts"], roots: ["src"] })
+        createCollector({ include: ["Another.test.ts"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock).not.toBeCalled();
     });
@@ -295,14 +304,14 @@ describe("jestCollector", () => {
   describe("Include Imports", () => {
     test("Include everything starts with SelectOption", () => {
       expect(() =>
-        jestCollector({ includeImports: ["SelectOption*"], roots: ["src"] })
+        createCollector({ includeImports: ["SelectOption*"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Include utils.ts from src and index.ts from utils", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           includeImports: ["/src/utils.ts", "/utils/index.ts"],
           roots: ["src", "utils"]
         })
@@ -312,14 +321,17 @@ describe("jestCollector", () => {
 
     test("Include everything with name SelectOption.tsx", () => {
       expect(() =>
-        jestCollector({ includeImports: ["SelectOption.tsx"], roots: ["src"] })
+        createCollector({
+          includeImports: ["SelectOption.tsx"],
+          roots: ["src"]
+        })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Include ts and tsx extensions", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           includeImports: ["**/*.(tsx?)"],
           extensions: [],
           roots: ["src"]
@@ -330,28 +342,34 @@ describe("jestCollector", () => {
 
     test("Include all files ending with .types.ts or types.tsx", () => {
       expect(() =>
-        jestCollector({ includeImports: ["**/*.types.(tsx?)"], roots: ["src"] })
+        createCollector({
+          includeImports: ["**/*.types.(tsx?)"],
+          roots: ["src"]
+        })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Include everything", () => {
       expect(() =>
-        jestCollector({ includeImports: ["**/*"], roots: ["src"] })
+        createCollector({ includeImports: ["**/*"], roots: ["src"] })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Include SelectOption.tsx in root", () => {
       expect(() =>
-        jestCollector({ includeImports: ["/SelectOption.tsx"], roots: ["src"] })
+        createCollector({
+          includeImports: ["/SelectOption.tsx"],
+          roots: ["src"]
+        })
       ).not.toThrowError();
       expect(_mock.mock.calls).toMatchSnapshot();
     });
 
     test("Include SelectOption.tsx in first dir", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           includeImports: ["/*/SelectOption.tsx"],
           roots: ["src"]
         })
@@ -361,7 +379,7 @@ describe("jestCollector", () => {
 
     test("Include SelectOption.tsx in root or first dir", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           includeImports: ["/**/SelectOption.tsx"],
           roots: ["src"]
         })
@@ -371,7 +389,7 @@ describe("jestCollector", () => {
 
     test("Include SelectOption.tsx in second dir", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           includeImports: ["/*/*/SelectOption.tsx"],
           roots: ["src"]
         })
@@ -381,7 +399,7 @@ describe("jestCollector", () => {
 
     test("Include all from folders", () => {
       expect(() =>
-        jestCollector({
+        createCollector({
           includeImports: ["components/**/*"],
           roots: ["src"]
         })
@@ -394,7 +412,7 @@ describe("jestCollector", () => {
     _resolveReact.mockReturnValueOnce(undefined);
 
     expect(() =>
-      jestCollector({
+      createCollector({
         roots: ["src"]
       })
     ).not.toThrowError();
@@ -406,7 +424,7 @@ describe("jestCollector", () => {
     const react = jest.requireActual("react");
 
     expect(() =>
-      jestCollector({
+      createCollector({
         roots: ["src"]
       })
     ).not.toThrowError();
@@ -432,7 +450,7 @@ describe("jestCollector", () => {
     Object.defineProperty(origin, "nonWritable", { writable: false });
 
     expect(() =>
-      jestCollector({
+      createCollector({
         includeImports: ["/test-file.ts"],
         roots: ["__tests-helper__"]
       })
