@@ -18,19 +18,26 @@ export type FunctionCalled = FunctionIdentity &
     parent?: RegisteredFunction | null;
   };
 
-export type FunctionExecuted = FunctionIdentity &
-  NthChild & {
-    children: FunctionIdentity[];
-    index: number;
-    parent: RegisteredFunction | null;
-    result: any;
-    time: number;
-  };
+export type FunctionExecuted = {
+  children: FunctionIdentity[];
+  index: number;
+  registered: RegisteredFunction;
+  result: any;
+  time: number;
+};
 
 export interface FunctionIdentity {
-  dataTestId?: string;
+  dataTestId: string | null;
   name: string;
   relativePath: string;
+}
+
+export interface GetRegistered {
+  dataTestId: string | null;
+  name: string;
+  nthChild?: number;
+  parent: RegisteredFunction | null;
+  relativePath?: string;
 }
 
 export interface GetStatsOptions extends Options {
@@ -112,10 +119,14 @@ export interface NthChild {
 }
 
 export interface Options extends NthChild {
-  dataTestId?: string;
+  dataTestId?: string | null;
   ignoreWarning?: true;
   parent?: OptionsParent | null;
   relativePath?: string;
+}
+
+export interface OptionsWithName extends Options {
+  name?: string;
 }
 
 export type OptionsParent = Partial<Identity> & {
@@ -156,10 +167,7 @@ export interface RegisterHookProps<K extends keyof ReactHooksTypes> {
 }
 
 export interface RegisterReactClass {
-  componentName: string;
-  dataTestId?: string;
   implementation: RegisterReactClassImplementation;
-  relativePath: string;
 }
 
 export interface RegisterReactClassImplementation {
@@ -205,7 +213,7 @@ export interface RegisterUseWithAction<K extends "useEffect" | "useCallback">
 
 export interface Stats {
   calls: Call[];
-  dataTestId?: string;
+  dataTestId: string | null;
   name: string;
   numberOfCalls: number;
   parent: IdentityWithParent | null;

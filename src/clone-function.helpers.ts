@@ -47,7 +47,7 @@ export const checkTheChildrenSequence = (children: Children[]) => {
 
 export const getDataFromArguments = (args: any) => {
   return {
-    dataTestId: args && args[0] ? args[0][DATA_TEST_ID] : undefined,
+    dataTestId: args && args[0] ? args[0][DATA_TEST_ID] : null,
     nthChild: args && args[0] ? args[0][__nthChild__] : undefined,
     parent: args && args[0] ? args[0][__parent__] : undefined,
     parentTestId: args && args[0] ? args[0][__parentTestId__] : undefined

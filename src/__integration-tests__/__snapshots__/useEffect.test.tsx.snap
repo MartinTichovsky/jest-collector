@@ -47,7 +47,7 @@ Object {
     },
   ],
   "current": Object {
-    "dataTestId": undefined,
+    "dataTestId": null,
     "name": "OneUseEffect",
     "nthChild": undefined,
     "originMock": true,
@@ -259,7 +259,7 @@ Object {
     },
   ],
   "current": Object {
-    "dataTestId": undefined,
+    "dataTestId": null,
     "name": "WithDeps",
     "nthChild": undefined,
     "originMock": true,
@@ -335,7 +335,7 @@ Object {
     },
   ],
   "current": Object {
-    "dataTestId": undefined,
+    "dataTestId": null,
     "name": "WithUmount",
     "nthChild": undefined,
     "originMock": true,

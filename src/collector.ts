@@ -3,6 +3,7 @@ import { CollectorAbstract, GetAllHooks } from "./private-collector.abstract";
 import {
   GetStatsOptions,
   Options,
+  OptionsWithName,
   ReactClassLifecycle,
   RegisteredFunction,
   Stats
@@ -58,6 +59,15 @@ export class Collector extends CollectorAbstract {
 
   /**
    * Get all data for a function or a react component. If there will
+   * be no options specified, all registered functions will be returned.
+   *
+   * @param {object} options Options where the name do not have to be defined
+   * @returns {array} An array of data
+   */
+  public getAllDataFor(options: OptionsWithName): RegisteredFunction<unknown>[];
+
+  /**
+   * Get all data for a function or a react component. If there will
    * be more data for a name or specified options, all will be returned.
    *
    * @param {string} name Name of a function or a react component
@@ -67,8 +77,14 @@ export class Collector extends CollectorAbstract {
   public getAllDataFor(
     name: string,
     options?: Options
+  ): RegisteredFunction<unknown>[];
+
+  /* @implementation */
+  public getAllDataFor(
+    nameOrOptions: string | OptionsWithName,
+    options?: Options
   ): RegisteredFunction<unknown>[] {
-    return this.privateCollector.getAllDataFor(name, options);
+    return this.privateCollector.getAllDataFor(nameOrOptions, options);
   }
 
   /**

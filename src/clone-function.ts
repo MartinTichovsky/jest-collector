@@ -39,9 +39,9 @@ export const registerClone = () => {
 
           const data = getDataFromArguments(arguments);
 
-          const registered = privateCollector.functionCalled({
+          const called = privateCollector.functionCalled({
             args: arguments,
-            dataTestId: data.dataTestId || data.parentTestId,
+            dataTestId: data.dataTestId || data.parentTestId || null,
             jestFn,
             name: _this.name,
             nthChild: data.nthChild,
@@ -77,12 +77,12 @@ export const registerClone = () => {
               privateCollector.isNotMockedElementExcluded,
             name: _this.name,
             privateCollector,
-            parent: registered.current,
+            parent: called.registered,
             parentTestId: privateCollector.isDataTestIdInherited
               ? !privateCollector.isNotMockedElementExcluded || originMock
                 ? data.dataTestId || data.parentTestId
                 : data.parentTestId
-              : undefined,
+              : null,
             relativePath,
             object: result
           });
@@ -96,23 +96,16 @@ export const registerClone = () => {
           if (result instanceof React.Component) {
             mockReactClass({
               component: _this,
-              dataTestId: registered.current.current.dataTestId,
-              componentName: _this.name,
-              privateCollector,
-              relativePath
+              privateCollector
             });
           }
 
           jestFn(arguments);
 
           privateCollector.functionExecuted({
-            parent: registered.parent,
             children: children.map((item) => item[1]),
-            dataTestId: registered.current.current.dataTestId,
-            index: registered.index,
-            name: _this.name,
-            nthChild: registered.current.current.nthChild,
-            relativePath,
+            index: called.index,
+            registered: called.registered,
             result,
             time: t1 - t0
           });

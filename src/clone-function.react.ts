@@ -185,7 +185,8 @@ export const processReactObject = ({
     for (let i = 0; i < object.props.children.length; i++) {
       if (
         React.isValidElement(object.props.children[i]) &&
-        object.props.children[i].type?.[__relativePath__]
+        object.props.children[i].type &&
+        object.props.children[i].type![__relativePath__]
       ) {
         // if the children does contain __relativePath__ it is a mocked component
         const child = getUpdatedReactObject({

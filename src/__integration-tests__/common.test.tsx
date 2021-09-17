@@ -26,6 +26,7 @@ console.warn = jest.fn();
 const ComponentName = "WithDeps";
 const dataTestId1 = "test-id-1";
 const dataTestId2 = "test-id-2";
+const dataTestId3 = "test-id-3";
 const useCallbackDepsRelativePath =
   "/src/__integration-tests__/components/UseCallback.tsx";
 const useEffectDepsRelativePath =
@@ -47,6 +48,7 @@ beforeEach(() => {
   collector.reset();
   jest.clearAllMocks();
 });
+
 describe("Commons tests", () => {
   test("Calling hooks with non react component function", () => {
     regularFunction("123");
@@ -176,7 +178,7 @@ describe("Commons tests", () => {
     ).toBe(2);
   });
 
-  test("dynamicRender", () => {
+  test("Dynamic render with not registered component", () => {
     const testId = "test-id";
     let num = 0;
     const TestComponent = () => {
@@ -216,6 +218,187 @@ describe("Commons tests", () => {
     expect(screen.getByTestId(testId)).toHaveTextContent("4");
   });
 
+  test("Get all data for", () => {
+    render(
+      <>
+        {/*
+          directly under the root, the element will have nthChild=undefined because
+          it can not be resolved, the component must be under a mocked component
+          to resolve nthChild
+        */}
+        <SimpleComponent />
+        <SimpleComponent />
+        <ComponentWithChildren>
+          {/* directly under the ComponentWithChildren */}
+          <UnregisteredComponentWithSimpleComponent />
+          {/* directly under the ComponentWithChildren, this will be SimpleComponent with nthChild=1 */}
+          <SimpleComponent />
+          {/* directly under the ComponentWithChildren, this will be SimpleComponent with nthChild=2 */}
+          <SimpleComponent />
+          {/*
+            directly under the ComponentWithChildren, this will be 
+            ComponentWithChildren with nthChild=1
+          */}
+          <ComponentWithChildren>
+            {/* three times under the ComponentWithChildren */}
+            <ComponentWithChildren>
+              <SimpleComponent />
+              <SimpleComponent />
+            </ComponentWithChildren>
+            <SimpleComponent />
+            <SimpleComponent />
+          </ComponentWithChildren>
+          {/*
+            directly under the ComponentWithChildren, this will be 
+            ComponentWithChildren with nthChild=2 
+          */}
+          <ComponentWithChildren>
+            <SimpleComponent />
+            <SimpleComponent />
+          </ComponentWithChildren>
+          {/* 
+            directly under the ComponentWithChildren, this will have the nthChild=undefined,
+            because it has unique data-testid
+          */}
+          <ComponentWithChildren data-testid={dataTestId1}>
+            <SimpleComponent />
+            <SimpleComponent />
+          </ComponentWithChildren>
+          {/* 
+            directly under the ComponentWithChildren, this will have the nthChild=undefined, 
+            because it has unique data-testid 
+          */}
+          <ComponentWithChildren data-testid={dataTestId2}>
+            <SimpleComponent />
+            <SimpleComponent />
+          </ComponentWithChildren>
+          {/*
+            directly under the ComponentWithChildren, this will be ComponentWithChildren 
+            with nthChild=1 and dataTestId=dataTestId3
+          */}
+          <ComponentWithChildren data-testid={dataTestId3}>
+            <SimpleComponent />
+            <SimpleComponent />
+          </ComponentWithChildren>
+          {/* 
+            directly under the ComponentWithChildren, this will be ComponentWithChildren 
+            with nthChild=2 and dataTestId=dataTestId3
+          */}
+          <ComponentWithChildren data-testid={dataTestId3}>
+            <SimpleComponent />
+            <SimpleComponent />
+          </ComponentWithChildren>
+        </ComponentWithChildren>
+      </>
+    );
+
+    /*
+      get SimpleComponent directly only UnregisteredComponentWithSimpleComponent,
+      only one result should match
+    */
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        parent: {
+          name: UnregisteredComponentWithSimpleComponent.name
+        }
+      }).length
+    ).toBe(1);
+
+    /*
+      get SimpleComponent under the root, there are two elements, which will
+      be merget into one because they have nthChild=undefined because the nthChild
+      can not be resolved
+    */
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        parent: null
+      }).length
+    ).toBe(1);
+    expect(
+      collector.getCallCount(SimpleComponent.name, {
+        parent: null
+      })
+    ).toBe(2);
+
+    /*
+      get all SimpleComponents directly under the ComponentWithChildren,
+      there are 16 elements matching that rule
+    */
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        parent: {
+          name: ComponentWithChildren.name
+        }
+      }).length
+    ).toBe(16);
+
+    /*
+      get all SimpleComponents directly under the ComponentWithChildren,
+      which should be under the root, there are only two elements
+      matching that rule
+    */
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        parent: {
+          name: ComponentWithChildren.name,
+          parent: null
+        }
+      }).length
+    ).toBe(2);
+
+    /*
+      get all SimpleComponents under the data-testid=dataTestId1,
+      there are two elements matching that rule because they are
+      resolved with nthChild
+    */
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        parent: {
+          dataTestId: dataTestId1
+        }
+      }).length
+    ).toBe(2);
+
+    /*
+      get all SimpleComponents which are resolved as a first child
+    */
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        nthChild: 1
+      }).length
+    ).toBe(8);
+
+    // get all SimpleComponents which have parent resolved as nthChild=1
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        parent: {
+          nthChild: 1
+        }
+      }).length
+    ).toBe(4);
+
+    // get all SimpleComponents which have parent resolved as nthChild=2
+    expect(
+      collector.getAllDataFor(SimpleComponent.name, {
+        parent: {
+          nthChild: 2
+        }
+      }).length
+    ).toBe(4);
+
+    // get all registered functions
+    expect(collector.getAllDataFor({}).length).toBe(27);
+
+    // get all by parent relative path
+    expect(
+      collector.getAllDataFor({
+        parent: {
+          relativePath: "/src/__integration-tests__/components/common.tsx"
+        }
+      }).length
+    ).toBe(24);
+  });
+
   test("More components with the same name should log a warning", () => {
     render(
       <>
@@ -252,7 +435,9 @@ describe("Commons tests", () => {
 
     // check if the components exist, it should not log a warning, because functions are called with dataTestId
     expect(console.warn).not.toBeCalled();
-    expect(collector.getDataFor(ComponentName)).toBeUndefined();
+    expect(
+      collector.getDataFor(ComponentName, { dataTestId: null })
+    ).toBeUndefined();
     expect(
       collector.getDataFor(ComponentName, { dataTestId: dataTestId1 })
     ).not.toBeUndefined();
@@ -646,7 +831,7 @@ describe("Commons tests", () => {
 
     const allFunctionsHistory = collector.getAllDataFor(recursiveFunction.name);
 
-    expect(allFunctionsHistory.length).toBe(2);
+    expect(allFunctionsHistory.length).toBe(11);
 
     // all calls should have the correct result number
     for (let i = 0; i < allFunctionsHistory.length; i++) {
