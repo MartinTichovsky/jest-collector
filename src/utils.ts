@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { __collectorProps__ } from "./constants";
 import { getTestPath } from "./jest-globals";
 import { GetFilesProps, TestItemProps } from "./types";
 
@@ -92,6 +93,15 @@ export const ignoreTest = (
   testRegex(items, property);
 
   return items.some((regexp) => relativeTestPath.match(regexp));
+};
+
+export const removeCollectorPrivatePropsFromArgs = (...args: unknown[]) => {
+  if (Array.isArray(args) && args[0] && args[0][__collectorProps__]) {
+    args[0] = { ...args[0] };
+    delete args[0][__collectorProps__];
+  }
+
+  return args;
 };
 
 export const testItem = ({

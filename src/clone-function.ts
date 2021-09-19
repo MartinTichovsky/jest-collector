@@ -5,10 +5,13 @@ import {
   getDataFromArguments
 } from "./clone-function.helpers";
 import { processReactObject } from "./clone-function.react";
-import { Children } from "./clone-function.types";
+import { Children, OriginMock } from "./clone-function.types";
 import { __originMock__, __relativePath__ } from "./constants";
 import { PrivateCollector } from "./private-collector";
 import { mockReactClass } from "./react-class";
+import { removeCollectorPrivatePropsFromArgs } from "./utils";
+
+const originMocks: OriginMock[] = [];
 
 export const registerClone = () => {
   if (!("clone" in Function.prototype)) {
@@ -24,6 +27,12 @@ export const registerClone = () => {
       const _this = this as any;
       let result: any;
       const jestFn = jest.fn((..._props) => result);
+
+      const isExistingMock = !!originMocks.find(
+        (item) => item.name === _this.name && item.relativePath === relativePath
+      );
+
+      originMock = originMock || isExistingMock;
 
       const _overload = {
         // this scope will be called on each call
@@ -70,14 +79,13 @@ export const registerClone = () => {
             the result from the react must be mocked to pass the parent 
             to the children for state re-renders
           */
-          result = processReactObject({
+          processReactObject({
             children,
             isDataTestIdInherited: privateCollector.isDataTestIdInherited,
             isNotMockedElementExcluded:
               privateCollector.isNotMockedElementExcluded,
             name: _this.name,
-            privateCollector,
-            parent: called.registered,
+            parent: (originMock ? called.registered : data.parent) || null,
             parentTestId: privateCollector.isDataTestIdInherited
               ? !privateCollector.isNotMockedElementExcluded || originMock
                 ? data.dataTestId || data.parentTestId
@@ -100,7 +108,9 @@ export const registerClone = () => {
             });
           }
 
-          jestFn(arguments);
+          jestFn(
+            ...removeCollectorPrivatePropsFromArgs(...Array.from(arguments))
+          );
 
           privateCollector.functionExecuted({
             children: children.map((item) => item[1]),
@@ -128,6 +138,13 @@ export const registerClone = () => {
         });
       }
 
+      if (originMock && !isExistingMock) {
+        originMocks.push({
+          name: _this.name,
+          relativePath
+        });
+      }
+
       Object.setPrototypeOf(
         _overload[_this.name],
         Object.getPrototypeOf(_this)
@@ -148,6 +165,5 @@ export const mockFunction = (
   privateCollector: PrivateCollector,
   relativePath: string
 ) => {
-  registerClone();
   return member.clone(privateCollector, relativePath);
 };

@@ -129,6 +129,19 @@ Array [
         "stats": Object {},
       },
     ],
+    "dataTestId": null,
+    "name": "EmptyWithUseEffectAndUseCallback",
+    "numberOfCalls": 1,
+    "parent": null,
+    "path": "/src/__integration-tests__/components/common.unregistered.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
     "dataTestId": "test-id-1",
     "name": "WithDeps",
     "numberOfCalls": 1,

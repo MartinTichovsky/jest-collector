@@ -1,11 +1,38 @@
 import { getCaller } from "./caller";
+import { __collectorProps__, __relativePath__ } from "./constants";
 import { PrivateCollector } from "./private-collector";
+import { resolvePath } from "./resolve-path";
 
 export const mockReactHooks = (
   origin: any,
   privateCollector: PrivateCollector
 ) => ({
   ...origin,
+  createElement: (...props: any[]) => {
+    if (
+      typeof props[0] !== "function" ||
+      process.env.disableReactMock === "true"
+    ) {
+      return origin.createElement(...props);
+    }
+
+    /*
+      create an oject to adjust collector properties
+      for needed indentification
+    */
+    if (!props[1]) {
+      props[1] = {};
+    }
+
+    props[1][__collectorProps__] = {};
+
+    // mock the component, every component will be mocked
+    if (!props[0][__relativePath__] && props[0].clone) {
+      props[0] = props[0].clone(privateCollector, resolvePath(props[0]), false);
+    }
+
+    return origin.createElement(...props);
+  },
   useCallback: function useCallback(
     action: (...props: any[]) => void,
     deps: any[]

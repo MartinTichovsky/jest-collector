@@ -32,6 +32,166 @@ const useCallbackDepsRelativePath =
 const useEffectDepsRelativePath =
   "/src/__integration-tests__/components/UseEffect.tsx";
 
+const complexTestSuite = () => {
+  render(
+    <ComponentWithChildren>
+      <div>
+        <UnregisteredComponentWithSimpleComponent data-testid={dataTestId1} />
+      </div>
+      <div>text</div>
+      <div />
+      <SimpleComponent />
+      <div>
+        <SimpleComponent />
+      </div>
+      <UnregisteredClassComponent />
+    </ComponentWithChildren>
+  );
+
+  render(
+    <>
+      <div />
+      <div>text</div>
+      <ComponentWithChildren>
+        <div>
+          <UnregisteredComponentWithSimpleComponent />
+        </div>
+        <div>text</div>
+        <div />
+      </ComponentWithChildren>
+      <ComponentWithChildren>
+        <div />
+      </ComponentWithChildren>
+      <ComponentWithChildren>
+        <p>text</p>
+      </ComponentWithChildren>
+      <SimpleComponent />
+      <div>
+        <SimpleComponent />
+      </div>
+    </>
+  );
+
+  render(<SimpleComponent />);
+
+  render(
+    <ComponentWithChildren>
+      <div />
+    </ComponentWithChildren>
+  );
+
+  render(
+    <ComponentWithChildren>
+      <p>text</p>
+    </ComponentWithChildren>
+  );
+
+  render(<UnregisteredClassComponent />);
+};
+
+const notMockedComponentTestSuite = () => {
+  const getExpectedText = (
+    state: number,
+    context: string,
+    callbackResult: string,
+    memo: string,
+    ref: string,
+    reducerState: number
+  ) =>
+    `state:${state},context:${context},callback:${callbackResult},memo:${memo},ref:${ref},reducer:${reducerState}`;
+
+  const action = jest.fn();
+  const unmount = jest.fn();
+
+  const reducer = (state: { count: number }, action: { type: "increment" }) => {
+    switch (action.type) {
+      case "increment":
+        return { count: state.count + 1 };
+      default:
+        throw new Error();
+    }
+  };
+
+  const reactCoontext = React.createContext("context");
+
+  const Component = () => {
+    const [state, setState] = React.useState(5);
+    const context = React.useContext(reactCoontext);
+    const callback = React.useCallback(() => {
+      return `text${state}`;
+    }, [state]);
+    const memo = React.useMemo(() => `result${state}`, [state]);
+    const ref = React.useRef(`ref${state}`);
+    const [reducerState, dispatch] = React.useReducer(reducer, { count: 8 });
+
+    React.useEffect(() => {
+      action();
+      return unmount;
+    }, [state]);
+
+    return (
+      <div>
+        <button
+          data-testid="state"
+          onClick={() => {
+            setState((prevValue) => prevValue + 1);
+          }}
+        >
+          {getExpectedText(
+            state,
+            context,
+            callback(),
+            memo,
+            ref.current,
+            reducerState.count
+          )}
+        </button>
+        <button
+          data-testid="reducer"
+          onClick={() => dispatch({ type: "increment" })}
+        >
+          Increment
+        </button>
+      </div>
+    );
+  };
+
+  render(<Component />);
+
+  // the text must be in the document
+  expect(screen.getByTestId("state")).toHaveTextContent(
+    getExpectedText(5, "context", "text5", "result5", "ref5", 8)
+  );
+  // action should be called once
+  expect(action).toBeCalledTimes(1);
+  // unmount should not be called
+  expect(unmount).not.toBeCalled();
+
+  // click on the button and set the state to re-render the component
+  fireEvent.click(screen.getByTestId("state"));
+
+  // the text must be in the document
+  expect(screen.getByTestId("state")).toHaveTextContent(
+    getExpectedText(6, "context", "text6", "result6", "ref5", 8)
+  );
+  // action should be called once
+  expect(action).toBeCalledTimes(2);
+  // unmount should not be called
+  expect(unmount).toBeCalledTimes(1);
+
+  // increment the state of the reducer
+  fireEvent.click(screen.getByTestId("reducer"));
+
+  // the text must be in the document
+  expect(screen.getByTestId("state")).toHaveTextContent(
+    getExpectedText(6, "context", "text6", "result6", "ref5", 9)
+  );
+  // action should be called once
+  expect(action).toBeCalledTimes(2);
+  // unmount should not be called
+  expect(unmount).toBeCalledTimes(1);
+};
+
 const nthChildTestSuite = () => {
   expect(console.warn).not.toBeCalled();
   expect(collector.getAllDataFor(SimpleComponent.name).length).toBe(2);
@@ -96,61 +256,14 @@ describe("Commons tests", () => {
     expect(collector.getCallCount(TestClass.name)).toBe(2);
   });
 
-  test("Complex test - it must pass", () => {
-    render(
-      <ComponentWithChildren>
-        <div>
-          <UnregisteredComponentWithSimpleComponent data-testid={dataTestId1} />
-        </div>
-        <div>text</div>
-        <div />
-        <SimpleComponent />
-        <div>
-          <SimpleComponent />
-        </div>
-        <UnregisteredClassComponent />
-      </ComponentWithChildren>
-    );
+  test("Complex test - it must pass - react mock disabled", () => {
+    process.env.disableReactMock = "true";
+    complexTestSuite();
+    process.env.disableReactMock = "";
+  });
 
-    render(
-      <>
-        <div />
-        <div>text</div>
-        <ComponentWithChildren>
-          <div>
-            <UnregisteredComponentWithSimpleComponent />
-          </div>
-          <div>text</div>
-          <div />
-        </ComponentWithChildren>
-        <ComponentWithChildren>
-          <div />
-        </ComponentWithChildren>
-        <ComponentWithChildren>
-          <p>text</p>
-        </ComponentWithChildren>
-        <SimpleComponent />
-        <div>
-          <SimpleComponent />
-        </div>
-      </>
-    );
-
-    render(<SimpleComponent />);
-
-    render(
-      <ComponentWithChildren>
-        <div />
-      </ComponentWithChildren>
-    );
-
-    render(
-      <ComponentWithChildren>
-        <p>text</p>
-      </ComponentWithChildren>
-    );
-
-    render(<UnregisteredClassComponent />);
+  test("Complex test - it must pass - react mock enabled", () => {
+    complexTestSuite();
   });
 
   test("Component from the same file", () => {
@@ -178,12 +291,13 @@ describe("Commons tests", () => {
     ).toBe(2);
   });
 
-  test("Dynamic render with not registered component", () => {
+  test("Dynamic render with not registered component - Child should not re-render", () => {
     const testId = "test-id";
     let num = 0;
     const TestComponent = () => {
       return <div data-testid={testId}>{++num}</div>;
     };
+
     // create a caller object to be able manually call the useState
     const caller = {
       setState: ((_state: number) => {}) as React.Dispatch<
@@ -193,6 +307,41 @@ describe("Commons tests", () => {
 
     render(
       <OneUseStateWithChildren caller={caller}>
+        <TestComponent />
+      </OneUseStateWithChildren>
+    );
+
+    expect(screen.getByTestId(testId)).toHaveTextContent("1");
+
+    act(() => {
+      caller.setState(1);
+    });
+
+    expect(screen.getByTestId(testId)).toHaveTextContent("1");
+
+    act(() => {
+      caller.setState(2);
+    });
+
+    expect(screen.getByTestId(testId)).toHaveTextContent("1");
+  });
+
+  test("Dynamic render with not registered component - Child should re-render", () => {
+    const testId = "test-id";
+    let num = 0;
+    const TestComponent = () => {
+      return <div data-testid={testId}>{++num}</div>;
+    };
+
+    // create a caller object to be able manually call the useState
+    const caller = {
+      setState: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+
+    render(
+      <OneUseStateWithChildren caller={caller} useKey={true}>
         <TestComponent />
       </OneUseStateWithChildren>
     );
@@ -293,18 +442,6 @@ describe("Commons tests", () => {
     );
 
     /*
-      get SimpleComponent directly only UnregisteredComponentWithSimpleComponent,
-      only one result should match
-    */
-    expect(
-      collector.getAllDataFor(SimpleComponent.name, {
-        parent: {
-          name: UnregisteredComponentWithSimpleComponent.name
-        }
-      }).length
-    ).toBe(1);
-
-    /*
       get SimpleComponent under the root, there are two elements, which will
       be merget into one because they have nthChild=undefined because the nthChild
       can not be resolved
@@ -330,7 +467,7 @@ describe("Commons tests", () => {
           name: ComponentWithChildren.name
         }
       }).length
-    ).toBe(16);
+    ).toBe(17);
 
     /*
       get all SimpleComponents directly under the ComponentWithChildren,
@@ -344,7 +481,7 @@ describe("Commons tests", () => {
           parent: null
         }
       }).length
-    ).toBe(2);
+    ).toBe(3);
 
     /*
       get all SimpleComponents under the data-testid=dataTestId1,
@@ -396,7 +533,7 @@ describe("Commons tests", () => {
           relativePath: "/src/__integration-tests__/components/common.tsx"
         }
       }).length
-    ).toBe(24);
+    ).toBe(25);
   });
 
   test("More components with the same name should log a warning", () => {
@@ -626,13 +763,13 @@ describe("Commons tests", () => {
     ).not.toBeUndefined();
   });
 
-  test("Not mocked component", () => {
+  test("Not mocked component should be registered as well", () => {
     render(<EmptyWithUseEffectAndUseCallback />);
 
-    // it should not exist in the collector
+    // it should exist in the collector
     expect(
       collector.getComponentData(EmptyWithUseEffectAndUseCallback.name)
-    ).toBeUndefined();
+    ).not.toBeUndefined();
   });
 
   test("Nth child - use case 1", () => {
@@ -682,110 +819,14 @@ describe("Commons tests", () => {
     nthChildTestSuite();
   });
 
-  test("Not mocked copmponent should work correctly", () => {
-    const getExpectedText = (
-      state: number,
-      context: string,
-      callbackResult: string,
-      memo: string,
-      ref: string,
-      reducerState: number
-    ) =>
-      `state:${state},context:${context},callback:${callbackResult},memo:${memo},ref:${ref},reducer:${reducerState}`;
+  test("Not mocked copmponent should work correctly - react mock disabled", () => {
+    process.env.disableReactMock = "true";
+    notMockedComponentTestSuite();
+    process.env.disableReactMock = "";
+  });
 
-    const action = jest.fn();
-    const unmount = jest.fn();
-
-    const reducer = (
-      state: { count: number },
-      action: { type: "increment" }
-    ) => {
-      switch (action.type) {
-        case "increment":
-          return { count: state.count + 1 };
-        default:
-          throw new Error();
-      }
-    };
-
-    const reactCoontext = React.createContext("context");
-
-    const Component = () => {
-      const [state, setState] = React.useState(5);
-      const context = React.useContext(reactCoontext);
-      const callback = React.useCallback(() => {
-        return `text${state}`;
-      }, [state]);
-      const memo = React.useMemo(() => `result${state}`, [state]);
-      const ref = React.useRef(`ref${state}`);
-      const [reducerState, dispatch] = React.useReducer(reducer, { count: 8 });
-
-      React.useEffect(() => {
-        action();
-        return unmount;
-      }, [state]);
-
-      return (
-        <div>
-          <button
-            data-testid="state"
-            onClick={() => {
-              setState((prevValue) => prevValue + 1);
-            }}
-          >
-            {getExpectedText(
-              state,
-              context,
-              callback(),
-              memo,
-              ref.current,
-              reducerState.count
-            )}
-          </button>
-          <button
-            data-testid="reducer"
-            onClick={() => dispatch({ type: "increment" })}
-          >
-            Increment
-          </button>
-        </div>
-      );
-    };
-
-    render(<Component />);
-
-    // the text must be in the document
-    expect(screen.getByTestId("state")).toHaveTextContent(
-      getExpectedText(5, "context", "text5", "result5", "ref5", 8)
-    );
-    // action should be called once
-    expect(action).toBeCalledTimes(1);
-    // unmount should not be called
-    expect(unmount).not.toBeCalled();
-
-    // click on the button and set the state to re-render the component
-    fireEvent.click(screen.getByTestId("state"));
-
-    // the text must be in the document
-    expect(screen.getByTestId("state")).toHaveTextContent(
-      getExpectedText(6, "context", "text6", "result6", "ref5", 8)
-    );
-    // action should be called once
-    expect(action).toBeCalledTimes(2);
-    // unmount should not be called
-    expect(unmount).toBeCalledTimes(1);
-
-    // increment the state of the reducer
-    fireEvent.click(screen.getByTestId("reducer"));
-
-    // the text must be in the document
-    expect(screen.getByTestId("state")).toHaveTextContent(
-      getExpectedText(6, "context", "text6", "result6", "ref5", 9)
-    );
-    // action should be called once
-    expect(action).toBeCalledTimes(2);
-    // unmount should not be called
-    expect(unmount).toBeCalledTimes(1);
+  test("Not mocked copmponent should work correctly - react mock enabled", () => {
+    notMockedComponentTestSuite();
   });
 
   test("Other hooks than ref should be undefined", () => {

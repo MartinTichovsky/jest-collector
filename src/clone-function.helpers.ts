@@ -5,6 +5,7 @@ import {
 } from "./clone-function.types";
 import {
   DATA_TEST_ID,
+  __collectorProps__,
   __nthChild__,
   __originMock__,
   __parentTestId__,
@@ -38,8 +39,11 @@ export const checkTheChildrenSequence = (children: Children[]) => {
       nthChild = 1;
     }
 
-    if (nthChild !== undefined) {
-      children[index][0].props[__nthChild__] = nthChild;
+    if (
+      nthChild !== undefined &&
+      children[index][0].props[__collectorProps__]
+    ) {
+      children[index][0].props[__collectorProps__][__nthChild__] = nthChild;
       children[index][1].nthChild = nthChild;
     }
   }
@@ -48,9 +52,20 @@ export const checkTheChildrenSequence = (children: Children[]) => {
 export const getDataFromArguments = (args: any) => {
   return {
     dataTestId: args && args[0] ? args[0][DATA_TEST_ID] : null,
-    nthChild: args && args[0] ? args[0][__nthChild__] : undefined,
-    parent: args && args[0] ? args[0][__parent__] : undefined,
-    parentTestId: args && args[0] ? args[0][__parentTestId__] : undefined
+    nthChild:
+      args && args[0]
+        ? args[0][__collectorProps__] &&
+          args[0][__collectorProps__][__nthChild__]
+        : undefined,
+    parent:
+      args && args[0]
+        ? args[0][__collectorProps__] && args[0][__collectorProps__][__parent__]
+        : undefined,
+    parentTestId:
+      args && args[0]
+        ? args[0][__collectorProps__] &&
+          args[0][__collectorProps__][__parentTestId__]
+        : undefined
   };
 };
 
@@ -61,7 +76,8 @@ export const getFunctionIdentity = (
 ) => ({
   dataTestId:
     object.props[DATA_TEST_ID] ||
-    object.props[__parentTestId__] ||
+    (object.props[__collectorProps__] &&
+      object.props[__collectorProps__][__parentTestId__]) ||
     (isDataTestIdInherited ? dataTestId : undefined),
   name: object.type!.name,
   relativePath: object.type![__relativePath__]!

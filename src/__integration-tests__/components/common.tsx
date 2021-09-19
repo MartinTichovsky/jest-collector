@@ -90,3 +90,13 @@ export const SimpleComponentInTheSameFile = ({ text }: { text?: string }) => (
 export const SimpleComponent = ({ text }: { text?: string }) => {
   return <p>{text}</p>;
 };
+
+export const ComponentWithChildrenFunction = ({
+  children,
+  text
+}: {
+  children: (text: string) => React.ReactNode;
+  text: string;
+}) => {
+  return <>{children(text)}</>;
+};

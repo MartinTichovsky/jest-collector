@@ -56,12 +56,14 @@ export const OneUseState = () => {
 
 export const OneUseStateWithChildren = ({
   caller,
-  children
+  children,
+  useKey = false
 }: React.PropsWithChildren<{
   caller: { setState: React.Dispatch<React.SetStateAction<number>> };
+  useKey?: boolean;
 }>) => {
-  const [, setState] = React.useState(0);
+  const [state, setState] = React.useState(0);
   caller.setState = setState;
 
-  return <div>{children}</div>;
+  return <div {...(useKey ? { key: state } : {})}>{children}</div>;
 };

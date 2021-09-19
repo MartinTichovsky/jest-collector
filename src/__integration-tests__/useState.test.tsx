@@ -1,12 +1,17 @@
 import "@testing-library/jest-dom";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
-import { ComponentWithChildren } from "./components/common";
+import {
+  ComponentWithChildren,
+  ComponentWithChildrenFunction,
+  SimpleComponent
+} from "./components/common";
 import {
   DynamicState,
   MultipeCalls,
   MultipleStates,
-  OneUseState
+  OneUseState,
+  OneUseStateWithChildren
 } from "./components/UseState";
 
 beforeEach(() => {
@@ -155,6 +160,8 @@ describe("useState", () => {
       </ComponentWithChildren>
     );
 
+    expect(collector.getCallCount(DynamicState.name)).toBe(2);
+
     expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
       getExpectedText(0)
     );
@@ -163,6 +170,8 @@ describe("useState", () => {
     );
 
     act(() => caller1.setState(7));
+
+    expect(collector.getCallCount(DynamicState.name)).toBe(3);
 
     expect(screen.getByTestId(dataTestId1)).toHaveTextContent(
       getExpectedText(7)
@@ -205,5 +214,65 @@ describe("useState", () => {
     fireEvent.click(screen.getByRole("button"));
     expect(screen.getByRole("button")).toHaveTextContent(getExpectedText(2));
     expect(collector.getCallCount(MultipeCalls.name)).toBe(2);
+  });
+
+  test("It should not re-render the children - use case 1", () => {
+    const caller = {
+      setState: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+    const testText = "Some text";
+
+    render(
+      <OneUseStateWithChildren caller={caller}>
+        <ComponentWithChildren>{testText}</ComponentWithChildren>
+      </OneUseStateWithChildren>
+    );
+
+    // the text should be in the document
+    expect(screen.getByText(testText)).toBeTruthy();
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
+
+    act(() => {
+      caller.setState(1);
+    });
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
+  });
+
+  test("It should not re-render the children - use case 2", () => {
+    const caller = {
+      setState: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+    const testText = "Some text";
+
+    render(
+      <ComponentWithChildren>
+        <OneUseStateWithChildren caller={caller}>
+          <ComponentWithChildrenFunction text={testText}>
+            {(text) => <SimpleComponent text={text} />}
+          </ComponentWithChildrenFunction>
+        </OneUseStateWithChildren>
+      </ComponentWithChildren>
+    );
+
+    // the text should be in the document
+    expect(screen.getByText(testText)).toBeTruthy();
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
+
+    act(() => {
+      caller.setState(1);
+    });
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
   });
 });

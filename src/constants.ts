@@ -1,3 +1,4 @@
+export const __collectorProps__ = "__collector_props__";
 export const __nthChild__ = Symbol("__nth_child__");
 export const __originMock__ = Symbol("__origin_mock__");
 export const __parent__ = Symbol("__parent__");

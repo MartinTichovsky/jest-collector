@@ -23,6 +23,7 @@ import {
   RegisterUseWithAction,
   Stats
 } from "./private-collector.types";
+import { removeCollectorPrivatePropsFromArgs } from "./utils";
 
 export class PrivateCollector extends CollectorAbstract {
   private activeFunction: RegisteredFunction[] = [];
@@ -128,7 +129,10 @@ export class PrivateCollector extends CollectorAbstract {
     });
 
     if (registered) {
-      registered.calls.push({ args: [...args], stats: { time: 0 } });
+      registered.calls.push({
+        args: [...removeCollectorPrivatePropsFromArgs(...args)],
+        stats: { time: 0 }
+      });
       this.clearHooksCounter(registered);
       this.clearUsecontextHooks(registered);
       this.unregisterAllHooks(registered);
@@ -148,7 +152,12 @@ export class PrivateCollector extends CollectorAbstract {
       };
 
       const registered: RegisteredFunction = {
-        calls: [{ args: [...args], stats: { time: 0 } }],
+        calls: [
+          {
+            args: [...removeCollectorPrivatePropsFromArgs(...args)],
+            stats: { time: 0 }
+          }
+        ],
         current,
         jestFn,
         parent: parent || null

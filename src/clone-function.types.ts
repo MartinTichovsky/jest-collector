@@ -13,31 +13,25 @@ export interface GetParentTestIdProps {
 }
 
 export interface GetUpdatedReactObjectProps {
-  children?: ReactObject[] | ReactObject;
   object: ReactObject;
   parent?: RegisteredFunction | null;
   parentTestId?: string;
 }
 
-export interface MockChildrenProps {
-  isDataTestIdInherited: boolean;
-  isNotMockedElementExcluded: boolean;
-  object: ReactObject;
-  parent?: RegisteredFunction | null;
-  parentTestId?: string;
-  privateCollector: PrivateCollector;
+export interface OriginMock {
+  name: string;
+  relativePath: string;
 }
 
 export interface ProcessReactResultProps {
   children: Children[];
   isDataTestIdInherited: boolean;
   isNotMockedElementExcluded: boolean;
-  name: string;
+  name?: string;
   object: ReactObject;
   parent?: RegisteredFunction | null;
   parentTestId?: string;
-  privateCollector: PrivateCollector;
-  relativePath: string;
+  relativePath?: string;
 }
 
 export interface ReactObject {

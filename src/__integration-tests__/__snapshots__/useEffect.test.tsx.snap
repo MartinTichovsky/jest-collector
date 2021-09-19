@@ -74,22 +74,20 @@ Object {
   "jestFn": [MockFunction] {
     "calls": Array [
       Array [
-        Arguments [
-          Object {
-            "callFunc": [MockFunction] {
-              "calls": Array [
-                Array [],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": undefined,
-                },
-              ],
-            },
+        Object {
+          "callFunc": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
           },
-          Object {},
-        ],
+        },
+        Object {},
       ],
     ],
     "results": Array [
@@ -180,41 +178,37 @@ Object {
   "jestFn": [MockFunction] {
     "calls": Array [
       Array [
-        Arguments [
-          Object {
-            "callFunc": [MockFunction] {
-              "calls": Array [
-                Array [],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": undefined,
-                },
-              ],
-            },
+        Object {
+          "callFunc": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
           },
-          Object {},
-        ],
+        },
+        Object {},
       ],
       Array [
-        Arguments [
-          Object {
-            "callFunc": [MockFunction] {
-              "calls": Array [
-                Array [],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": undefined,
-                },
-              ],
-            },
-            "data-testid": "test-id",
+        Object {
+          "callFunc": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
           },
-          Object {},
-        ],
+          "data-testid": "test-id",
+        },
+        Object {},
       ],
     ],
     "results": Array [
@@ -293,19 +287,17 @@ Object {
   "jestFn": [MockFunction] {
     "calls": Array [
       Array [
-        Arguments [
-          Object {
-            "deps": Array [
-              1,
-              Object {
-                "property": "some",
-              },
-              "Text",
-              false,
-            ],
-          },
-          Object {},
-        ],
+        Object {
+          "deps": Array [
+            1,
+            Object {
+              "property": "some",
+            },
+            "Text",
+            false,
+          ],
+        },
+        Object {},
       ],
     ],
     "results": Array [
@@ -363,10 +355,8 @@ Object {
   "jestFn": [MockFunction] {
     "calls": Array [
       Array [
-        Arguments [
-          Object {},
-          Object {},
-        ],
+        Object {},
+        Object {},
       ],
     ],
     "results": Array [
