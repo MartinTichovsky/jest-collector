@@ -95,8 +95,8 @@ export const ignoreTest = (
   return items.some((regexp) => relativeTestPath.match(regexp));
 };
 
-export const removeCollectorPrivatePropsFromArgs = (...args: unknown[]) => {
-  if (Array.isArray(args) && args[0] && args[0][__collectorProps__]) {
+export const removeCollectorPrivatePropsFromArgs = <T>(args: T) => {
+  if (args[0] && args[0][__collectorProps__]) {
     args[0] = { ...args[0] };
     delete args[0][__collectorProps__];
   }

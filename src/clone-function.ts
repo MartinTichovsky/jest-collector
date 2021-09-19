@@ -1,5 +1,5 @@
 import React from "react";
-import { getCaller } from "./caller";
+import { isCallerDescribeNativeComponentFrame } from "./caller";
 import {
   checkTheChildrenSequence,
   getDataFromArguments
@@ -42,14 +42,17 @@ export const registerClone = () => {
             and it cause an extra call of the function and therefore must
             be skipped
           */
-          if (getCaller(2).name === "describeNativeComponentFrame") {
+          if (isCallerDescribeNativeComponentFrame()) {
             return null;
           }
 
           const data = getDataFromArguments(arguments);
+          const args = new.target
+            ? arguments
+            : removeCollectorPrivatePropsFromArgs(arguments);
 
           const called = privateCollector.functionCalled({
-            args: arguments,
+            args,
             dataTestId: data.dataTestId || data.parentTestId || null,
             jestFn,
             name: _this.name,
@@ -62,8 +65,8 @@ export const registerClone = () => {
           const t0 = performance.now();
 
           result = new.target
-            ? new _this(...Array.from(arguments))
-            : _this.apply(_this, arguments);
+            ? new _this(...Array.from(args))
+            : _this.apply(_this, args);
 
           const t1 = performance.now();
 
@@ -108,9 +111,7 @@ export const registerClone = () => {
             });
           }
 
-          jestFn(
-            ...removeCollectorPrivatePropsFromArgs(...Array.from(arguments))
-          );
+          jestFn(...Array.from(args));
 
           privateCollector.functionExecuted({
             children: children.map((item) => item[1]),

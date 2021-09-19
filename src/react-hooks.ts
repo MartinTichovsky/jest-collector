@@ -27,7 +27,7 @@ export const mockReactHooks = (
     props[1][__collectorProps__] = {};
 
     // mock the component, every component will be mocked
-    if (!props[0][__relativePath__] && props[0].clone) {
+    if (props[0].name && !props[0][__relativePath__] && props[0].clone) {
       props[0] = props[0].clone(privateCollector, resolvePath(props[0]), false);
     }
 

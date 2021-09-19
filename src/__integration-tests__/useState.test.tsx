@@ -39,6 +39,51 @@ describe("useState", () => {
     expect(useState?.getUseState(1).getState(2)).toBeUndefined();
   });
 
+  test("Disabled button should work", () => {
+    let setComponentState: React.Dispatch<React.SetStateAction<boolean>>;
+
+    const Button = ({ children, ...rest }: React.PropsWithChildren<{}>) => {
+      return (
+        <button data-testid={testId} {...rest}>
+          {children}
+        </button>
+      );
+    };
+
+    const Component = ({
+      Button
+    }: {
+      Button: React.ComponentType<
+        React.ButtonHTMLAttributes<HTMLButtonElement>
+      >;
+    }) => {
+      const [state, setState] = React.useState(false);
+      setComponentState = setState;
+
+      const ButtonElement = React.useCallback(
+        ({ disabled }: { disabled: boolean }) => {
+          return <Button disabled={disabled}>Button</Button>;
+        },
+        []
+      );
+
+      return <ButtonElement disabled={state} />;
+    };
+
+    const testId = "test-id";
+
+    render(<Component Button={Button} />);
+
+    expect(screen.getByTestId(testId)).toBeTruthy();
+    expect(screen.getByTestId(testId)).not.toBeDisabled();
+
+    act(() => {
+      setComponentState(true);
+    });
+
+    expect(screen.getByTestId(testId)).toBeDisabled();
+  });
+
   test("Dynamic state changing", () => {
     const getExpectedText = (num: number) => `State ${num}`;
     // create a caller object to be able manually call the useState
@@ -89,6 +134,66 @@ describe("useState", () => {
 
     // check all states created since render
     expect(useState?.next()).toEqual([0, 1, 3, 8]);
+  });
+
+  test("It should not re-render the children - use case 1", () => {
+    const caller = {
+      setState: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+    const testText = "Some text";
+
+    render(
+      <OneUseStateWithChildren caller={caller}>
+        <ComponentWithChildren>{testText}</ComponentWithChildren>
+      </OneUseStateWithChildren>
+    );
+
+    // the text should be in the document
+    expect(screen.getByText(testText)).toBeTruthy();
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
+
+    act(() => {
+      caller.setState(1);
+    });
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
+  });
+
+  test("It should not re-render the children - use case 2", () => {
+    const caller = {
+      setState: ((_state: number) => {}) as React.Dispatch<
+        React.SetStateAction<number>
+      >
+    };
+    const testText = "Some text";
+
+    render(
+      <ComponentWithChildren>
+        <OneUseStateWithChildren caller={caller}>
+          <ComponentWithChildrenFunction text={testText}>
+            {(text) => <SimpleComponent text={text} />}
+          </ComponentWithChildrenFunction>
+        </OneUseStateWithChildren>
+      </ComponentWithChildren>
+    );
+
+    // the text should be in the document
+    expect(screen.getByText(testText)).toBeTruthy();
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
+
+    act(() => {
+      caller.setState(1);
+    });
+
+    // children of the OneUseStateWithChildren should be rendered once
+    expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
   });
 
   test("Multiple states with dynamic changing", () => {
@@ -214,65 +319,5 @@ describe("useState", () => {
     fireEvent.click(screen.getByRole("button"));
     expect(screen.getByRole("button")).toHaveTextContent(getExpectedText(2));
     expect(collector.getCallCount(MultipeCalls.name)).toBe(2);
-  });
-
-  test("It should not re-render the children - use case 1", () => {
-    const caller = {
-      setState: ((_state: number) => {}) as React.Dispatch<
-        React.SetStateAction<number>
-      >
-    };
-    const testText = "Some text";
-
-    render(
-      <OneUseStateWithChildren caller={caller}>
-        <ComponentWithChildren>{testText}</ComponentWithChildren>
-      </OneUseStateWithChildren>
-    );
-
-    // the text should be in the document
-    expect(screen.getByText(testText)).toBeTruthy();
-
-    // children of the OneUseStateWithChildren should be rendered once
-    expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
-
-    act(() => {
-      caller.setState(1);
-    });
-
-    // children of the OneUseStateWithChildren should be rendered once
-    expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
-  });
-
-  test("It should not re-render the children - use case 2", () => {
-    const caller = {
-      setState: ((_state: number) => {}) as React.Dispatch<
-        React.SetStateAction<number>
-      >
-    };
-    const testText = "Some text";
-
-    render(
-      <ComponentWithChildren>
-        <OneUseStateWithChildren caller={caller}>
-          <ComponentWithChildrenFunction text={testText}>
-            {(text) => <SimpleComponent text={text} />}
-          </ComponentWithChildrenFunction>
-        </OneUseStateWithChildren>
-      </ComponentWithChildren>
-    );
-
-    // the text should be in the document
-    expect(screen.getByText(testText)).toBeTruthy();
-
-    // children of the OneUseStateWithChildren should be rendered once
-    expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
-
-    act(() => {
-      caller.setState(1);
-    });
-
-    // children of the OneUseStateWithChildren should be rendered once
-    expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
   });
 });

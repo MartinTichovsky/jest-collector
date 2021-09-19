@@ -10,10 +10,10 @@ jest.mock("../caller", () => {
 
   return {
     ...origin,
-    getCaller: (...props: any) =>
+    isCallerDescribeNativeComponentFrame: (...props: any) =>
       mockDescribeNativeComponentFrame
-        ? { name: "describeNativeComponentFrame" }
-        : origin.getCaller(...props)
+        ? true
+        : origin.isCallerDescribeNativeComponentFrame(...props)
   };
 });
 
