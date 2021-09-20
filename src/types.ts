@@ -20,5 +20,4 @@ export interface Options {
   include?: string[];
   includeImports?: string[];
   roots: string[];
-  process?: string[];
 }
