@@ -16,6 +16,7 @@ import { WithDeps as UseCallbackDeps } from "./components/UseCallback";
 import { WithDeps as UseEffectDeps } from "./components/UseEffect";
 import { OneUseRef } from "./components/UseRef";
 import { OneUseStateWithChildren } from "./components/UseState";
+import { Validation } from "./components/validation";
 import { TestClass } from "./others/class";
 import {
   recursiveFunction,
@@ -819,6 +820,18 @@ describe("Commons tests", () => {
     nthChildTestSuite();
   });
 
+  test("Nth child - use case 4", () => {
+    render(
+      <ComponentWithChildren>
+        <SimpleComponent />
+        <SimpleComponent />
+        <SimpleComponent />
+      </ComponentWithChildren>
+    );
+
+    expect(collector.getAllDataFor(SimpleComponent.name).length).toBe(3);
+  });
+
   test("Not mocked copmponent should work correctly - react mock disabled", () => {
     process.env.disableReactMock = "true";
     notMockedComponentTestSuite();
@@ -962,5 +975,17 @@ describe("Commons tests", () => {
     expect(collector.getReactLifecycle("SomeComponent")).toBeUndefined;
 
     collector.reset("SomeComponent");
+  });
+
+  test("Validation", () => {
+    render(
+      <Validation>
+        <SimpleComponent />
+        <SimpleComponent />
+        <SimpleComponent />
+      </Validation>
+    );
+
+    expect(collector.getCallCount(SimpleComponent.name)).toBe(3);
   });
 });

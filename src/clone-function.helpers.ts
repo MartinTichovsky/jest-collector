@@ -22,14 +22,8 @@ import { FunctionIdentity } from "./private-collector.types";
  */
 export const checkTheChildrenSequence = (children: Children[]) => {
   for (let index = 0; index < children.length; index++) {
-    const leftSideIndex = children.findIndex(
-      (item, itemIndex) =>
-        itemIndex < index && isMatch(children[index][1], item[1])
-    );
-    const rightSideIndex = children.findIndex(
-      (item, itemIndex) =>
-        itemIndex > index && isMatch(children[index][1], item[1])
-    );
+    const leftSideIndex = findLeftSideIndex(children, index);
+    const rightSideIndex = findRightSideIndex(children, index);
 
     let nthChild: number | undefined = undefined;
 
@@ -47,6 +41,22 @@ export const checkTheChildrenSequence = (children: Children[]) => {
       children[index][1].nthChild = nthChild;
     }
   }
+};
+
+const findRightSideIndex = (children: Children[], index: number) =>
+  children.findIndex(
+    (item, itemIndex) =>
+      itemIndex > index && isMatch(children[index][1], item[1])
+  );
+
+const findLeftSideIndex = (children: Children[], index: number) => {
+  for (let i = index - 1; i >= 0; i--) {
+    if (isMatch(children[index][1], children[i][1])) {
+      return i;
+    }
+  }
+
+  return -1;
 };
 
 export const getDataFromArguments = (args: any) => {

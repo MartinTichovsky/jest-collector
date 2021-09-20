@@ -13,7 +13,9 @@ export const mockReactHooks = (
   createElement: (...props: any[]) => {
     if (
       typeof props[0] !== "function" ||
-      process.env.disableReactMock === "true"
+      process.env.disableReactMock === "true" ||
+      !props[0].name ||
+      !props[0].clone
     ) {
       return origin.createElement(...props);
     }
@@ -28,7 +30,7 @@ export const mockReactHooks = (
 
     props[1][__collectorProps__] = {};
 
-    if (!(props[0].name && !props[0][__relativePath__] && props[0].clone)) {
+    if (props[0][__relativePath__]) {
       return origin.createElement(...props);
     }
 

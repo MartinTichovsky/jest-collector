@@ -45,8 +45,42 @@ export const processReactObject = ({
     return object;
   }
 
-  // if the children is an object
+  // if the type is diferent from expected, update the props and don't proceed the rest
   if (
+    object.type[__relativePath__] &&
+    relativePath &&
+    name &&
+    (object.type[__relativePath__] !== relativePath ||
+      (object.type[__relativePath__] === relativePath &&
+        object.type.name !== name))
+  ) {
+    updatedReactObject({
+      object,
+      parent,
+      parentTestId: getParentTestId({
+        isDataTestIdInherited,
+        isNotMockedElementExcluded,
+        object,
+        parentTestId
+      })
+    });
+
+    children.push([
+      object,
+      getFunctionIdentity(
+        object,
+        isDataTestIdInherited,
+        getParentTestId({
+          isDataTestIdInherited,
+          isNotMockedElementExcluded,
+          object,
+          parentTestId
+        })
+      )
+    ]);
+  }
+  // if the children is an object
+  else if (
     !Array.isArray(object.props.children) &&
     React.isValidElement(object.props.children)
   ) {
@@ -97,41 +131,6 @@ export const processReactObject = ({
       }),
       relativePath: object.props.children.type[__relativePath__]
     });
-  }
-  // if the children does not exist and the react object is different from expected
-  else if (
-    !object.props.children &&
-    object.type[__relativePath__] &&
-    relativePath &&
-    name &&
-    (object.type[__relativePath__] !== relativePath ||
-      (object.type[__relativePath__] === relativePath &&
-        object.type.name !== name))
-  ) {
-    updatedReactObject({
-      object,
-      parent,
-      parentTestId: getParentTestId({
-        isDataTestIdInherited,
-        isNotMockedElementExcluded,
-        object,
-        parentTestId
-      })
-    });
-
-    children.push([
-      object,
-      getFunctionIdentity(
-        object,
-        isDataTestIdInherited,
-        getParentTestId({
-          isDataTestIdInherited,
-          isNotMockedElementExcluded,
-          object,
-          parentTestId
-        })
-      )
-    ]);
   }
   // if the children is an array
   else if (Array.isArray(object.props.children)) {

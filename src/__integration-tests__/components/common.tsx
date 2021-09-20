@@ -55,6 +55,16 @@ export const ComponentWithChildren = ({
   return <>{children}</>;
 };
 
+export const ComponentWithChildrenFunction = ({
+  children,
+  text
+}: {
+  children: (text: string) => React.ReactNode;
+  text: string;
+}) => {
+  return <>{children(text)}</>;
+};
+
 export const DirectComponent = ({
   templateDataTestId
 }: {
@@ -83,20 +93,10 @@ export const DirectComponentInTheSameFile = ({
   templateDataTestId?: string;
 }) => <DirectComponent templateDataTestId={templateDataTestId} />;
 
-export const SimpleComponentInTheSameFile = ({ text }: { text?: string }) => (
-  <SimpleComponent text={text} />
-);
-
 export const SimpleComponent = ({ text }: { text?: string }) => {
   return <p>{text}</p>;
 };
 
-export const ComponentWithChildrenFunction = ({
-  children,
-  text
-}: {
-  children: (text: string) => React.ReactNode;
-  text: string;
-}) => {
-  return <>{children(text)}</>;
-};
+export const SimpleComponentInTheSameFile = ({ text }: { text?: string }) => (
+  <SimpleComponent text={text} />
+);
