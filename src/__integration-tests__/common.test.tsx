@@ -830,6 +830,19 @@ describe("Commons tests", () => {
     );
 
     expect(collector.getAllDataFor(SimpleComponent.name).length).toBe(3);
+    expect(collector.getCallCount(SimpleComponent.name)).toBe(3);
+    expect(collector.getCallCount(SimpleComponent.name, { nthChild: 1 })).toBe(
+      1
+    );
+    expect(collector.getCallCount(SimpleComponent.name, { nthChild: 2 })).toBe(
+      1
+    );
+    expect(collector.getCallCount(SimpleComponent.name, { nthChild: 3 })).toBe(
+      1
+    );
+    expect(
+      collector.getCallCount(SimpleComponent.name, { nthChild: 4 })
+    ).toBeUndefined();
   });
 
   test("Not mocked copmponent should work correctly - react mock disabled", () => {

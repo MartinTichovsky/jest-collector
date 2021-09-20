@@ -241,6 +241,10 @@ describe("Test id inheritance", () => {
     expect(
       collector.getDataFor(SimpleComponent.name, { dataTestId: dataTestId1 })
     ).not.toBeUndefined();
+
+    expect(
+      collector.hasComponent(SimpleComponent.name, { dataTestId: dataTestId1 })
+    ).toBeTruthy();
   });
 
   test("Test id should be passed from not mocked elements - use case 1", () => {

@@ -8,15 +8,28 @@
 - [About](#about)
 - [List of Collected Hooks](#list-of-collected-hooks)
 - [Configuration](#configuration)
-  - [Options](#options)
-    - [Root Folder](#root-folder)
-    - [Exclude Tests](#exclude-tests)
-    - [Exclude Imports](#exclude-imports)
-    - [Include Tests](#include-tests)
-    - [Include Imports](#include-imports)
-    - [Extensions](#extensions)
+  - [Root Folder](#root-folder)
+  - [Exclude Tests](#exclude-tests)
+  - [Exclude Imports](#exclude-imports)
+  - [Include Tests](#include-tests)
+  - [Include Imports](#include-imports)
+  - [Extensions](#extensions)
   - [Matches](#matches)
 - [Documentation](#documentation)
+  - [Enable Data Test Id Inheritance](#enable-data-test-id-inheritance)
+  - [Disable Data Test Id Inheritance](#disable-data-test-id-inheritance)
+  - [Get Call Count](#get-call-count)
+  - [Get Component Data](#get-component-data)
+  - [Get All Data For](#get-all-data-for)
+  - [Get Data For](#get-data-for)
+  - [Get React Hooks](#get-react-hooks)
+  - [Get React Lifecycle](#get-react-lifecycle)
+  - [Get Stats](#get-stats)
+  - [Has Component](#has-component)
+  - [Has Registered](#has-registered)
+  - [Reset](#reset)
+  - [Options](#options)
+- [Real Examples](#real-examples)
 
 ## Getting Started
 
@@ -95,7 +108,7 @@ createCollector({
 });
 ```
 
-## Options
+## Create Collector Options
 
 ### Root Folder
 
@@ -242,3 +255,293 @@ There are examples using a match pattern:
 > NOTE: Matches are case sensitive. Always use UNIX file system style even when you run the tests under Windows.
 
 ## Documentation
+
+If you use Typescript add a globals file to your source code:
+
+```ts
+// globals.ts
+import { Collector } from "jest-collector";
+
+declare global {
+  var collector: Collector;
+}
+
+```
+
+### Enable Data Test Id Inheritance
+
+```ts
+// inheritance is disabled by default
+enableDataTestIdInheritance(excludeNotMockedElements?: boolean): void
+```
+
+Each component should have a data-testid to be easily identified. In cases you do not want to put a data-testid to each component and you want to inherit data-testid from the parent, you can enable inheritance. When the inheritance is enabled, each component with no data-testid will try to inherit the data-testid from the parent. It works from not mocked elements as well as for mocked elements.
+
+> IMPORTANT: When testing, on the highest level must be a mocked component to inherit the data-testid correctly.
+
+Examples:
+
+```ts
+// enable the inheritance
+collector.enableDataTestIdInheritance();
+
+// the SimpleComponent will iherit the data-testid
+render(
+  <MockedComponent data-testid="test-id">
+    <SimpleComponent />
+  </MockedComponent>
+);
+
+// the SimpleComponent will be registered in the collector with the "test-id"
+expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id" })).toBeTruthy();
+```
+
+```ts
+// enable the inheritance
+collector.enableDataTestIdInheritance();
+
+// the SimpleComponent will iherit the data-testid
+render(
+  <MockedComponent>
+    <div data-testid="test-id">
+      <SimpleComponent />
+    </div>
+  </MockedComponent>
+);
+
+// the SimpleComponent will be registered in the collector with the "test-id"
+expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id" })).toBeTruthy();
+```
+
+#### Exclude Not Mocked Components
+
+When you would like to exclude not mocked components from data-testid inheritance, call `enableDataTestIdInheritance` with `true`
+
+Examples:
+
+```ts
+// enable the inheritance
+collector.enableDataTestIdInheritance(true);
+
+// the SimpleComponent will iherit the data-testid if the Component 
+// is mocked by the collector
+render(
+  <Component data-testid="test-id">
+    <SimpleComponent />
+  </Component>
+);
+
+// the SimpleComponent will be registered in the collector with the "test-id"
+expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id" })).toBeTruthy();
+```
+
+```ts
+// enable the inheritance
+collector.enableDataTestIdInheritance(true);
+
+// the SimpleComponent will iherit the data-testid from the component 
+// if the Component is mocked by the collector, the "test-id-2" will
+// be ignored
+render(
+  <Component data-testid="test-id-1">
+    <div data-testid="test-id-2">
+      <SimpleComponent />
+    </div>
+  </Component>
+);
+
+// the SimpleComponent will be registered in the collector with the "test-id-1"
+expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id-1" })).toBeTruthy();
+// there will be no SimpleComponent with the "test-id-2"
+expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id-2" })).toBeFalsy();
+```
+
+### Disable Data Test Id Inheritance
+
+```ts
+disableDataTestIdInheritance(): void
+```
+
+When you turned on the inheritance and you would like to disable it again, you can call `disableDataTestIdInheritance` or [`reset`](#reset)
+
+Example:
+
+```ts
+collector.disableDataTestIdInheritance();
+```
+
+### Get Call Count
+
+```ts
+getCallCount(name: string, options?: Options): number | undefined
+```
+
+Get number of calls for the function or a react component. If the component is a react class component, the returned number will be a number of how many times was the `render` method called. See all available [`Options`](#options).
+
+Examples:
+
+```ts
+render(
+  <SimpleComponent />
+);
+
+// the SimpleComponent will be called once
+expect(collector.getCallCount(SimpleComponent.name)).toBe(1);
+```
+
+```ts
+// these components are difficult to identify, both are under the root
+// and they do not have a data-testid, therefore they will be considered
+// as one
+render(
+  <>
+    <SimpleComponent />
+    <SimpleComponent />
+  </>
+);
+
+// the SimpleComponent will be called twice
+expect(collector.getCallCount(SimpleComponent.name)).toBe(2);
+```
+
+```ts
+// when the parent is a mocked component, the children components
+// will be registered with nthChild property to identify them
+render(
+  <MockedComponent>
+    <SimpleComponent />
+    <SimpleComponent />
+  </MockedComponent>
+);
+
+// the SimpleComponent will be called twice
+expect(collector.getCallCount(SimpleComponent.name)).toBe(2);
+// the first SimpleComponent under the MockedComponent will be called once
+expect(collector.getCallCount(SimpleComponent.name, { nthChild: 1 })).toBe(1);
+// the second SimpleComponent under the MockedComponent will be called once
+expect(collector.getCallCount(SimpleComponent.name, { nthChild: 2 })).toBe(1);
+// the third SimpleComponent under the MockedComponent will not exist
+expect(collector.getCallCount(SimpleComponent.name, { nthChild: 3 })).toBeUndefined();
+```
+
+```ts
+// get the components by the parent
+render(
+  <>
+    <MockedComponent>
+      <SimpleComponent />
+      <SimpleComponent />
+    </MockedComponent>
+    <SimpleComponent />
+  </>
+);
+
+// the SimpleComponent will be called twice
+expect(collector.getCallCount(SimpleComponent.name)).toBe(3);
+// there are two SimpleComponents under the MockedComponent
+expect(collector.getCallCount(SimpleComponent.name, { parent: { name: MockedComponent.name } })).toBe(2);
+// there is only one SimpleComponent under the root
+expect(collector.getCallCount(SimpleComponent.name, { parent: null })).toBe(1);
+```
+
+If the component has a `useState` or `useReducer` hook, can be called multiple times. You can check the call count on a regular function as well. Then you can test if the function was called (rendered) as many times as you expect.
+
+### Get Component Data
+
+```ts
+getComponentData(componentName: string, options?: Options): RegisteredFunction<unknown> | undefined
+```
+
+This function is the same as [Get Data For](#get-data-for). The name serve only for better orientation when working with react components.
+
+### Get All Data For
+
+`getAllDataFor`
+
+### Get Data For
+
+`getDataFor`
+
+### Get React Hooks
+
+`getReactHooks`
+
+### Get React Lifecycle
+
+`getReactLifecycle`
+
+### Get Stats
+
+`getStats`
+
+### Has Component
+
+```ts
+hasComponent(componentName: string, options?: Options): boolean
+```
+
+This function is the same as [Has Registered](#has-registered). The name serve only for better orientation when working with react components.
+
+### Has Registered
+
+```ts
+hasRegistered(name: string, options?: Options): boolean
+```
+
+Check if a function or a react component was registered by the jest collector. See all available [`Options`](#options).
+
+Example:
+
+```ts
+render(<SimpleComponent />);
+
+// check if the SimpleComponent is registered in the collector
+expect(collector.hasRegistered(SimpleComponent.name)).tobeTruthy();
+// or you can use "hasComponent"
+expect(collector.hasComponent(SimpleComponent.name)).tobeTruthy();
+```
+
+### Reset
+
+```ts
+reset(): void
+reset(name: string, options?: Options): void
+```
+
+When you run more tests in the same test file, it is recomended to reset the collector data before run another test. Use [`beforeEach`](https://jestjs.io/docs/api#beforeeachfn-timeout) with the reset:
+
+```ts
+beforeEach(() => {
+  collector.reset();
+})
+```
+
+In cases when you would like to remove a specific function or a component from the collector, you can do it providing a name and or options. See all available [`Options`](#options).
+
+```ts
+// it will remove all registered SimpleComponents from the collector
+collector.reset(SimpleComponent.name);
+```
+
+### Options
+
+```ts
+interface Options {
+  dataTestId?: string | null;
+  ignoreWarning?: true;
+  nthChild?: number;
+  parent?: OptionsParent | null;
+  relativePath?: string;
+}
+
+interface OptionsParent {
+  dataTestId?: string | null;
+  name?: string;
+  nthChild?: number;
+  originMock?: boolean;
+  parent?: OptionsParent | null;
+  relativePath?: string;
+}
+```
+
+## Real Examples
