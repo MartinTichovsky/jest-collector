@@ -74,14 +74,16 @@ describe("useState", () => {
 
     render(<Component Button={Button} />);
 
-    expect(screen.getByTestId(testId)).toBeTruthy();
-    expect(screen.getByTestId(testId)).not.toBeDisabled();
+    const button = screen.getByTestId(testId);
+
+    expect(button).toBeTruthy();
+    expect(button).not.toBeDisabled();
 
     act(() => {
       setComponentState(true);
     });
 
-    expect(screen.getByTestId(testId)).toBeDisabled();
+    expect(button).toBeDisabled();
   });
 
   test("Dynamic state changing", () => {

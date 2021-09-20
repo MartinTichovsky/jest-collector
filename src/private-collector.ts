@@ -668,47 +668,6 @@ export class PrivateCollector extends CollectorAbstract {
     });
   }
 
-  public registerUseState({
-    componentName,
-    props,
-    relativePath
-  }: RegisterUseState) {
-    const hookType = "useState";
-    const active = this.getActiveFunction();
-    const registered = this.getRegistered({
-      dataTestId: active?.current.dataTestId || null,
-      name: componentName,
-      nthChild: active?.current.nthChild,
-      parent: active?.parent || null,
-      relativePath
-    });
-
-    if (!registered) {
-      return undefined;
-    }
-
-    this.registerHook(registered, hookType);
-
-    const existingHook = registered.hooks![hookType]!.find(
-      (item) => item._originState === props._originState
-    );
-
-    if (existingHook) {
-      existingHook.isRegistered = true;
-      return existingHook;
-    }
-
-    const sequence = this.getSequenceNumber(registered, hookType);
-
-    return this.registerHookProps({
-      registered,
-      hooks: registered.hooks![hookType]!,
-      hookType,
-      props,
-      sequence
-    });
-  }
-
   public registerUseReducer({
     componentName,
     props,
@@ -773,6 +732,47 @@ export class PrivateCollector extends CollectorAbstract {
 
     const existingHook = registered.hooks![hookType]!.find(
       (item) => item.ref === props.ref
+    );
+
+    if (existingHook) {
+      existingHook.isRegistered = true;
+      return existingHook;
+    }
+
+    const sequence = this.getSequenceNumber(registered, hookType);
+
+    return this.registerHookProps({
+      registered,
+      hooks: registered.hooks![hookType]!,
+      hookType,
+      props,
+      sequence
+    });
+  }
+
+  public registerUseState({
+    componentName,
+    props,
+    relativePath
+  }: RegisterUseState) {
+    const hookType = "useState";
+    const active = this.getActiveFunction();
+    const registered = this.getRegistered({
+      dataTestId: active?.current.dataTestId || null,
+      name: componentName,
+      nthChild: active?.current.nthChild,
+      parent: active?.parent || null,
+      relativePath
+    });
+
+    if (!registered) {
+      return undefined;
+    }
+
+    this.registerHook(registered, hookType);
+
+    const existingHook = registered.hooks![hookType]!.find(
+      (item) => item._originState === props._originState
     );
 
     if (existingHook) {

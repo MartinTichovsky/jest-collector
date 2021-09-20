@@ -3,6 +3,8 @@ import { __collectorProps__, __relativePath__ } from "./constants";
 import { PrivateCollector } from "./private-collector";
 import { resolvePath } from "./resolve-path";
 
+const memorizedClones = new Map<unknown, unknown>();
+
 export const mockReactHooks = (
   origin: any,
   privateCollector: PrivateCollector
@@ -26,9 +28,18 @@ export const mockReactHooks = (
 
     props[1][__collectorProps__] = {};
 
+    if (!(props[0].name && !props[0][__relativePath__] && props[0].clone)) {
+      return origin.createElement(...props);
+    }
+
+    const fnc = props[0];
+
     // mock the component, every component will be mocked
-    if (props[0].name && !props[0][__relativePath__] && props[0].clone) {
+    if (memorizedClones.has(fnc)) {
+      props[0] = memorizedClones.get(fnc);
+    } else {
       props[0] = props[0].clone(privateCollector, resolvePath(props[0]), false);
+      memorizedClones.set(fnc, props[0]);
     }
 
     return origin.createElement(...props);
@@ -248,10 +259,10 @@ export const mockReactHooks = (
     registered.state.push(result[0]);
     registered.setState.mockImplementation((...props) => result[1](...props));
 
-    Object.defineProperties(
-      registered.setState,
-      Object.getOwnPropertyDescriptors(result[1])
-    );
+    // Object.defineProperties(
+    //   registered.setState,
+    //   Object.getOwnPropertyDescriptors(result[1])
+    // );
 
     return [result[0], registered.setState];
   }
