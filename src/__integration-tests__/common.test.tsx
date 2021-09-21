@@ -906,7 +906,7 @@ describe("Commons tests", () => {
     }
   });
 
-  test("Stats", () => {
+  test("Stats - without children", () => {
     // create class, call function and render some components
     new TestClass();
     render(<ClassComponent />);
@@ -928,10 +928,12 @@ describe("Commons tests", () => {
     ).toMatchSnapshot();
 
     // time should not be zero
+    const stats = collector.getStats(TestClass.name);
+
     expect(
-      collector.getStats(TestClass.name)?.calls[0].stats.time
+      !Array.isArray(stats) && stats?.calls[0].stats.time
     ).not.toBeUndefined();
-    expect(collector.getStats(TestClass.name)?.calls[0].stats.time).not.toBe(0);
+    expect(!Array.isArray(stats) && stats?.calls[0].stats.time).not.toBe(0);
 
     // get statistics for specific component with test id, exclude time because it is always different
     expect(
@@ -939,6 +941,31 @@ describe("Commons tests", () => {
         dataTestId: dataTestId1,
         excludeTime: true
       })
+    ).toMatchSnapshot();
+  });
+
+  test("Stats - with children", () => {
+    render(
+      <ComponentWithChildren>
+        <SimpleComponent />
+        <SimpleComponent />
+        <SimpleComponent />
+        <ComponentWithChildren>
+          <SimpleComponent />
+        </ComponentWithChildren>
+        <ComponentWithChildren>
+          <SimpleComponent />
+          <SimpleComponent />
+          <SimpleComponent />
+        </ComponentWithChildren>
+      </ComponentWithChildren>
+    );
+
+    // get statistics for all, exclude time because it is always different
+    expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
+    // get stats for all SimpleComponents
+    expect(
+      collector.getStats(SimpleComponent.name, { excludeTime: true })
     ).toMatchSnapshot();
   });
 

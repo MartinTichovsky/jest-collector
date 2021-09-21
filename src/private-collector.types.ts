@@ -211,11 +211,11 @@ export interface RegisterUseWithAction<K extends "useEffect" | "useCallback">
   props: ReactHooksTypes[K];
 }
 
-export interface Stats {
+export interface Stats extends NthChild {
   calls: Call[];
   dataTestId: string | null;
   name: string;
   numberOfCalls: number;
   parent: IdentityWithParent | null;
-  path: string;
+  relativePath: string;
 }

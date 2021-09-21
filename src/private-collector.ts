@@ -302,7 +302,7 @@ export class PrivateCollector extends CollectorAbstract {
     return {
       dataTestId: parent.current.dataTestId,
       name: parent.current.name,
-      nthChild: parent.current.nthChild,
+      ...(parent.current.nthChild ? { nthChild: parent.current.nthChild } : {}),
       originMock: parent.current.originMock,
       parent: this.getIdentityFromParent(parent.parent),
       relativePath: parent.current.relativePath
@@ -467,29 +467,27 @@ export class PrivateCollector extends CollectorAbstract {
     nameOrOptions?: string | GetStatsOptions,
     options?: GetStatsOptions
   ): Stats[] | Stats | undefined {
-    return nameOrOptions === undefined || typeof nameOrOptions !== "string"
-      ? this.registeredFunctions.map((registered) =>
-          this.makeStats(registered, nameOrOptions)
-        )
-      : this.makeStats(this.getDataFor(nameOrOptions, options), options);
+    if (nameOrOptions === undefined || typeof nameOrOptions !== "string") {
+      return this.registeredFunctions.map((registered) =>
+        this.makeStats(registered, nameOrOptions)
+      );
+    }
+
+    const stats = this.getAllDataFor(nameOrOptions, options).map((registered) =>
+      this.makeStats(registered, options)
+    );
+
+    return stats.length ? (stats.length === 1 ? stats[0] : stats) : undefined;
   }
 
   public hasRegistered(name: string, options?: Options) {
     return this.getDataFor(name, options) !== undefined;
   }
 
-  private makeStats<T extends RegisteredFunction | undefined>(
-    registered?: T,
-    options?: GetStatsOptions
-  ): T extends undefined ? undefined : Stats;
   private makeStats(
-    registered?: RegisteredFunction,
+    registered: RegisteredFunction,
     options?: GetStatsOptions
-  ): Stats | undefined {
-    if (registered === undefined) {
-      return undefined;
-    }
-
+  ): Stats {
     return {
       calls: registered.calls.map((call) => ({
         args: undefined,
@@ -497,9 +495,12 @@ export class PrivateCollector extends CollectorAbstract {
       })),
       dataTestId: registered.current.dataTestId,
       name: registered.current.name,
+      ...(registered.current.nthChild
+        ? { nthChild: registered.current.nthChild }
+        : {}),
       numberOfCalls: registered.calls.length,
       parent: this.getIdentityFromParent(registered.parent),
-      path: registered.current.relativePath
+      relativePath: registered.current.relativePath
     };
   }
 

@@ -1,6 +1,403 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Commons tests Stats 1`] = `
+exports[`Commons tests Stats - with children 1`] = `
+Array [
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "ComponentWithChildren",
+    "numberOfCalls": 1,
+    "parent": null,
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 1,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 2,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 3,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "ComponentWithChildren",
+    "nthChild": 1,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 1,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "ComponentWithChildren",
+    "nthChild": 2,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 1,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 2,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 2,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 2,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 3,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 2,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+]
+`;
+
+exports[`Commons tests Stats - with children 2`] = `
+Array [
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 1,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 2,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 3,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "originMock": true,
+      "parent": null,
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 1,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 1,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 2,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 2,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 2,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+  Object {
+    "calls": Array [
+      Object {
+        "args": undefined,
+        "stats": Object {},
+      },
+    ],
+    "dataTestId": null,
+    "name": "SimpleComponent",
+    "nthChild": 3,
+    "numberOfCalls": 1,
+    "parent": Object {
+      "dataTestId": null,
+      "name": "ComponentWithChildren",
+      "nthChild": 2,
+      "originMock": true,
+      "parent": Object {
+        "dataTestId": null,
+        "name": "ComponentWithChildren",
+        "originMock": true,
+        "parent": null,
+        "relativePath": "/src/__integration-tests__/components/common.tsx",
+      },
+      "relativePath": "/src/__integration-tests__/components/common.tsx",
+    },
+    "relativePath": "/src/__integration-tests__/components/common.tsx",
+  },
+]
+`;
+
+exports[`Commons tests Stats - without children 1`] = `
 Array [
   Object {
     "calls": Array [
@@ -13,7 +410,7 @@ Array [
     "name": "TestClass",
     "numberOfCalls": 1,
     "parent": null,
-    "path": "/src/__integration-tests__/others/class.ts",
+    "relativePath": "/src/__integration-tests__/others/class.ts",
   },
   Object {
     "calls": Array [
@@ -26,7 +423,7 @@ Array [
     "name": "ClassComponent",
     "numberOfCalls": 1,
     "parent": null,
-    "path": "/src/__integration-tests__/components/class-components.tsx",
+    "relativePath": "/src/__integration-tests__/components/class-components.tsx",
   },
   Object {
     "calls": Array [
@@ -39,7 +436,7 @@ Array [
     "name": "recursiveFunction",
     "numberOfCalls": 1,
     "parent": null,
-    "path": "/src/__integration-tests__/others/recursive-function.ts",
+    "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
   Object {
     "calls": Array [
@@ -54,12 +451,11 @@ Array [
     "parent": Object {
       "dataTestId": null,
       "name": "recursiveFunction",
-      "nthChild": undefined,
       "originMock": true,
       "parent": null,
       "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
     },
-    "path": "/src/__integration-tests__/others/recursive-function.ts",
+    "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
   Object {
     "calls": Array [
@@ -74,19 +470,17 @@ Array [
     "parent": Object {
       "dataTestId": null,
       "name": "recursiveFunction",
-      "nthChild": undefined,
       "originMock": true,
       "parent": Object {
         "dataTestId": null,
         "name": "recursiveFunction",
-        "nthChild": undefined,
         "originMock": true,
         "parent": null,
         "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
       },
       "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
     },
-    "path": "/src/__integration-tests__/others/recursive-function.ts",
+    "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
   Object {
     "calls": Array [
@@ -101,17 +495,14 @@ Array [
     "parent": Object {
       "dataTestId": null,
       "name": "recursiveFunction",
-      "nthChild": undefined,
       "originMock": true,
       "parent": Object {
         "dataTestId": null,
         "name": "recursiveFunction",
-        "nthChild": undefined,
         "originMock": true,
         "parent": Object {
           "dataTestId": null,
           "name": "recursiveFunction",
-          "nthChild": undefined,
           "originMock": true,
           "parent": null,
           "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
@@ -120,7 +511,7 @@ Array [
       },
       "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
     },
-    "path": "/src/__integration-tests__/others/recursive-function.ts",
+    "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
   Object {
     "calls": Array [
@@ -133,7 +524,7 @@ Array [
     "name": "EmptyWithUseEffectAndUseCallback",
     "numberOfCalls": 1,
     "parent": null,
-    "path": "/src/__integration-tests__/components/common.unregistered.tsx",
+    "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
   Object {
     "calls": Array [
@@ -146,7 +537,7 @@ Array [
     "name": "WithDeps",
     "numberOfCalls": 1,
     "parent": null,
-    "path": "/src/__integration-tests__/components/UseEffect.tsx",
+    "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
   Object {
     "calls": Array [
@@ -159,12 +550,12 @@ Array [
     "name": "WithDeps",
     "numberOfCalls": 1,
     "parent": null,
-    "path": "/src/__integration-tests__/components/UseCallback.tsx",
+    "relativePath": "/src/__integration-tests__/components/UseCallback.tsx",
   },
 ]
 `;
 
-exports[`Commons tests Stats 2`] = `
+exports[`Commons tests Stats - without children 2`] = `
 Object {
   "calls": Array [
     Object {
@@ -176,11 +567,11 @@ Object {
   "name": "TestClass",
   "numberOfCalls": 1,
   "parent": null,
-  "path": "/src/__integration-tests__/others/class.ts",
+  "relativePath": "/src/__integration-tests__/others/class.ts",
 }
 `;
 
-exports[`Commons tests Stats 3`] = `
+exports[`Commons tests Stats - without children 3`] = `
 Object {
   "calls": Array [
     Object {
@@ -192,6 +583,6 @@ Object {
   "name": "WithDeps",
   "numberOfCalls": 1,
   "parent": null,
-  "path": "/src/__integration-tests__/components/UseEffect.tsx",
+  "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
 }
 `;

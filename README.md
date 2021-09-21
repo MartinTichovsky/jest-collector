@@ -8,27 +8,35 @@
 - [About](#about)
 - [List of Collected Hooks](#list-of-collected-hooks)
 - [Configuration](#configuration)
-  - [Root Folder](#root-folder)
-  - [Exclude Tests](#exclude-tests)
-  - [Exclude Imports](#exclude-imports)
-  - [Include Tests](#include-tests)
-  - [Include Imports](#include-imports)
-  - [Extensions](#extensions)
+  - [exclude](#exclude)
+  - [excludeImports](#excludeimports)
+  - [extensions](#extensions)
+  - [include](#include)
+  - [includeImports](#includeimports)
+  - [roots](#roots)
   - [Matches](#matches)
 - [Documentation](#documentation)
-  - [Enable Data Test Id Inheritance](#enable-data-test-id-inheritance)
-  - [Disable Data Test Id Inheritance](#disable-data-test-id-inheritance)
-  - [Get Call Count](#get-call-count)
-  - [Get Component Data](#get-component-data)
-  - [Get All Data For](#get-all-data-for)
-  - [Get Data For](#get-data-for)
-  - [Get React Hooks](#get-react-hooks)
-  - [Get React Lifecycle](#get-react-lifecycle)
-  - [Get Stats](#get-stats)
-  - [Has Component](#has-component)
-  - [Has Registered](#has-registered)
-  - [Reset](#reset)
-  - [Options](#options)
+  - [enableDataTestIdInheritance](#enabledatatestidinheritance)
+  - [disableDataTestIdInheritance](#disabledatatestidinheritance)
+  - [getCallCount](#getcallcount)
+  - [getComponentData](#getcomponentdata)
+  - [getAllDataFor](#getalldatafor)
+  - [getDataFor](#getdatafor)
+  - [getReactHooks](#getreacthooks)
+  - [getReactLifecycle](#getreactlifecycle)
+  - [getStats](#getstats)
+  - [hasComponent](#hascomponent)
+  - [hasRegistered](#hasregistered)
+  - [reset](#reset)
+  - [Interfaces](#interfaces)
+    - [Call](#call)
+    - [CallStats](#callstats)
+    - [Identity](#identity)
+    - [Options](#options)
+    - [Parent](#parent)
+    - [ReactClassLifecycle](#reactclasslifecycle)
+    - [RegisteredFunction](#registeredfunction)
+    - [Stats](#stats)
 - [Real Examples](#real-examples)
 
 ## Getting Started
@@ -51,7 +59,7 @@ The Jest Collector is a tool for mocking all imports and collect data about the 
 
 This tool is providing a way of testing how many times was your component rendered (called), if it contains the correct properties or if you used correct dependencies in React hooks such as in `useEffect`, `useCallback` or in `useMemo`.
 
-> NOTE: React class components are not fully supported yet!
+> NOTE: React class components are not fully implemented yet!
 
 ## List of Collected Hooks
 
@@ -110,13 +118,95 @@ createCollector({
 
 ## Create Collector Options
 
-### Root Folder
+### exclude
 
-`roots` - an array of folders
+[_an array of matches_]
+
+The collector is created for each test by default. In cases when you would like to exclude a test from being processed by the collector, you can exclude it with the `exclude` option. You can provide a [`match`](#matches) pattern.
+
+_Example:_
+
+```js
+// it will exclude the "custom.test.ts" directly under the "src"
+createColector({ 
+  exclude: ["src/custom.test.ts"], 
+  roots: ["src"] 
+});
+```
+
+### excludeImports
+
+[_an array of matches_]
+
+The collector is mocking every file and its exports by default. In cases when you would like to exclude a file from being processed by the collector and mock the exports, you can exclude it with the `excludeImports` option. You can provide a [`match`](#matches) pattern.
+
+> NOTE: Excluded files are not considered in the parent tree in the collector.
+
+_Example:_
+
+```js
+// it will not mock the "custom.ts" directly under the "src"
+createColector({ 
+  excludeImports: ["src/custom.ts"], 
+  roots: ["src"] 
+});
+```
+
+### extensions
+
+[_an array of file extensions_]
+
+By default the extensions are set to `.ts` and `.js`. You can set an additional extension. New set of extensions will replace the default. It means if you set `extensions` option to `[.ts]` the collector will mock the exports only from typescript files. If you provide an empty array, the collector will try to mock all files matching other options.
+
+_Example:_
+
+```js
+// exports from all javascript and typescript files will be mocked
+createColector({ 
+  extensions: [".ts", ".js"], 
+  roots: ["src"] 
+});
+```
+
+### include
+
+[_an array of matches_]
+
+The collector is created for each test by default. In cases when you would like to include only a specific test to being processed by the collector, you can include it with the `include` option. Only the tests matching the `include` array will be processed by the collector. If there is a match in `exclude` option for the same test file as in `include`, the test will not be processed by the collector. You can provide a [`match`](#matches) pattern.
+
+_Example:_
+
+```js
+// it will include only the "custom.test.ts" directly in "src"
+createColector({ 
+  include: ["src/custom.test.ts"], 
+  roots: ["src"] 
+});
+```
+
+### includeImports
+
+[_an array of matches_]
+
+The collector is mocking every file with exports by default. In cases when you would like to include only a specific file to being processed by the collector and mock the exports, you can include it with the `includeImports` option. If there is a match in `excludeImports` option for the same file as in `includeImports`, the file will not be processed by the collector. You can provide a [`match`](#matches) pattern.
+
+_Example:_
+
+```js
+// it will mock only the "custom.ts" directly under the "src"
+createColector({ 
+  includeImports: ["src/custom.ts"], 
+  roots: ["src"] 
+});
+```
+
+### roots
+
+[_an array of folders_]
 
 The collector must have set at least one root folder of your source code. You can set more folders. A folder must have a relative path to the jest process. All files matching the other options will be mocked and processed by the jest collector. If you do not set the other options, all typescript and javascript files will be mocked and processed.
 
-Lets say you have two folders in your repository "admin" and "src".
+Lets say you have two folders "admin" and "src" in your repository.
 
 ```
 .
@@ -137,88 +227,6 @@ If you would like to set an inner folder, it is possible:
 
 ```js
 createColector({ roots: ["src/inner-folder"] });
-```
-
-### Exclude Tests
-
-`exclude` - an array of matches
-
-The collector is created for each test by default. In cases when you would like to exclude a test from being processed by the collector, you can exclude it with the `exclude` option. You can provide a [`match`](#matches) pattern.
-
-Example:
-
-```js
-// it will exclude the "custom.test.ts" directly under the "src"
-createColector({ 
-  exclude: ["src/custom.test.ts"], 
-  roots: ["src"] 
-});
-```
-
-### Exclude Imports
-
-`excludeImports` - an array of matches
-
-The collector is mocking every file and its exports by default. In cases when you would like to exclude a file from being processed by the collector and mock the exports, you can exclude it with the `excludeImports` option. You can provide a [`match`](#matches) pattern.
-
-> NOTE: Excluded files are not considered in the parent tree in the collector.
-
-Example:
-
-```js
-// it will not mock the "custom.ts" directly under the "src"
-createColector({ 
-  excludeImports: ["src/custom.ts"], 
-  roots: ["src"] 
-});
-```
-
-### Include Tests
-
-`include` - an array of matches
-
-The collector is created for each test by default. In cases when you would like to include only a specific test to being processed by the collector, you can include it with the `include` option. Only the tests matching the `include` array will be processed by the collector. If there is a match in `exclude` option for the same test file as in `include`, the test will not be processed by the collector. You can provide a [`match`](#matches) pattern.
-
-Example:
-
-```js
-// it will include only the "custom.test.ts" directly in "src"
-createColector({ 
-  include: ["src/custom.test.ts"], 
-  roots: ["src"] 
-});
-```
-
-### Include Imports
-
-`includeImports` - an array of matches
-
-The collector is mocking every file with exports by default. In cases when you would like to include only a specific file to being processed by the collector and mock the exports, you can include it with the `includeImports` option. If there is a match in `excludeimports` option for the same file as in `includeImports`, the file will not be processed by the collector. You can provide a [`match`](#matches) pattern.
-
-Example:
-
-```js
-// it will mock only the "custom.ts" directly under the "src"
-createColector({ 
-  includeImports: ["src/custom.ts"], 
-  roots: ["src"] 
-});
-```
-
-### Extensions
-
-`extensions` - an array of file extensions
-
-By default the extensions are set to `.ts` and `.js`. You can set an additional extension. New set of extensions will replace the default. It means if you set `extensions` option to `[.ts]` the collector will mock the exports only from typescript files. If you provide an empty array, the collector will try to mock all files matching other options.
-
-Example:
-
-```js
-// exports from all javascript and typescript files will be mocked
-createColector({ 
-  extensions: [".ts", ".js"], 
-  roots: ["src"] 
-});
 ```
 
 ## Matches
@@ -268,7 +276,7 @@ declare global {
 
 ```
 
-### Enable Data Test Id Inheritance
+### enableDataTestIdInheritance
 
 ```ts
 // inheritance is disabled by default
@@ -279,7 +287,7 @@ Each component should have a data-testid to be easily identified. In cases you d
 
 > IMPORTANT: When testing, on the highest level must be a mocked component to inherit the data-testid correctly.
 
-Examples:
+_Examples:_
 
 ```ts
 // enable the inheritance
@@ -317,7 +325,7 @@ expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id" })).
 
 When you would like to exclude not mocked components from data-testid inheritance, call `enableDataTestIdInheritance` with `true`
 
-Examples:
+_Examples:_
 
 ```ts
 // enable the inheritance
@@ -356,7 +364,7 @@ expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id-1" })
 expect(collector.hasComponent(SimpleComponent.name, { dataTestId: "test-id-2" })).toBeFalsy();
 ```
 
-### Disable Data Test Id Inheritance
+### disableDataTestIdInheritance
 
 ```ts
 disableDataTestIdInheritance(): void
@@ -364,21 +372,24 @@ disableDataTestIdInheritance(): void
 
 When you turned on the inheritance and you would like to disable it again, you can call `disableDataTestIdInheritance` or [`reset`](#reset)
 
-Example:
+_Example:_
 
 ```ts
 collector.disableDataTestIdInheritance();
 ```
 
-### Get Call Count
+### getCallCount
 
 ```ts
 getCallCount(name: string, options?: Options): number | undefined
 ```
 
-Get number of calls for the function or a react component. If the component is a react class component, the returned number will be a number of how many times was the `render` method called. See all available [`Options`](#options).
+_References:_
+  - [`Options`](#options)
 
-Examples:
+Get number of calls for the function or a react component. If the component is a react class component, the returned number will be a number of how many times was the `render` method called.
+
+_Examples:_
 
 ```ts
 render(
@@ -446,51 +457,133 @@ expect(collector.getCallCount(SimpleComponent.name, { parent: null })).toBe(1);
 
 If the component has a `useState` or `useReducer` hook, can be called multiple times. You can check the call count on a regular function as well. Then you can test if the function was called (rendered) as many times as you expect.
 
-### Get Component Data
+### getComponentData
 
 ```ts
 getComponentData(componentName: string, options?: Options): RegisteredFunction<unknown> | undefined
 ```
 
-This function is the same as [Get Data For](#get-data-for). The name serve only for better orientation when working with react components.
+_References:_
+  - [`Options`](#options)
 
-### Get All Data For
+This function is the same as [getDataFor](#getdatafor). The name serve only for better orientation when working with react components.
 
-`getAllDataFor`
+### getAllDataFor
 
-### Get Data For
+```ts
+getAllDataFor(name: string, options?: Options): RegisteredFunction[]
+getAllDataFor(options: OptionsWithName): RegisteredFunction[]
+
+interface OptionsWithName extends Options {
+  name?: string;
+}
+```
+
+_References:_
+  - [`Options`](#options)
+  - [`RegisteredFunction`](#registeredfunction)
+
+This method is moreless the same as [`getDataFor`](#getdatafor). It returns an array of all founded registered functions/components in the collector and it does not log a warning if there are more functions/components matching the name and options.
+
+_Examples:_
+
+```ts
+// it returns an array of founded results for the SimpleComponent
+collector.getAllDataFor(SimpleComponent.name);
+```
+
+### getDataFor
 
 `getDataFor`
 
-### Get React Hooks
+### getReactHooks
 
 `getReactHooks`
 
-### Get React Lifecycle
+### getReactLifecycle
 
-`getReactLifecycle`
+```ts
+getReactLifecycle(componentName: string, options?: Options): ReactClassLifecycle | undefined
+```
 
-### Get Stats
+_References:_
+  - [`Options`](#options)
+  - [`ReactClassLifecycle`](#reactclasslifecycle)
 
-`getStats`
+When you would like to get all lifecycles for a react class component, you can use `getReactLifecycle` method. The mothod returns an object with properties `render` and `setState` which are a [`jest.fn`](#https://jestjs.io/docs/mock-functions). You can check how many times was `render` or `setState` called and or arguments passed to `setState` and its returns. For more info, read the [`jest.fn documentation`](#https://jestjs.io/docs/mock-functions)
 
-### Has Component
+> NOTE: React class components are not fully implemented yet!
+
+### getStats
+
+```ts
+getStats(): Stats[]
+getStats(options?: GetStatsOptions): Stats[]
+getStats(name: string, options?: GetStatsOptions): Stats[] | Stats | undefined
+
+interface GetStatsOptions extends Options {
+  excludeTime?: boolean;
+}
+```
+
+_References:_
+  - [`Options`](#options)
+  - [`Stats`](#stats)
+
+This method serves for getting statistics from the whole collector or for a specific function/component. Data includes statistics for each call, calling aguments and a result of the function or component. Because the time statistics are a dynamic number, you can exclude time from statistics with `excludeTime` option. Excluding the time from statistics is needed for test snapshots.
+
+_Examples:_
+
+```ts
+// it returns statistics for all registered functions/components
+collector.getStats();
+
+// it returns statistics for all registered functions/components
+// and it excludes time from every call stats
+collector.getStats({ excludeTime: true });
+
+// it returns statistics for all registered functions/components
+// which do not have a parent, they are rendered on the top
+// of the render tree. You can combine all available options
+// get only specific components with data-testid or parent etc.
+collector.getStats({ parent: null });
+
+// it returns statistics for the SimpleComponent only. Every
+// registered SimpleComponent will be included in the
+// statisctics, if there will be only one result, it returns
+// an object, if there will be more results, it returns an array
+collector.getStats(SimpleComponent.name);
+
+// it returns statistics for the SimpleComponent with data-testid 
+// equal to "test-id". You can filter the results with other
+// available options such as parent, nthChild etc. If there
+// will be more matching results, it returns an array
+collector.getStats(SimpleComponent.name, { dataTestId: "test-id" });
+```
+
+### hasComponent
 
 ```ts
 hasComponent(componentName: string, options?: Options): boolean
 ```
 
-This function is the same as [Has Registered](#has-registered). The name serve only for better orientation when working with react components.
+_References:_
+  - [`Options`](#options)
 
-### Has Registered
+This function is the same as [hasRegistered](#hasregistered). The name serve only for better orientation when working with react components.
+
+### hasRegistered
 
 ```ts
 hasRegistered(name: string, options?: Options): boolean
 ```
 
-Check if a function or a react component was registered by the jest collector. See all available [`Options`](#options).
+_References:_
+  - [`Options`](#options)
 
-Example:
+Check if a function or a react component was registered by the jest collector.
+
+_Example:_
 
 ```ts
 render(<SimpleComponent />);
@@ -501,12 +594,15 @@ expect(collector.hasRegistered(SimpleComponent.name)).tobeTruthy();
 expect(collector.hasComponent(SimpleComponent.name)).tobeTruthy();
 ```
 
-### Reset
+### reset
 
 ```ts
 reset(): void
 reset(name: string, options?: Options): void
 ```
+
+_References:_
+  - [`Options`](#options)
 
 When you run more tests in the same test file, it is recomended to reset the collector data before run another test. Use [`beforeEach`](https://jestjs.io/docs/api#beforeeachfn-timeout) with the reset:
 
@@ -516,31 +612,103 @@ beforeEach(() => {
 })
 ```
 
-In cases when you would like to remove a specific function or a component from the collector, you can do it providing a name and or options. See all available [`Options`](#options).
+In cases when you would like to remove a specific function or a component from the collector, you can do it providing a name and or options.
 
 ```ts
 // it will remove all registered SimpleComponents from the collector
 collector.reset(SimpleComponent.name);
 ```
 
-### Options
+### Interfaces
+
+#### Call
+
+```ts
+interface Call {
+  args: any;
+  stats: CallStats;
+  result?: any;
+}
+```
+
+#### CallStats
+
+```ts
+interface CallStats {
+  time?: number;
+}
+```
+
+#### Identity
+
+```ts
+interface Identity {
+  dataTestId: string | null;
+  name: string;
+  nthChild?: number;
+  originMock: boolean;
+  relativePath: string;
+}
+```
+
+#### Options
 
 ```ts
 interface Options {
   dataTestId?: string | null;
   ignoreWarning?: true;
   nthChild?: number;
-  parent?: OptionsParent | null;
+  parent?: Parent | null;
   relativePath?: string;
 }
+```
 
-interface OptionsParent {
+#### Parent
+
+```ts
+interface Parent {
   dataTestId?: string | null;
   name?: string;
   nthChild?: number;
   originMock?: boolean;
-  parent?: OptionsParent | null;
+  parent?: Parent | null;
   relativePath?: string;
+}
+```
+
+#### ReactClassLifecycle
+
+```ts
+interface ReactClassLifecycle {
+  render: jest.Mock;
+  setState: jest.Mock;
+}
+```
+
+#### RegisteredFunction
+
+```ts
+interface RegisteredFunction {
+  calls: Call[];
+  current: Identity;
+  hooks?: ReactHooks; // only available in react functional components
+  jestFn: jest.Mock;
+  lifecycle?: ReactClassLifecycle; // only available in react class components
+  parent: RegisteredFunction | null;
+} 
+```
+
+#### Stats
+
+```ts
+interface Stats {
+  calls: Call[];
+  dataTestId: string | null;
+  name: string;
+  nthChild?: number;
+  numberOfCalls: number;
+  parent: Parent | null;
+  relativePath: string;
 }
 ```
 

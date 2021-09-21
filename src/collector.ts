@@ -166,7 +166,10 @@ export class Collector extends CollectorAbstract {
    * @param {object} options Options
    * @returns {object} An object with statistics
    */
-  public getStats(name: string, options?: GetStatsOptions): Stats | undefined;
+  public getStats(
+    name: string,
+    options?: GetStatsOptions
+  ): Stats[] | Stats | undefined;
 
   /* @implementation */
   public getStats(
