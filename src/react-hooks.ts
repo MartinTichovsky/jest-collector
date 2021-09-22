@@ -179,27 +179,33 @@ export const mockReactHooks = (
 
     return registered.result;
   },
-  useReducer: function useReducer(reducer: unknown, initialState: unknown) {
+  useReducer: function useReducer(
+    reducer: () => unknown,
+    initialState: unknown
+  ) {
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
 
     const registered = privateCollector.registerUseReducer({
       componentName: caller.name,
       props: {
+        _originReducer: reducer,
         initialState,
         isRegistered: true,
         dispatch: jest.fn(),
-        reducer,
+        reducer: jest.fn(),
         state: undefined
       },
       relativePath: caller.relativePath
     });
 
-    const result = origin.useReducer(reducer, initialState);
-
     if (registered === undefined) {
-      return result;
+      return origin.useReducer(reducer, initialState);
     }
+
+    registered.reducer.mockImplementation(reducer);
+
+    const result = origin.useReducer(registered.reducer, initialState);
 
     registered.state = result[0];
     registered.dispatch.mockImplementation(result[1]);
@@ -238,15 +244,16 @@ export const mockReactHooks = (
 
     return registered.ref;
   },
-  useState: function useState(initialValue: unknown) {
+  useState: function useState(initialState: unknown) {
     // get caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
-    const result = origin.useState(initialValue);
+    const result = origin.useState(initialState);
 
     const registered = privateCollector.registerUseState({
       componentName: caller.name,
       props: {
         _originState: result[1],
+        initialState,
         isRegistered: true,
         setState: jest.fn(),
         state: []

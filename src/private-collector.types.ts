@@ -1,9 +1,9 @@
 import React from "react";
 
 export interface Call {
-  args: any;
+  args?: unknown[];
   stats: CallStats;
-  result?: any;
+  result?: unknown;
 }
 
 export interface CallStats {
@@ -12,7 +12,7 @@ export interface CallStats {
 
 export type FunctionCalled = FunctionIdentity &
   NthChild & {
-    args: any;
+    args?: any;
     jestFn: jest.Mock;
     originMock: boolean;
     parent?: RegisteredFunction | null;
@@ -22,7 +22,7 @@ export type FunctionExecuted = {
   children: FunctionIdentity[];
   index: number;
   registered: RegisteredFunction;
-  result: any;
+  result: unknown;
   time: number;
 };
 
@@ -57,8 +57,8 @@ export type HookChecker<T = undefined> = T extends undefined
   : {};
 
 export interface HookContext {
-  args: any;
-  context: any;
+  args: unknown;
+  context: unknown;
 }
 
 export type HookEffect<T = undefined> = HookWithAction<T> & {
@@ -66,7 +66,7 @@ export type HookEffect<T = undefined> = HookWithAction<T> & {
 };
 
 export type HookMemo<T = undefined> = {
-  deps: any[];
+  deps: unknown[];
   hasBeenChanged: boolean;
   result: jest.Mock | unknown;
 } & HookOriginScope<T>;
@@ -75,34 +75,35 @@ export type HookOriginScope<T = undefined> = T extends undefined
   ? { _originScope: string }
   : {};
 
-export interface HookReducer {
+export type HookReducer<T = undefined> = {
   dispatch: jest.Mock;
   initialState: unknown;
-  reducer: unknown;
+  reducer: jest.Mock;
   state: unknown;
-}
+} & (T extends undefined ? { _originReducer: unknown } : {});
 
 export interface HookRef {
-  args: any;
+  args: unknown;
+  hasBeenChanged: boolean;
   ref: {
     current?: unknown;
   };
-  hasBeenChanged: boolean;
 }
 
 export interface HookResult {
-  args?: any;
-  result?: any;
+  args?: unknown[];
+  result?: unknown;
 }
 
 export type HookState<T = undefined> = {
+  initialState: unknown;
   setState: jest.Mock;
-  state: any[];
+  state: unknown[];
 } & (T extends undefined ? { _originState: Function } : {});
 
 export type HookWithAction<T = undefined> = {
   action: jest.Mock;
-  deps: any[];
+  deps: unknown[];
 } & HookOriginScope<T>;
 
 export type Identity = FunctionIdentity &
@@ -145,7 +146,7 @@ export interface ReactHooksTypes<T = undefined> {
   useImperativeHandle: HookResult & HookChecker<T>;
   useMemo: HookMemo & HookChecker<T>;
   useRef: HookRef & HookChecker<T>;
-  useReducer: HookReducer & HookChecker<T>;
+  useReducer: HookReducer<T> & HookChecker<T>;
   useState: HookState<T> & HookChecker<T>;
 }
 
@@ -172,7 +173,7 @@ export interface RegisterReactClass {
 
 export interface RegisterReactClassImplementation {
   render: () => React.ReactNode;
-  setState: (...props: any) => void;
+  setState: (...props: unknown[]) => void;
 }
 
 export type RegisteredFunction<T = undefined> = {

@@ -691,7 +691,7 @@ export class PrivateCollector extends CollectorAbstract {
     this.registerHook(registered, hookType);
 
     const existingHook = registered.hooks![hookType]!.find(
-      (item) => item.reducer === props.reducer
+      (item) => item._originReducer === props._originReducer
     );
 
     if (existingHook) {
@@ -798,6 +798,10 @@ export class PrivateCollector extends CollectorAbstract {
     const result: ReactHooksTypes<unknown>[K] = {
       ...item
     };
+
+    if (result["_originReducer"]) {
+      delete result["_originReducer"];
+    }
 
     if (result["_originScope"]) {
       delete result["_originScope"];

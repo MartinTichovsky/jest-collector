@@ -30,6 +30,7 @@ describe("useState", () => {
     // the useState hook should exist
     expect(useStateHooks?.get(1)).not.toBeUndefined();
     expect(useStateHooks?.get(2)).toBeUndefined();
+    expect(useStateHooks?.get(1)?.initialState).toEqual(0);
     expect(useStateHooks?.get(1)?.setState).not.toBeCalled();
     expect(useStateHooks?.get(1)?.state).toEqual([0]);
 
@@ -314,7 +315,7 @@ describe("useState", () => {
     ).toBeCalledTimes(1);
   });
 
-  test("Multipe calls", () => {
+  test("Multiple calls", () => {
     const getExpectedText = (num: number) => `Content ${num}`;
     render(<MultipeCalls />);
     expect(screen.getByRole("button")).toHaveTextContent(getExpectedText(1));

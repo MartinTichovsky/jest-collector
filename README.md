@@ -35,6 +35,7 @@
     - [Options](#options)
     - [Parent](#parent)
     - [ReactClassLifecycle](#reactclasslifecycle)
+    - [ReactHooks](#reacthooks)
     - [RegisteredFunction](#registeredfunction)
     - [Stats](#stats)
 - [Real Examples](#real-examples)
@@ -494,11 +495,244 @@ collector.getAllDataFor(SimpleComponent.name);
 
 ### getDataFor
 
-`getDataFor`
+```ts
+getDataFor(name: string, options?: Options): RegisteredFunction | undefined
+```
+
+_References:_
+  - [`Options`](#options)
+  - [`RegisteredFunction`](#registeredfunction)
+
+The method returns an object with data about the registered function/component if it is found. If there are more results matching the name and options, a warning will be shown in the console.
+
+There is a difference between function, react functional component and react class component. All of them contain `calls`, `current`, `jestFn` and `parent` property. React functional component contains additional [`hooks`](#reacthooks) property and React class component contains additional [`lifecycle`](#reactclasslifecycle) property.
+
+#### The returned object properties
+
+[`calls`](#call) - an array of calls.
+  - `args` - an array of passed arguments when the function/component was called.
+  - [`stats`](#callstats) - an object with statistics about the call. Contains `time` which is a time in miliseconds when the function/component was executed. In react components it does not mean that the whole component was executed in that time, because React executes a component and then its children separately. The children are not included in the time.
+  - `result` - any result from the function/component.
+
+[`current`](#identity) - an object with identity of the function/component.
+  - `dataTestId` - data-testid if it was provided to the component.
+  - `name` - a name of the function/component.
+  - `nthChild` - a number of sequence. If there are more identical react components rendered parallelly in a mocked parent, the nthChildren property will be  provided with the number of the render sequence of the component. This is needed to register the components separately, because they are not the same. They can contain different arguments and provide different result.
+  - `originMock` - a boolean. True means, that the function/component was originally mocked by the [`createCollector`](#configuration). False means that the function/component was mocked during the process because of its identification and identification of its children.
+  - `relativePath` - a string with relative path of the function/component. It is always in Linux file system format with no back slashes.
+
+`hooks` - an object with hooks. More info in [`getReactHooks`](#getreacthooks).
+
+`jestFn` - a [`jest.fn`](https://jestjs.io/docs/mock-functions) which contains data about each call and its returns. Similar to the calls property. The difference is this is a jest.Mock function. For more info, read the [`jest.fn documentation`](https://jestjs.io/docs/mock-functions).
+
+`lifecycle` - an object with react class lifecycle. More info in [`getReactLifecycle`](#getreactlifecycle).
+
+[`parent`](#registeredfunction) - an object with info about the parent. The object is a [`RegisteredFunction`](#registeredfunction) type, so it means it contains the same properties as above.
 
 ### getReactHooks
 
-`getReactHooks`
+```ts
+getReactHooks(componentName: string, options?: Options): {
+  getAll(): ReactHooks | undefined;
+  getAll(hookType: HookType): ReactHooks[typeof hookType][] | undefined;
+  getHook(hookType: HookType, sequence: number): ReactHooks[typeof hookType] | undefined;
+  getHooksByType(hookType: HookType): {
+     get(sequence: number): ReactHooks[typeof hookType] | undefined;
+  };
+  getUseState(sequence: number): {
+    getState(stateSequence: number): unknown | undefined;
+    next(): unknown[];
+    reset(): void;
+  };
+} | undefined
+
+type HookType = "useCallback" | "useContext" | "useEffect" | "useMemo" | "useRef" | "useReducer" | "useState"
+```
+
+The return of the method provides functions of how to comfortable work with hooks and its results. The mentioned `hookType` above must be always a name of the hook. When the `hookType` is provided, the result will be always the matching object to the hook.
+
+#### Returned object properties
+
+`getAll` - returns an object or an array. You can get all react hooks as an object [`ReactHooks`](#reacthooks) if you do not pass a hook name. The object will contain only founded hooks. So if you use only `useEffect` in your React component, you will find in the returned object only `useEffect`. If you would like to get only a specific hook, provide a name of the hook and the result will be an array of all registered hooks. It means if you call `getAll("useEffect")` and the React component contains two `useEffects`, the returned array will have two objects in order how they were rendered.
+
+`getHook` - returns an object if the hook with the sequence was found, otherwise it returns undefined. For example, when you have in your React component two `useEffects` and you would like to get the second one, call `getHook("useEffect", 2)`. The sequence always starts from one.
+
+`getHooksByType` - returns an object. It helps if you would like to test more hooks and do not call `getHook` for the each time.
+  - `get` - returns an object of the hook or undefined if the hook or sequence was not found. The sequence always starts from one.
+
+`getUseState` - returns an object or undefined if a `useState` does not exist or it was not found by the passed sequence. It helps to test specific `useState` and its returns.
+  - `getState` - any value. Get specific state result providing the state sequence. State sequence means the sequence of the state results. It means if you have one `useState` and the React component was rendered twice, the state will have two results. You can get the first result by calling `getState(1)` or the second with `getState(2)`.
+  - `next` - returns an array of the states from the last call of this function. It means if your component was rendered twice, and you call the `next`, the return will be an array with two members. First member will be a result from the first render and the second member will be a result from the second render of the component. If the component will be no more rendered, the next call will return an empty array.
+  - `reset` - when call this function, the `next` function will return the state results from the beginning.
+
+#### ReactHooks properties
+
+Every function mentioned bellow is a [`jest.fn`](https://jestjs.io/docs/mock-functions).
+
+`useCallback` - an object
+  - `action` - a function passed to the `React.useCallback`.
+  - `deps` - an array passed to the `React.useCallback` function as deps.
+  - `hasBeenChanged` - a boolean. If the return from the `React.useCallback` has been changed, this property will be true.
+
+`useContext` - an object
+  - `args` - arguments passed to the `React.useContext`.
+  - `context` - result of the `React.useContext`.
+
+`useEffect` - an object
+  - `action` - a function passed to the `React.useEffect`
+  - `deps` - an array passed to the `React.useEffect` function as deps.
+  - `unmount` - a function or undefined. If the `React.useEffect` contains return, it is considered as `unmount` function called when the `React.useEffect` is changed because of the component was unmounted or because of the deps.
+
+`useMemo` - an object
+  - `args` - arguments passed to the `React.useMemo`.
+  - `hasBeenChanged` - a boolean. If the return from the `React.useMemo` has been changed, this property will be true.
+  - `result` - a function or any value. If the result from the `React.useMemo` is a function, will be mocked with [`jest.fn`](https://jestjs.io/docs/mock-functions). Otherwise it can be string, number, an object, etc.
+
+`useRef` - an object
+ - `args` - arguments passed to the `React.useRef`.
+ - `hasBeenChanged` - a boolean. This property will be always false if the React works correctly.
+ - `ref` - an object with `current` property which can be undefined or any value. It is a result from the `React.useRef`.
+
+`useReducer` - an object
+  - `dispatch` - a function returned from the `React.useReducer`.
+  - `initialState` - an object passed to the `React.useReducer` as initial value.
+  - `reducer` - a function passed to the `React.useReducer` as a reducer.
+  - `state` - any value. State result from the `React.useReducer`.
+
+`useState` - an object
+  - `initialState` - an object passed to the `React.useState` as initial value.
+  - `setState` - a function returned from the `React.useState`
+  - `state` - any value. State result from the `React.useState`.
+
+_Examples:_
+
+```ts
+const deps = [];
+const action = jest.fn();
+const unmountAction = jest.fn();
+
+const Component = () => {
+  const [state, setState] = React.useState(10);
+  React.useEffect(() => {
+    action();
+
+    return unmountAction;
+  }, deps)
+
+  return (
+    <button onClick={() => setState(state + 1)}>Increase</button>
+  )
+}
+
+// to make it works with this example, the MockedComponent
+// must be a component mocked by the createCollector
+const { unmount } = render(
+  <MockedComponent>
+    <Component />
+  </MockedComponent>
+);
+
+const reactHooks = collector.getReactHooks(Component.name);
+
+// returned object will have two properties, useEffect and useState
+ expect(reactHooks?.getAll()).toMatchInlineSnapshot(`
+  Object {
+    "useEffect": Array [
+      Object {
+        "action": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": [MockFunction],
+            },
+          ],
+        },
+        "deps": Array [],
+        "unmount": [MockFunction],
+      },
+    ],
+    "useState": Array [
+      Object {
+        "initialState": 10,
+        "setState": [MockFunction],
+        "state": Array [
+          10,
+        ],
+      },
+    ],
+  }
+  `);
+
+  const useEffectHooks = reactHooks?.getHooksByType("useEffect");
+
+  // first useEffect will exist
+  expect(useEffectHooks?.get(1)).not.toBeUndefined();
+  // the useEffect will be called once
+  expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+  // second useEffect will not exist
+  expect(useEffectHooks?.get(2)).toBeUndefined();
+  // the unmount action will be not called
+  expect(useEffectHooks?.get(1)?.unmount).not.toBeCalled();
+
+  // the result will be the same, there are two ways how to
+  // get the specific hook
+  expect(reactHooks?.getHook("useEffect", 1)).toEqual(useEffectHooks?.get(1));
+
+  const firstUseState = reactHooks?.getUseState(1);
+
+  // there is one useState, so it should exist
+  expect(firstUseState).not.toBeUndefined();
+
+  // the first result of the useState will be initial value
+  expect(firstUseState?.getState(1)).toEqual(10);
+
+  // increase the state
+  fireEvent.click(screen.getByRole("button"));
+
+  // the action of the useEffect will be still called once
+  // because the useEffect did not change by the deps
+  expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
+
+  // the unmount action will not be called
+  expect(useEffectHooks?.get(1)?.unmount).not.toBeCalled();
+
+  // the next result of the state will be the initial value + 1
+  expect(firstUseState?.getState(2)).toEqual(11);
+
+  // the result from the useState since first render will
+  // be an array with two numbers, the first and the second
+  // state result
+  expect(firstUseState?.next()).toEqual([10, 11]);
+
+  // the next call will return an empty array because the
+  // state has not been changed since last call of the
+  // next function
+  expect(firstUseState?.next()).toEqual([]);
+
+  // increase the state
+  fireEvent.click(screen.getByRole("button"));
+
+  // new state result will be the initial value + 2
+  expect(firstUseState?.next()).toEqual([12]);
+
+  // reset the state counter
+  firstUseState?.reset()
+
+  // the next call will return all state results
+  // since the first render
+  expect(firstUseState?.next()).toEqual([10, 11, 12]);
+
+  // unmount the component manually
+  unmount();
+
+  // the unmount action will be called
+  expect(useEffectHooks?.get(1)?.unmount).toBeCalledTimes(1);
+```
+
+> NOTE: For more realistic use cases see the [`Real Examples`](#real-examples)
 
 ### getReactLifecycle
 
@@ -510,7 +744,7 @@ _References:_
   - [`Options`](#options)
   - [`ReactClassLifecycle`](#reactclasslifecycle)
 
-When you would like to get all lifecycles for a react class component, you can use `getReactLifecycle` method. The mothod returns an object with properties `render` and `setState` which are a [`jest.fn`](#https://jestjs.io/docs/mock-functions). You can check how many times was `render` or `setState` called and or arguments passed to `setState` and its returns. For more info, read the [`jest.fn documentation`](#https://jestjs.io/docs/mock-functions)
+When you would like to get all lifecycles for a react class component, you can use `getReactLifecycle` method. The mothod returns an object with properties `render` and `setState` which are a [`jest.fn`](https://jestjs.io/docs/mock-functions). You can check how many times was `render` or `setState` called and or arguments passed to `setState` and its returns. For more info, read the [`jest.fn documentation`](https://jestjs.io/docs/mock-functions)
 
 > NOTE: React class components are not fully implemented yet!
 
@@ -625,9 +859,9 @@ collector.reset(SimpleComponent.name);
 
 ```ts
 interface Call {
-  args: any;
+  args: unknown[];
   stats: CallStats;
-  result?: any;
+  result?: unknown;
 }
 ```
 
@@ -685,6 +919,50 @@ interface ReactClassLifecycle {
 }
 ```
 
+#### ReactHooks
+
+```ts
+interface ReactHooks {
+  useCallback: {
+    action: jest.Mock;
+    deps: unknown[];
+    hasBeenChanged: boolean;
+  }[];
+  useContext: {
+    args: unknown[];
+    context: unknown;
+  }[];
+  useEffect: {
+    action: jest.Mock;
+    deps: unknown[];
+    unmount?: jest.Mock;
+  }[];
+  useMemo: {
+    deps: unknown[];
+    hasBeenChanged: boolean;
+    result: jest.Mock | unknown;
+  }[];
+  useRef: {
+    args: unknown[];
+    hasBeenChanged: boolean;
+    ref: {
+      current?: unknown;
+    };
+  }[];
+  useReducer: {
+    dispatch: jest.Mock;
+    initialState: unknown;
+    reducer: jest.Mock;
+    state: unknown;
+  }[];
+  useState: {
+    initialState: unknown;
+    setState: jest.Mock;
+    state: unknown[];
+  }[];
+}
+```
+
 #### RegisteredFunction
 
 ```ts
@@ -713,3 +991,5 @@ interface Stats {
 ```
 
 ## Real Examples
+
+Check out the [`examples`](https://github.com/MartinTichovsky/jest-collector/tree/main/examples).
