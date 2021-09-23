@@ -6,6 +6,7 @@
 
 - [Getting Started](#getting-started)
 - [About](#about)
+- [Next versions](#next-versions)
 - [List of Collected Hooks](#list-of-collected-hooks)
 - [Configuration](#configuration)
   - [exclude](#exclude)
@@ -56,11 +57,24 @@ npm install --save-dev jest-collector
 
 ## About
 
-The Jest Collector is a tool for mocking all imports and collect data about the functions. It is mainly targeted on the React components, but it can be used for regular functions as well. In the collector is stored an info about the function/component, every call, every hook and a parent tree.
+The Jest Collector is a tool for mocking all imports and collect data about the functions. It is mainly targeted on the React components, but it can be used for regular functions and classes as well. In the collector is stored an info about the function/component, every call, every hook and a parent tree.
 
 This tool is providing a way of testing how many times was your component rendered (called), if it contains the correct properties or if you used correct dependencies in React hooks such as in `useEffect`, `useCallback` or in `useMemo`.
 
+The Jest Collector will be not useful for unit tests, but it is very helpful for integration tests. When I was working on [`form-controller`](https://github.com/MartinTichovsky/form-controller) which is far away from being released and published, I wanted to test the performance of the components. I realized, that I know only a little about the React and how the things are done. Lets suppose, that the Jest Collector does not influence how the React works. Then we can develop our component by test driven development and use the Jest Collector to see, if everything works as we expect. At the end, we can test the whole result of our work and prevent useless renders and improve the performance.
+
+For more understanding, check out the [`examples`](https://github.com/MartinTichovsky/jest-collector/tree/main/examples).
+
 > NOTE: React class components are not fully implemented yet!
+
+## Next versions
+
+There are plans for upcoming versions:
+
+- 1.1.0 - Full React class component support
+- 1.2.0 - Support Redux
+- 1.3.0 - Support Mobx
+- 1.4.0 - Mock all methods of a class
 
 ## List of Collected Hooks
 
