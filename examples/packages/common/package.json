@@ -2,7 +2,8 @@
   "name": "common",
   "version": "1.0.0",
   "scripts": {
-    "test": "jest --no-cache --silent"
+    "postinstall": "node ../../scripts/create-symlinks.js",
+    "test": "jest --no-cache"
   },
   "devDependencies": {
     "@testing-library/dom": "8.6.0",
