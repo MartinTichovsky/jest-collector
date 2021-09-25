@@ -531,7 +531,7 @@ There is a difference between function, react functional component and react cla
 [`current`](#identity) - an object with identity of the function/component.
   - `dataTestId` - data-testid if it was provided to the component.
   - `name` - a name of the function/component.
-  - `nthChild` - a number of sequence. If there are more identical react components rendered parallelly in a mocked parent, the nthChildren property will be  provided with the number of the render sequence of the component. This is needed to register the components separately, because they are not the same. They can contain different arguments and provide different result.
+  - `nthChild` - a number of sequence. If there are more identical react components rendered in parallel in a mocked parent, the nthChildren property will be  provided with the number of the render sequence of the component. This is needed to register the components separately, because they are not the same. They can contain different arguments and provide different result.
   - `originMock` - a boolean. True means, that the function/component was originally mocked by the [`createCollector`](#configuration). False means that the function/component was mocked during the process because of its identification and identification of its children.
   - `relativePath` - a string with relative path of the function/component. It is always in Linux file system format with no back slashes.
 

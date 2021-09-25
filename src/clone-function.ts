@@ -99,7 +99,7 @@ export const registerClone = () => {
           });
 
           /*
-            When the components are rendered parallelly, there must be an easy
+            When the components are rendered in parallel, there must be an easy
             way how to identify them. Therefore is created `nthChild` property.
           */
           checkTheChildrenSequence(children);
