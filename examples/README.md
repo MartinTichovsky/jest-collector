@@ -1,4 +1,4 @@
-## Jest Collector Real Examples
+## Jest Collector Examples
 
 The `examples` is a monorepository using [`lerna`](https://github.com/lerna/lerna). I chose a monoreposity because of testing, if the Jest Collector works properly in monorepositories. Go through the projects in `packages` and check out containing tests. Every test contains a description of what is being testing and why.
 
