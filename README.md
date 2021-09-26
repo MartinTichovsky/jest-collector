@@ -1,5 +1,5 @@
 ![Jest Collector](https://github.com/MartinTichovsky/__sources__/raw/master/jest-collector.png)
-
+[![Build Status][ci-image]][ci-url] [![Coverage Status][coveralls-image]][coveralls-url]
 [![NPM](https://img.shields.io/npm/v/jest-collector.svg)](https://www.npmjs.com/package/jest-collector)
 
 ## Table of Contents
