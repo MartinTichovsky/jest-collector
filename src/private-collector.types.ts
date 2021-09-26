@@ -90,11 +90,6 @@ export interface HookRef {
   };
 }
 
-export interface HookResult {
-  args?: unknown[];
-  result?: unknown;
-}
-
 export type HookState<T = undefined> = {
   initialState: unknown;
   setState: jest.Mock;
@@ -143,7 +138,6 @@ export interface ReactHooksTypes<T = undefined> {
   useCallback: HookCallback<T> & HookChecker<T>;
   useContext: HookContext & HookChecker<T>;
   useEffect: HookEffect<T> & HookChecker<T>;
-  useImperativeHandle: HookResult & HookChecker<T>;
   useMemo: HookMemo & HookChecker<T>;
   useRef: HookRef & HookChecker<T>;
   useReducer: HookReducer<T> & HookChecker<T>;

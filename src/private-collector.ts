@@ -816,7 +816,9 @@ export class PrivateCollector extends CollectorAbstract {
     return result;
   }
 
-  private removePropsFromHook(hooks: HookChecker[]) {
+  private removePropsFromHook<K extends keyof ReactHooksTypes>(
+    hooks: ReactHooksTypes[K][]
+  ) {
     return hooks
       .filter((item) => item.isRegistered)
       .map((item) => this.removeHelperProps(item));
