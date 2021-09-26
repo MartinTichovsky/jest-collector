@@ -1,6 +1,7 @@
 ![Jest Collector](https://github.com/MartinTichovsky/__sources__/raw/master/jest-collector.png)
 
 [![NPM](https://img.shields.io/npm/v/jest-collector.svg)](https://www.npmjs.com/package/jest-collector)
+[![Coverage Status](https://coveralls.io/repos/github/MartinTichovsky/jest-collector/badge.svg?branch=main)](https://coveralls.io/github/MartinTichovsky/jest-collector?branch=main)
 
 ## Table of Contents
 
@@ -39,7 +40,8 @@
     - [ReactHooks](#reacthooks)
     - [RegisteredFunction](#registeredfunction)
     - [Stats](#stats)
-- [Real Examples](#real-examples)
+- [Examples](#examples)
+- [License](#license)
 
 ## Getting Started
 
@@ -753,7 +755,7 @@ const reactHooks = collector.getReactHooks(Component.name);
   expect(useEffectHooks?.get(1)?.unmount).toBeCalledTimes(1);
 ```
 
-> NOTE: For more realistic use cases see the [`Real Examples`](#real-examples)
+> NOTE: For more realistic use cases see the [`Examples`](#examples)
 
 ### getReactLifecycle
 
@@ -1011,6 +1013,10 @@ interface Stats {
 }
 ```
 
-## Real Examples
+## Examples
 
 Check out the [`examples`](https://github.com/MartinTichovsky/jest-collector/tree/main/examples).
+
+## License
+
+Jest Collector is [MIT licensed](./LICENSE).
