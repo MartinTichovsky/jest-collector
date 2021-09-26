@@ -13,7 +13,7 @@ export const DynamicState = ({
 
 /**
  * The component creates two states and through useCallback and
- * the caller provide a possibility to manually change the second
+ * the caller provides a possibility to manually change the second
  * state
  */
 export const MultipleStates = ({

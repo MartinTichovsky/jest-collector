@@ -10,8 +10,8 @@ import { OneUseState } from "./UseState";
 
 /**
  * The component calls recursive function before all children,
- * when the component and its children are executed, useEffect
- * will be called and re-render only Template and its children
+ * when the component and its children are executed. UseEffect
+ * will be called and it re-render only Template and its children
  */
 export const ComplexComponent = ({
   templateDataTestId
@@ -29,7 +29,7 @@ export const ComplexComponent = ({
     unmount: jest.fn()
   };
 
-  // after render, set state in the Template, it is assigned inside Template
+  // after the render, set the state in Template
   React.useEffect(() => {
     caller.templateSetState({ num: 5, text: "Some text" });
   }, []);
@@ -70,7 +70,7 @@ export const DirectComponent = ({
 }: {
   templateDataTestId?: string;
 }) => {
-  // create the caller object
+  // create a caller object
   const caller = {
     action: jest.fn(),
     templateSetState: ((_state) => {}) as React.Dispatch<
@@ -79,7 +79,7 @@ export const DirectComponent = ({
     unmount: jest.fn()
   };
 
-  // after render, set state in the Template, it is assigned inside Template
+  // after the render, set the state in Template
   React.useEffect(() => {
     caller.templateSetState({ num: 5, text: "Some text" });
   }, []);

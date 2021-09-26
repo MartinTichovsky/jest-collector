@@ -20,7 +20,7 @@ const reducer = (state: State, action: Action) => {
 };
 
 /**
- * An example with useReducer
+ * An example with useReducer.
  */
 export const UseReducer = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);

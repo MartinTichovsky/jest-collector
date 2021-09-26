@@ -180,7 +180,7 @@ describe("Test id inheritance", () => {
   test("Inheritance disabled", () => {
     const snapshotId = "inheritance disabed";
 
-    // render with test id
+    // render with the test id
     render(<ComplexComponent data-testid={dataTestId1} />);
 
     // only ComplexComponent should have dataTestId1
@@ -223,7 +223,7 @@ describe("Test id inheritance", () => {
     );
 
     /*
-      all children except for Template and its children should have dataTestId1
+      all children except for Template and its children should have dataTestId1.
       Template and its childen should have dataTestId2
     */
     expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();

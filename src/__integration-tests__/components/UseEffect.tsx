@@ -2,11 +2,10 @@ import React from "react";
 import { MultipleUseEffectsInner, TemplateInner } from "./UseEffect.Inner";
 
 /**
- * The component contains multiple child div elements in a tree to force the React
+ * The component contains multiple children div elements in a tree to force React
  * to create multiple nested children. The component has one setState which is
  * passed through the caller to be able manually set the state and force the whole
- * component re-render. MultipleUseEffectsInner component must be imported, otherwise
- * the collector will not catch the function (component) calls.
+ * component re-render.
  */
 export const MultipleUseEffects = ({
   caller,
@@ -53,8 +52,8 @@ export const OneUseEffect = ({ callFunc }: { callFunc: () => void }) => {
 };
 
 /**
- * The component passes the setState to the caller to be able
- * manually set the state and re-render the component
+ * The component passes setState to the caller to be able
+ * manually set the state and re-render the component.
  */
 export const Renders = ({
   caller
@@ -76,8 +75,8 @@ export const Renders = ({
 
 /**
  * The component contains direct TemplateInner component. It should
- * create different react object with no children. The component
- * passes the setState to the caller to be able manually set the state.
+ * create different React object with no children. The component
+ * passes setState to the caller to be able manually set the state.
  */
 export const Template = ({
   caller

@@ -17,9 +17,9 @@ let session: Session | undefined = undefined;
 const scripts: Debugger.ScriptParsedEventDataType[] = [];
 
 /**
- * Because each test is run separately with different
+ * Because of each test is run separately with different
  * context, it is needed to use VM to get the
- * right context to resolve a function path
+ * right context to resolve the function path
  */
 const createContext = (session: Session) => {
   if (context === undefined) {
@@ -67,7 +67,7 @@ const createSession = () => {
 };
 
 /**
- * Resolve path using the debugger
+ * Resolve the path using the debugger
  */
 export const resolvePath = (func: unknown) => {
   const session = createSession();

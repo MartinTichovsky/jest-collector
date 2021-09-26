@@ -18,7 +18,7 @@ beforeEach(() => {
   collector.reset();
 });
 
-describe("useState", () => {
+describe("UseState", () => {
   test("Component with one useState", () => {
     render(<OneUseState />);
 
@@ -27,7 +27,7 @@ describe("useState", () => {
     // get useState hooks
     const useStateHooks = useState?.getHooksByType("useState");
 
-    // the useState hook should exist
+    // useState hook should exist
     expect(useStateHooks?.get(1)).not.toBeUndefined();
     expect(useStateHooks?.get(2)).toBeUndefined();
     expect(useStateHooks?.get(1)?.initialState).toEqual(0);
@@ -89,7 +89,7 @@ describe("useState", () => {
 
   test("Dynamic state changing", () => {
     const getExpectedText = (num: number) => `State ${num}`;
-    // create a caller object to be able manually call the useState
+    // create a caller object to be able manually call useState
     const caller = {
       setState: ((_state: number) => {}) as React.Dispatch<
         React.SetStateAction<number>
@@ -101,7 +101,7 @@ describe("useState", () => {
     // get the first useState hook
     const useState = collector.getReactHooks(DynamicState.name)?.getUseState(1);
 
-    // correct text should be in the document
+    // the correct text should be in the document
     expect(screen.getByText(getExpectedText(0))).toBeTruthy();
     // it should contain the correct state result
     expect(useState?.next()).toEqual([0]);
@@ -111,7 +111,7 @@ describe("useState", () => {
       caller.setState(1);
     });
 
-    // correct text should be in the document
+    // the correct text should be in the document
     expect(screen.getByText(getExpectedText(1))).toBeTruthy();
     // it should contain the correct state result
     expect(useState?.next()).toEqual([1]);
@@ -121,7 +121,7 @@ describe("useState", () => {
       caller.setState(3);
     });
 
-    // correct text should be in the document
+    // the correct text should be in the document
     expect(screen.getByText(getExpectedText(3))).toBeTruthy();
 
     // manually set the state
@@ -129,7 +129,7 @@ describe("useState", () => {
       caller.setState(8);
     });
 
-    // it should contain correct state results since last calling the useState.next()
+    // it should contain correct state results since last calling useState.next()
     expect(useState?.next()).toEqual([3, 8]);
 
     // reset the state itterator
@@ -156,14 +156,14 @@ describe("useState", () => {
     // the text should be in the document
     expect(screen.getByText(testText)).toBeTruthy();
 
-    // children of the OneUseStateWithChildren should be rendered once
+    // children of OneUseStateWithChildren should be rendered once
     expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
 
     act(() => {
       caller.setState(1);
     });
 
-    // children of the OneUseStateWithChildren should be rendered once
+    // children of OneUseStateWithChildren should be rendered once
     expect(collector.getCallCount(ComponentWithChildren.name)).toBe(1);
   });
 
@@ -188,14 +188,14 @@ describe("useState", () => {
     // the text should be in the document
     expect(screen.getByText(testText)).toBeTruthy();
 
-    // children of the OneUseStateWithChildren should be rendered once
+    // children of OneUseStateWithChildren should be rendered once
     expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
 
     act(() => {
       caller.setState(1);
     });
 
-    // children of the OneUseStateWithChildren should be rendered once
+    // children of OneUseStateWithChildren should be rendered once
     expect(collector.getCallCount(ComponentWithChildrenFunction.name)).toBe(1);
   });
 
@@ -214,7 +214,7 @@ describe("useState", () => {
     // get all hooks
     const useState = collector.getReactHooks(MultipleStates.name);
 
-    // two useState hooks shoul exist
+    // two useState hooks should exist
     expect(useState?.getAll("useState")?.length).toBe(2);
 
     // manually set the state

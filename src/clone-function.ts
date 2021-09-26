@@ -71,7 +71,7 @@ export const registerClone = () => {
           const t1 = performance.now();
 
           /*
-            The children represent next expected calls. The react does not call the
+            The children represent next expected calls. React does not call the
             children components during the component call, but after the component is executed.
             Therefore to resolve the correct parent, is must be still as a active function
             in the collector.
@@ -79,7 +79,7 @@ export const registerClone = () => {
           const children: Children[] = [];
 
           /*
-            the result from the react must be mocked to pass the parent 
+            the result from React must be mocked to pass the parent 
             to the children for state re-renders
           */
           processReactObject({
@@ -166,5 +166,6 @@ export const mockFunction = (
   privateCollector: PrivateCollector,
   relativePath: string
 ) => {
+  registerClone();
   return member.clone(privateCollector, relativePath);
 };

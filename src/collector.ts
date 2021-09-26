@@ -15,25 +15,25 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Enable data-testid inheritance
+   * Enable data-testid inheritance.
    *
-   * @param {boolean} excludeNotMockedElements If is set to true, not mocked component will not pass the data-testid
+   * @param {boolean} excludeNotMockedElements If it is set to true, not mocked components will not pass data-testid
    */
   public enableDataTestIdInheritance(excludeNotMockedElements?: boolean): void {
     this.privateCollector.enableDataTestIdInheritance(excludeNotMockedElements);
   }
 
   /**
-   * Disable data-testid inheritance
+   * Disable data-testid inheritance.
    */
   public disableDataTestIdInheritance(): void {
     this.privateCollector.disableDataTestIdInheritance();
   }
 
   /**
-   * Get number of calls for the function or a react component
+   * Get the number of calls for a function or a React component.
    *
-   * @param {String} name Name of a function or a react component
+   * @param {String} name Name of a function or a React component
    * @param {object} options Options
    * @returns {number|undefined} Number of all calls or undefined
    */
@@ -42,11 +42,12 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Get data for a component. The function is the same as `getDataFor`.
-   * If more componets with the same name or name and options are detected,
-   * a warning will be logged. Use more option properties to get exact result.
+   * Get the data for a component. This function is the same as `getDataFor`.
+   * If more components with the same name or the name and options are detected,
+   * a warning will be logged in the console. Use more option properties to get
+   * exact result.
    *
-   * @param {string} componentName Component name
+   * @param {string} componentName Name of a component
    * @param {object} options Options
    * @returns {object|undefined} Data or undefined
    */
@@ -58,8 +59,9 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Get all data for a function or a react component. If there will
-   * be no options specified, all registered functions will be returned.
+   * Get all data for a function or a React component. If there will
+   * be no options specified, all registered functions/components will
+   * be returned.
    *
    * @param {object} options Options where the name do not have to be defined
    * @returns {array} An array of data
@@ -67,10 +69,11 @@ export class Collector extends CollectorAbstract {
   public getAllDataFor(options: OptionsWithName): RegisteredFunction<unknown>[];
 
   /**
-   * Get all data for a function or a react component. If there will
-   * be more data for a name or specified options, all will be returned.
+   * Get all data for a function or a React component. If there will
+   * be more data for a name or specified options, all of them will
+   * be returned.
    *
-   * @param {string} name Name of a function or a react component
+   * @param {string} name Name of a function or a React component
    * @param {object} options Options
    * @returns {array} An array of data
    */
@@ -88,11 +91,11 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Get data for a function or for a react component. If more componets
+   * Get the data for a function or a React component. If more components
    * with the same name or name and options are detected, a warning will
-   * be logged. Use more option properties to get exact result.
+   * be logged. Use option properties to get the exact result.
    *
-   * @param {string} name Name of a function or a react component
+   * @param {string} name Name of a function or a React component
    * @param {object} options Options
    * @returns {object|undefined} Data or undefined
    */
@@ -117,9 +120,9 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Get react hooks of a component
+   * Get React hooks of a component.
    *
-   * @param {string} componentName Component name
+   * @param {string} componentName Name of a component
    * @param {object} options Options
    * @returns {object|undefined} An object with methods or undefined
    */
@@ -131,9 +134,9 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Get react lifecycle for a react class component
+   * Get React lifecycle for a React class component.
    *
-   * @param {string} componentName Component name
+   * @param {string} componentName Name of a component
    * @param {object} options Options
    * @returns {object|undefined} An object with lifecycle properties and their results or undefined
    */
@@ -145,24 +148,24 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Get all statistics of the registered functions
+   * Get all statistics of the registered functions.
    *
-   * @returns {array} An array of statistics sorted in order how the were called
+   * @returns {array} An array of statistics sorted in order of how they were called
    */
   public getStats(): Stats[];
 
   /**
-   * Get all statistics of the registered functions
+   * Get all statistics of the registered functions.
    *
    * @param {object} options Options
-   * @returns {array} An array of statistics sorted in order how the were called
+   * @returns {array} An array of statistics sorted in order of how they were called
    */
   public getStats(options?: GetStatsOptions): Stats[];
 
   /**
-   * Get statistics of a specfic function
+   * Get statistics of a specfic function.
    *
-   * @param {string} name Name of a function or a react component
+   * @param {string} name Name of a function or a React component
    * @param {object} options Options
    * @returns {object} An object with statistics
    */
@@ -180,10 +183,10 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Checking if the collector has registered specific component.
+   * Checking if the collector has registered a specific component.
    * The function is the same as `hasRegistered`.
    *
-   * @param {string} componentName Component name
+   * @param {string} componentName Name of a component
    * @param {object} options Options
    * @returns {boolean} True if the component is registered in the collector
    */
@@ -192,9 +195,9 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Checking if the collector has registered specific function.
+   * Checking if the collector has registered a specific function or a React component.
    *
-   * @param {string} name Name of a function or a react component
+   * @param {string} name Name of a function or a React component
    * @param {object} options Options
    * @returns {boolean} True if the function is registered in the collector
    */
@@ -203,18 +206,18 @@ export class Collector extends CollectorAbstract {
   }
 
   /**
-   * Reset all data in the collector and set everything to default
+   * Reset all data in the collector and set everything to default.
    *
-   * @param name Name of a function or a react component
+   * @param name Name of a function or a React component
    * @param options Options
    */
   public reset(): void;
 
   /**
-   * Delete data for a specific function or a react component. The function
-   * will be no more registered in the collector until next render.
+   * Delete the data for a specific function or a React component. The function
+   * will be no more registered in the collector until the next render.
    *
-   * @param name Name of a function or a react component
+   * @param name Name of a function or a React component
    * @param options Options
    */
   public reset(name: string, options?: Options): void;

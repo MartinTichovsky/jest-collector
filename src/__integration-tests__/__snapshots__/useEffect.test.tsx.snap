@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useEffect Default - Component with one useEffect 1`] = `
+exports[`UseEffect Default - Component with one useEffect 1`] = `
 Object {
   "useEffect": Array [
     Object {
@@ -21,7 +21,7 @@ Object {
 }
 `;
 
-exports[`useEffect Default - Component with one useEffect 2`] = `
+exports[`UseEffect Default - Component with one useEffect 2`] = `
 Object {
   "calls": Array [
     Object {
@@ -103,7 +103,7 @@ Object {
 }
 `;
 
-exports[`useEffect Default with test id - Component with one useEffect 1`] = `
+exports[`UseEffect Default with test id - Component with one useEffect 1`] = `
 Object {
   "useEffect": Array [
     Object {
@@ -124,7 +124,7 @@ Object {
 }
 `;
 
-exports[`useEffect Default with test id - Component with one useEffect 2`] = `
+exports[`UseEffect Default with test id - Component with one useEffect 2`] = `
 Object {
   "calls": Array [
     Object {
@@ -230,7 +230,7 @@ Object {
 }
 `;
 
-exports[`useEffect Deps in the component 1`] = `
+exports[`UseEffect Deps in the component 1`] = `
 Object {
   "calls": Array [
     Object {
@@ -313,7 +313,7 @@ Object {
 }
 `;
 
-exports[`useEffect Unmount registered component 1`] = `
+exports[`UseEffect Unmount registered component 1`] = `
 Object {
   "calls": Array [
     Object {

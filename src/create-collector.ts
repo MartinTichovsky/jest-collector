@@ -1,5 +1,5 @@
 import path from "path";
-import { mockFunction, registerClone } from "./clone-function";
+import { mockFunction } from "./clone-function";
 import { Collector } from "./collector";
 import { mock, resolveReact } from "./jest-globals";
 import { PrivateCollector } from "./private-collector";
@@ -68,9 +68,7 @@ export const createCollector = ({
     extensions = [".ts", ".tsx"];
   }
 
-  registerClone();
-
-  // mocking react to get statistics from calling hooks
+  // mocking React to get the statistics from called hooks
   let reactModule: string | undefined;
 
   try {

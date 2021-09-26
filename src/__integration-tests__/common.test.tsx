@@ -163,9 +163,9 @@ const notMockedComponentTestSuite = () => {
   expect(screen.getByTestId("state")).toHaveTextContent(
     getExpectedText(5, "context", "text5", "result5", "ref5", 8)
   );
-  // action should be called once
+  // the action should be called once
   expect(action).toBeCalledTimes(1);
-  // unmount should not be called
+  // the unmount should not be called
   expect(unmount).not.toBeCalled();
 
   // click on the button and set the state to re-render the component
@@ -175,9 +175,9 @@ const notMockedComponentTestSuite = () => {
   expect(screen.getByTestId("state")).toHaveTextContent(
     getExpectedText(6, "context", "text6", "result6", "ref5", 8)
   );
-  // action should be called once
+  // the action should be called once
   expect(action).toBeCalledTimes(2);
-  // unmount should not be called
+  // the unmount should not be called
   expect(unmount).toBeCalledTimes(1);
 
   // increment the state of the reducer
@@ -187,9 +187,9 @@ const notMockedComponentTestSuite = () => {
   expect(screen.getByTestId("state")).toHaveTextContent(
     getExpectedText(6, "context", "text6", "result6", "ref5", 9)
   );
-  // action should be called once
+  // the action should be called once
   expect(action).toBeCalledTimes(2);
-  // unmount should not be called
+  // the unmount should not be called
   expect(unmount).toBeCalledTimes(1);
 };
 
@@ -235,25 +235,25 @@ describe("Commons tests", () => {
   });
 
   test("Class", () => {
-    // class should not exist
+    // the class should not exist
     expect(collector.getDataFor(TestClass.name)).toBeUndefined();
 
     // create new class
     const testClass = new TestClass();
 
-    // class should exist in the collector
+    // the class should exist in the collector
     expect(collector.getDataFor(TestClass.name)).not.toBeUndefined();
 
-    // class should be called once
+    // the class should be called once
     expect(collector.getCallCount(TestClass.name)).toBe(1);
 
-    // class should be instance of the origin class
+    // the class should be instance of the origin class
     expect(testClass instanceof TestClass).toBeTruthy();
 
     // create new class
     new TestClass();
 
-    // class should be called twice
+    // the class should be called twice
     expect(collector.getCallCount(TestClass.name)).toBe(2);
   });
 
@@ -299,7 +299,7 @@ describe("Commons tests", () => {
       return <div data-testid={testId}>{++num}</div>;
     };
 
-    // create a caller object to be able manually call the useState
+    // create a caller object to be able manually call useState
     const caller = {
       setState: ((_state: number) => {}) as React.Dispatch<
         React.SetStateAction<number>
@@ -334,7 +334,7 @@ describe("Commons tests", () => {
       return <div data-testid={testId}>{++num}</div>;
     };
 
-    // create a caller object to be able manually call the useState
+    // create a caller object to be able manually call useState
     const caller = {
       setState: ((_state: number) => {}) as React.Dispatch<
         React.SetStateAction<number>
@@ -372,25 +372,25 @@ describe("Commons tests", () => {
     render(
       <>
         {/*
-          directly under the root, the element will have nthChild=undefined because
-          it can not be resolved, the component must be under a mocked component
+          directly under the root, the element will have nthChild=undefined because of
+          it can not be resolved. The component must be under a mocked component
           to resolve nthChild
         */}
         <SimpleComponent />
         <SimpleComponent />
         <ComponentWithChildren>
-          {/* directly under the ComponentWithChildren */}
+          {/* directly under ComponentWithChildren */}
           <UnregisteredComponentWithSimpleComponent />
-          {/* directly under the ComponentWithChildren, this will be SimpleComponent with nthChild=1 */}
+          {/* directly under ComponentWithChildren, this will be SimpleComponent with nthChild=1 */}
           <SimpleComponent />
-          {/* directly under the ComponentWithChildren, this will be SimpleComponent with nthChild=2 */}
+          {/* directly under ComponentWithChildren, this will be SimpleComponent with nthChild=2 */}
           <SimpleComponent />
           {/*
-            directly under the ComponentWithChildren, this will be 
+            directly under ComponentWithChildren, this will be 
             ComponentWithChildren with nthChild=1
           */}
           <ComponentWithChildren>
-            {/* three times under the ComponentWithChildren */}
+            {/* three times under ComponentWithChildren */}
             <ComponentWithChildren>
               <SimpleComponent />
               <SimpleComponent />
@@ -399,7 +399,7 @@ describe("Commons tests", () => {
             <SimpleComponent />
           </ComponentWithChildren>
           {/*
-            directly under the ComponentWithChildren, this will be 
+            directly under ComponentWithChildren, this will be 
             ComponentWithChildren with nthChild=2 
           */}
           <ComponentWithChildren>
@@ -407,7 +407,7 @@ describe("Commons tests", () => {
             <SimpleComponent />
           </ComponentWithChildren>
           {/* 
-            directly under the ComponentWithChildren, this will have the nthChild=undefined,
+            directly under ComponentWithChildren, this will have the nthChild=undefined,
             because it has unique data-testid
           */}
           <ComponentWithChildren data-testid={dataTestId1}>
@@ -415,7 +415,7 @@ describe("Commons tests", () => {
             <SimpleComponent />
           </ComponentWithChildren>
           {/* 
-            directly under the ComponentWithChildren, this will have the nthChild=undefined, 
+            directly under ComponentWithChildren, this will have the nthChild=undefined, 
             because it has unique data-testid 
           */}
           <ComponentWithChildren data-testid={dataTestId2}>
@@ -423,7 +423,7 @@ describe("Commons tests", () => {
             <SimpleComponent />
           </ComponentWithChildren>
           {/*
-            directly under the ComponentWithChildren, this will be ComponentWithChildren 
+            directly under ComponentWithChildren, this will be ComponentWithChildren 
             with nthChild=1 and dataTestId=dataTestId3
           */}
           <ComponentWithChildren data-testid={dataTestId3}>
@@ -431,7 +431,7 @@ describe("Commons tests", () => {
             <SimpleComponent />
           </ComponentWithChildren>
           {/* 
-            directly under the ComponentWithChildren, this will be ComponentWithChildren 
+            directly under ComponentWithChildren, this will be ComponentWithChildren 
             with nthChild=2 and dataTestId=dataTestId3
           */}
           <ComponentWithChildren data-testid={dataTestId3}>
@@ -443,9 +443,9 @@ describe("Commons tests", () => {
     );
 
     /*
-      get SimpleComponent under the root, there are two elements, which will
-      be merget into one because they have nthChild=undefined because the nthChild
-      can not be resolved
+      get SimpleComponent under the root. There are two elements, which will
+      be merget into one because the nthChild can not be resolved and it is
+      undefined
     */
     expect(
       collector.getAllDataFor(SimpleComponent.name, {
@@ -459,7 +459,7 @@ describe("Commons tests", () => {
     ).toBe(2);
 
     /*
-      get all SimpleComponents directly under the ComponentWithChildren,
+      get all SimpleComponents directly under ComponentWithChildren,
       there are 16 elements matching that rule
     */
     expect(
@@ -471,8 +471,8 @@ describe("Commons tests", () => {
     ).toBe(17);
 
     /*
-      get all SimpleComponents directly under the ComponentWithChildren,
-      which should be under the root, there are only two elements
+      get all SimpleComponents directly under ComponentWithChildren,
+      which should be under the root. There are only two elements
       matching that rule
     */
     expect(
@@ -485,8 +485,8 @@ describe("Commons tests", () => {
     ).toBe(3);
 
     /*
-      get all SimpleComponents under the data-testid=dataTestId1,
-      there are two elements matching that rule because they are
+      get all SimpleComponents under the data-testid=dataTestId1.
+      There are two elements matching that rule because they are
       resolved with nthChild
     */
     expect(
@@ -498,7 +498,7 @@ describe("Commons tests", () => {
     ).toBe(2);
 
     /*
-      get all SimpleComponents which are resolved as a first child
+      get all SimpleComponents which are resolved as the first children
     */
     expect(
       collector.getAllDataFor(SimpleComponent.name, {
@@ -527,7 +527,7 @@ describe("Commons tests", () => {
     // get all registered functions
     expect(collector.getAllDataFor({}).length).toBe(27);
 
-    // get all by parent relative path
+    // get all by parent's relative path
     expect(
       collector.getAllDataFor({
         parent: {
@@ -571,7 +571,10 @@ describe("Commons tests", () => {
       </>
     );
 
-    // check if the components exist, it should not log a warning, because functions are called with dataTestId
+    /*
+      check if the components exists, it should not log a warning, 
+      because the functions are called with dataTestId
+    */
     expect(console.warn).not.toBeCalled();
     expect(
       collector.getDataFor(ComponentName, { dataTestId: null })
@@ -595,7 +598,7 @@ describe("Commons tests", () => {
     ).toBe(1);
     expect(console.warn).not.toBeCalled();
 
-    // reset data only for one specific component
+    // reset the data only for one specific component
     collector.reset(ComponentName, { dataTestId: dataTestId2 });
 
     // check if the component has been deleted
@@ -615,8 +618,8 @@ describe("Commons tests", () => {
     );
 
     /* 
-      check the component data, it should log a warning because there are
-      two components with the same name and test id and different path of the script
+      check the component data. It should log a warning because there are
+      two components with the same name, test id and different path
     */
     expect(console.warn).not.toBeCalled();
     expect(
@@ -636,7 +639,7 @@ describe("Commons tests", () => {
     // clean the mock stats
     (console.warn as jest.Mock).mockClear();
 
-    // get data wth dataTestId and relative path
+    // get data with dataTestId and relative path
     expect(console.warn).not.toBeCalled();
     expect(
       collector.getCallCount(ComponentName, {
@@ -673,7 +676,10 @@ describe("Commons tests", () => {
       </>
     );
 
-    // check if the componets exist, it should not log a warning, because functions are called with relativePath
+    /*
+      check if the components exists. It should not log a warning, 
+      because the functions are called with relativePath
+    */
     expect(console.warn).not.toBeCalled();
     expect(
       collector.getDataFor(ComponentName, {
@@ -706,12 +712,12 @@ describe("Commons tests", () => {
     ).toBe(1);
     expect(console.warn).not.toBeCalled();
 
-    // reset data on component with useCallbackDepsRelativePath
+    // reset the data on the component with useCallbackDepsRelativePath
     collector.reset(ComponentName, {
       relativePath: useCallbackDepsRelativePath
     });
 
-    // check if component data is correctly deleted
+    // check if the component data was correctly deleted
     expect(
       collector.getCallCount(ComponentName, {
         relativePath: useCallbackDepsRelativePath
@@ -733,7 +739,7 @@ describe("Commons tests", () => {
       })
     ).not.toBeUndefined();
 
-    // new redner should again register the component
+    // new render should register the component again
     render(
       <>
         <UseEffectDeps deps={[]} />
@@ -879,8 +885,8 @@ describe("Commons tests", () => {
 
   test("Recursive function", () => {
     /*
-      call the function several times, the function must be taken from import, if it is not taken 
-      from import and called directly in the function, it will not to be catched by the collector
+      call the function several times. The function must be taken from import. If it is not taken 
+      from import and called directly in the function, it will not be catched by the collector
     */
     recursiveFunction(10, recursiveFunction);
 
@@ -892,7 +898,7 @@ describe("Commons tests", () => {
     // recursive function must exist
     expect(functionHistory).not.toBeUndefined();
 
-    // check global call count
+    // check the global call count
     expect(functionHistory?.jestFn).not.toBeUndefined();
     expect(functionHistory?.jestFn).toBeCalledTimes(11);
 
@@ -907,7 +913,7 @@ describe("Commons tests", () => {
   });
 
   test("Stats - without children", () => {
-    // create class, call function and render some components
+    // create a class, call a function and render some components
     new TestClass();
     render(<ClassComponent />);
     recursiveFunction(3, recursiveFunction);
@@ -919,10 +925,13 @@ describe("Commons tests", () => {
       </>
     );
 
-    // get statistics for all, exclude time because it is always different
+    // get the statistics for all, exclude the time because it is always different
     expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
 
-    // get statistics for specific component, exclude time because it is always different
+    /*
+      get the statistics for the specific component, exclude the time because 
+      it is always different
+    */
     expect(
       collector.getStats(TestClass.name, { excludeTime: true })
     ).toMatchSnapshot();
@@ -935,7 +944,10 @@ describe("Commons tests", () => {
     ).not.toBeUndefined();
     expect(!Array.isArray(stats) && stats?.calls[0].stats.time).not.toBe(0);
 
-    // get statistics for specific component with test id, exclude time because it is always different
+    /*
+      get the statistics for the specific component with test id, 
+      exclude the time because it is always different
+    */
     expect(
       collector.getStats(ComponentName, {
         dataTestId: dataTestId1,
@@ -961,9 +973,9 @@ describe("Commons tests", () => {
       </ComponentWithChildren>
     );
 
-    // get statistics for all, exclude time because it is always different
+    // get the statistics for all, exclude the time because it is always different
     expect(collector.getStats({ excludeTime: true })).toMatchSnapshot();
-    // get stats for all SimpleComponents
+    // get the stats for all SimpleComponents
     expect(
       collector.getStats(SimpleComponent.name, { excludeTime: true })
     ).toMatchSnapshot();

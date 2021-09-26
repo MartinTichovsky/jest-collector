@@ -163,20 +163,20 @@ describe("Wildcards", () => {
   });
 });
 
-test("convertFileSystem", () => {
+test("ConvertFileSystem", () => {
   expect(convertFileSystem("jest-collector\\src\\unit.test.ts")).toBe(
     "jest-collector/src/unit.test.ts"
   );
 });
 
-test("convertFileSystemArray", () => {
+test("ConvertFileSystemArray", () => {
   expect(convertFileSystemArray(["jest-collector\\src\\unit.test.ts"])).toEqual(
     ["jest-collector/src/unit.test.ts"]
   );
 });
 
-describe("getFiles", () => {
-  test("fileSystem", () => {
+describe("GetFiles", () => {
+  test("File system", () => {
     expect(fs.readdirSync("src")).toEqual([
       "folder1",
       "folder2",
@@ -280,7 +280,7 @@ describe("getFiles", () => {
     ]);
   });
 
-  test("Exclude folder", () => {
+  test("Exclude a folder", () => {
     expect(
       convertFileSystemArray(
         getFiles({
@@ -317,7 +317,7 @@ describe("getFiles", () => {
     ]);
   });
 
-  test("Include folder", () => {
+  test("Include a folder", () => {
     expect(
       convertFileSystemArray(
         getFiles({
@@ -366,11 +366,11 @@ describe("getFiles", () => {
   });
 });
 
-test("testRegex", () => {
+test("TestRegex", () => {
   expect(() => testRegex(["abcd["])).toThrowError();
 });
 
-describe("ignoreTest", () => {
+describe("IgnoreTest", () => {
   test("Default", () => {
     expect(ignoreTest("exclude")).toBeFalsy();
     expect(ignoreTest("include")).toBeTruthy();

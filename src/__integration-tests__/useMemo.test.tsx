@@ -10,19 +10,19 @@ beforeEach(() => {
   collector.reset();
 });
 
-describe("useMemo", () => {
+describe("UseMemo", () => {
   test("Component with one useMemo", () => {
     render(<OneUseMemo />);
 
     // the correct text should be in the document
     expect(screen.getByText("Memorized text")).toBeTruthy();
 
-    // get the useRef hooks
+    // get useRef hooks
     const useMemoHooks = collector
       .getReactHooks(OneUseMemo.name)
       ?.getHooksByType("useMemo");
 
-    // the useRef should create an object with the default value
+    // useRef should create an object with the default value
     expect(useMemoHooks?.get(1)).not.toBeUndefined();
     expect(useMemoHooks?.get(2)).toBeUndefined();
     expect(useMemoHooks?.get(1)?.result).toEqual("text");
@@ -53,7 +53,10 @@ describe("useMemo", () => {
       .getReactHooks(DynamicMemo.name)
       ?.getHooksByType("useMemo");
 
-    // the useMemo should return a number from state, first memo state+1 and second memo state+2
+    /*
+      useMemo should return a number from state, the first memo state+1 
+      and the second memo state+2
+    */
     expect(useMemoHooks?.get(1)).not.toBeUndefined();
     expect(useMemoHooks?.get(2)).not.toBeUndefined();
     expect(useMemoHooks?.get(3)).toBeUndefined();
@@ -62,7 +65,7 @@ describe("useMemo", () => {
     expect(useMemoHooks?.get(2)?.result).toEqual(12);
     expect(useMemoHooks?.get(2)?.hasBeenChanged).toBeFalsy();
 
-    // manualy set the state
+    // manually set the state
     act(() => {
       caller.setState({ num1: 0, num2: 11 });
     });
@@ -70,13 +73,13 @@ describe("useMemo", () => {
     // the correct text should be in the document
     expect(screen.getByText(getExpectedText(0, 11))).toBeTruthy();
 
-    // only the second memo should chnge
+    // only the second memo should change
     expect(useMemoHooks?.get(1)?.result).toEqual(1);
     expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
     expect(useMemoHooks?.get(2)?.result).toEqual(13);
     expect(useMemoHooks?.get(2)?.hasBeenChanged).toBeTruthy();
 
-    // manualy set the state
+    // manually set the state
     act(() => {
       caller.setState({ num1: 25, num2: 11 });
     });
@@ -84,7 +87,7 @@ describe("useMemo", () => {
     // the correct text should be in the document
     expect(screen.getByText(getExpectedText(25, 11))).toBeTruthy();
 
-    // only the first memo should chnge
+    // only the first memo should change
     expect(useMemoHooks?.get(1)?.result).toEqual(26);
     expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeTruthy();
     expect(useMemoHooks?.get(2)?.result).toEqual(13);
@@ -121,12 +124,12 @@ describe("useMemo", () => {
     expect(useMemoHooks?.get(1)?.result).lastReturnedWith(9);
     expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
 
-    // manualy set the state
+    // manually set the state
     act(() => {
       caller.setState({ num1: 0, num2: 11 });
     });
 
-    // the useMemo is holding the previous number, so the text should not change
+    // useMemo is holding the previous number, so the text should not be changed
     expect(screen.getByText(getExpectedText(9))).toBeTruthy();
 
     // the useMemo should return the same value
@@ -136,15 +139,15 @@ describe("useMemo", () => {
     expect(useMemoHooks?.get(1)?.result).lastReturnedWith(9);
     expect(useMemoHooks?.get(1)?.hasBeenChanged).toBeFalsy();
 
-    // manualy set the state
+    // manually set the state
     act(() => {
       caller.setState({ num1: 5, num2: 15 });
     });
 
-    // num1 has been changed so now should be in the document new number
+    // num1 has been changed, so now should be in the document a new number
     expect(screen.getByText(getExpectedText(15))).toBeTruthy();
 
-    // the useMemo should return new value
+    // useMemo should return new value
     expect(useMemoHooks?.get(1)).not.toBeUndefined();
     expect(useMemoHooks?.get(2)).toBeUndefined();
     expect(useMemoHooks?.get(1)?.result).toBeCalledTimes(3);

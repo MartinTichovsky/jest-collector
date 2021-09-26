@@ -8,13 +8,13 @@ beforeEach(() => {
   collector.reset();
 });
 
-describe("useReducer", () => {
+describe("UseReducer", () => {
   test("Component with one useReducer", () => {
     console.error = jest.fn();
 
     render(<OneUseReducer />);
 
-    // get the useReducer hooks
+    // get useReducer hooks
     const useReducerHooks = collector
       .getReactHooks(OneUseReducer.name)
       ?.getHooksByType("useReducer");
@@ -26,10 +26,10 @@ describe("useReducer", () => {
     // the component should be rendered once
     expect(collector.getCallCount(OneUseReducer.name)).toBe(1);
 
-    // correct text should be in the document
+    // the correct text should be in the document
     expect(screen.getByTestId("result")).toHaveTextContent("Count: 0");
 
-    // the useReducer should be registered and have initial value
+    // useReducer should be registered and have the initial value
     expect(useReducerHooks?.get(1)).not.toBeUndefined();
     expect(useReducerHooks?.get(2)).toBeUndefined();
     expect(useReducerHooks?.get(1)?.dispatch).not.toBeCalled();
@@ -44,10 +44,10 @@ describe("useReducer", () => {
     // the component should be rendered twice
     expect(collector.getCallCount(OneUseReducer.name)).toBe(2);
 
-    // correct text should be in the document
+    // the correct text should be in the document
     expect(screen.getByTestId("result")).toHaveTextContent("Count: 1");
 
-    // the dispatch should be called and state should be incremented
+    // the dispatch should be called and the state should be incremented
     expect(useReducerHooks?.get(1)).not.toBeUndefined();
     expect(useReducerHooks?.get(2)).toBeUndefined();
     expect(useReducerHooks?.get(1)?.dispatch).toBeCalledTimes(1);
@@ -68,10 +68,10 @@ describe("useReducer", () => {
     // the component should be rendered three times
     expect(collector.getCallCount(OneUseReducer.name)).toBe(3);
 
-    // correct text should be in the document
+    // the correct text should be in the document
     expect(screen.getByTestId("result")).toHaveTextContent("Count: 0");
 
-    // the dispatch should be called and state should be decremented
+    // the dispatch should be called and the state should be decremented
     expect(useReducerHooks?.get(1)).not.toBeUndefined();
     expect(useReducerHooks?.get(2)).toBeUndefined();
     expect(useReducerHooks?.get(1)?.dispatch).toBeCalledTimes(2);
@@ -105,10 +105,10 @@ describe("useReducer", () => {
     // the component should be rendered three times
     expect(collector.getCallCount(OneUseReducer.name)).toBe(4);
 
-    // correct text should be in the document
+    // the correct text should be in the document
     expect(screen.getByTestId("result")).toHaveTextContent("Count: -1");
 
-    // call dispatch directly with not defined type should throw an error
+    // calling the dispatch directly with not defined type should throw an error
     expect(() => {
       act(() => {
         useReducerHooks?.get(1)?.dispatch({ type: "unknown" });

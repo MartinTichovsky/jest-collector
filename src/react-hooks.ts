@@ -21,7 +21,7 @@ export const mockReactHooks = (
     }
 
     /*
-      create an oject to adjust collector properties
+      create an oject to adjust the collector properties
       for needed indentification
     */
     if (!props[1]) {
@@ -50,7 +50,7 @@ export const mockReactHooks = (
     action: (...props: any[]) => void,
     deps: any[]
   ) {
-    // get caller function name from error stack since Funcion.caller is deprecated
+    // get the caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
 
     const registered = privateCollector.registerHookWithAction({
@@ -83,7 +83,7 @@ export const mockReactHooks = (
     return registered.action;
   },
   useContext: function useContext(args: unknown) {
-    // get caller function name from error stack since Funcion.caller is deprecated
+    // get the caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
     const context = origin.useContext(args);
 
@@ -100,7 +100,7 @@ export const mockReactHooks = (
     return context;
   },
   useEffect: (action: () => () => void, deps: any[]) => {
-    // get caller function name from error stack since Funcion.caller is deprecated
+    // get the caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
 
     const registered = privateCollector.registerHookWithAction({
@@ -141,7 +141,7 @@ export const mockReactHooks = (
     return origin.useEffect(registered.action, deps);
   },
   useMemo: function useMemo(action: () => unknown, deps: any[]) {
-    // get caller function name from error stack since Funcion.caller is deprecated
+    // get the caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
     const result = origin.useMemo(action, deps);
 
@@ -183,7 +183,7 @@ export const mockReactHooks = (
     reducer: () => unknown,
     initialState: unknown
   ) {
-    // get caller function name from error stack since Funcion.caller is deprecated
+    // get the caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
 
     const registered = privateCollector.registerUseReducer({
@@ -213,7 +213,7 @@ export const mockReactHooks = (
     return [result[0], registered.dispatch];
   },
   useRef: function useRef(args: unknown) {
-    // get caller function name from error stack since Funcion.caller is deprecated
+    // get the caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
     const ref = origin.useRef(args);
 
@@ -245,7 +245,7 @@ export const mockReactHooks = (
     return registered.ref;
   },
   useState: function useState(initialState: unknown) {
-    // get caller function name from error stack since Funcion.caller is deprecated
+    // get the caller function name from error stack since Funcion.caller is deprecated
     const caller = getCaller();
     const result = origin.useState(initialState);
 
@@ -267,11 +267,6 @@ export const mockReactHooks = (
 
     registered.state.push(result[0]);
     registered.setState.mockImplementation((...props) => result[1](...props));
-
-    // Object.defineProperties(
-    //   registered.setState,
-    //   Object.getOwnPropertyDescriptors(result[1])
-    // );
 
     return [result[0], registered.setState];
   }

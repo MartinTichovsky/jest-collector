@@ -13,7 +13,7 @@ beforeEach(() => {
   collector.reset();
 });
 
-describe("useContext", () => {
+describe("UseContext", () => {
   test("Inheritance of the providers and test id in use", () => {
     const testId1 = "test-id-1";
     const testId2 = "test-id-2";
@@ -61,7 +61,7 @@ describe("useContext", () => {
       .getReactHooks(UseContext.name)
       ?.getHooksByType("useContext");
 
-    // the contexts should have default value
+    // the contexts should have the default value
     expect(screen.getByText(getExpectedText("", ""))).toBeTruthy();
     expect(useContextHooks?.get(1)).not.toBeUndefined();
     expect(useContextHooks?.get(2)).not.toBeUndefined();

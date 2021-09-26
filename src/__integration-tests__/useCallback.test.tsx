@@ -11,7 +11,7 @@ beforeEach(() => {
   collector.reset();
 });
 
-describe("useCallback", () => {
+describe("UseCallback", () => {
   test("Component with one useCallback", () => {
     const callFunc = jest.fn();
 
@@ -41,13 +41,13 @@ describe("useCallback", () => {
       .getReactHooks(WithDeps.name)
       ?.getHooksByType("useCallback");
 
-    // hook should have passed deps
+    // the hook should have passed deps
     expect(useCallbackHooks?.get(1)).not.toBeUndefined();
     expect(useCallbackHooks?.get(1)?.deps).toEqual(deps);
   });
 
   test("Dynamic changing setState to return a new result from useCallback", () => {
-    // create the caller object
+    // create a caller object
     const caller = {
       action: jest.fn(),
       setState: ((_state: number) => {}) as React.Dispatch<
@@ -57,7 +57,7 @@ describe("useCallback", () => {
 
     render(<Renders caller={caller} />);
 
-    // get the useCallback hooks
+    // get useCallback hooks
     const useCallbackHooks = collector
       .getReactHooks(Renders.name)
       ?.getHooksByType("useCallback");
@@ -107,14 +107,14 @@ describe("useCallback", () => {
     expect(useCallbackHooks?.get(1)?.hasBeenChanged).toBeFalsy();
   });
 
-  test("Return from the useCallback", () => {
+  test("Return from useCallback", () => {
     const caller = {
       action: (_nume: number) => ""
     };
 
     render(<WithReturn caller={caller} />);
 
-    // get the useCallback hooks
+    // get useCallback hooks
     const useCallbackHooks = collector
       .getReactHooks(WithReturn.name)
       ?.getHooksByType("useCallback");

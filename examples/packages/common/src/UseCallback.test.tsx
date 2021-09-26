@@ -3,10 +3,10 @@ import React from "react";
 import { UseCallback } from "./useCallback";
 
 /**
- * Whenever it is needed to test if you passed to the useCallback right deps.
- * This test is really simple and shows how you can test the useCallback.
- * It will be useful when you pass more complex deps and you would be sure
- * that you used everything correctly. There is no other way how to test if the
+ * Whenever it is needed to test if you passed to useCallback right deps.
+ * This test is really simple and it shows how you can test useCallback.
+ * It will be useful when you pass more complex deps and you want to be sure
+ * that you used everything correctly. There is no other way, how to test if
  * useCallback has been changed.
  *
  * This test will pass.

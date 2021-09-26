@@ -28,7 +28,7 @@ const updatedReactObject = ({
 };
 
 /**
- * Process the react object to add needed properties
+ * Process the React object to add needed properties
  * to the props for identification of the component
  */
 export const processReactObject = ({
@@ -79,7 +79,7 @@ export const processReactObject = ({
       )
     ]);
   }
-  // if the children is an object
+  // if children is an object
   else if (
     !Array.isArray(object.props.children) &&
     React.isValidElement(object.props.children)
@@ -99,7 +99,7 @@ export const processReactObject = ({
       typeof object.props.children.type === "function" &&
       object.props.children.type![__relativePath__];
 
-    // add an element to the children
+    // add an element to children
     if (isMockedComponent) {
       children.push([
         object.props.children,
@@ -132,7 +132,7 @@ export const processReactObject = ({
       relativePath: object.props.children.type[__relativePath__]
     });
   }
-  // if the children is an array
+  // if children is an array
   else if (Array.isArray(object.props.children)) {
     for (let i = 0; i < object.props.children.length; i++) {
       if (!React.isValidElement(object.props.children[i])) {

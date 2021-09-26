@@ -53,7 +53,7 @@ const defaultTestSuite = (callFunc: () => void, dataTestId?: string) => {
   ).toMatchSnapshot();
 };
 
-describe("useEffect", () => {
+describe("UseEffect", () => {
   test("Default - Component with one useEffect", () => {
     const callFunc = jest.fn();
 
@@ -81,17 +81,17 @@ describe("useEffect", () => {
     // the component should be registered
     expect(collector.hasComponent(WithDeps.name)).toBeTruthy();
     expect(collector.getCallCount(WithDeps.name)).toBe(1);
-    // the component data must mutch the snapshot
+    // the component data must match the snapshot
     expect(
       removeStatsFromCalls(collector.getComponentData(WithDeps.name))
     ).toMatchSnapshot();
 
-    // get the useEffect hooks
+    // get useEffect hooks
     const useEffectHooks = collector
       .getReactHooks(WithDeps.name)
       ?.getHooksByType("useEffect");
 
-    // deps must mutch the passed value
+    // the deps must match the passed value
     expect(useEffectHooks?.get(1)).not.toBeUndefined();
     expect(useEffectHooks?.get(2)).toBeUndefined();
     expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(1);
@@ -116,7 +116,7 @@ describe("useEffect", () => {
       .getReactHooks(Renders.name)
       ?.getHooksByType("useEffect");
 
-    // check if the render is correct and contains correct text
+    // check if the render is correct and contains the correct text
     expect(screen.getByText(getExpectedText(0))).toBeTruthy();
     // the component should be called once
     expect(collector.getCallCount(Renders.name)).toBe(1);
@@ -131,7 +131,7 @@ describe("useEffect", () => {
       caller.setState(1);
     });
 
-    // check if render is correct and contains correct text
+    // check if the render is correct and contains the correct text
     expect(screen.getByText(getExpectedText(1))).toBeTruthy();
     // the component should be called twice
     expect(collector.getCallCount(Renders.name)).toBe(2);
@@ -146,7 +146,7 @@ describe("useEffect", () => {
       caller.setState(2);
     });
 
-    // check if render is correct and contains correct text
+    // check if the render is correct and contains the correct text
     expect(screen.getByText(getExpectedText(2))).toBeTruthy();
     // the component should be called three times
     expect(collector.getCallCount(Renders.name)).toBe(3);
@@ -262,7 +262,7 @@ describe("useEffect", () => {
     expect(useEffectHooks?.get(3)?.action).toBeCalledTimes(1);
     expect(useEffectHooks?.get(4)).toBeUndefined();
 
-    // call the parent component and force to rerender all
+    // call the parent component and force it to rerender all
     act(() => {
       caller.setStateParent(false);
     });
@@ -287,7 +287,7 @@ describe("useEffect", () => {
     expect(useEffectHooks?.get(3)?.action).toBeCalledTimes(1);
     expect(useEffectHooks?.get(4)).toBeUndefined();
 
-    // render the component again an force the component to register only two useEffect hooks
+    // render the component again and force the component to register only two useEffect hooks
     render(
       <MultipleUseEffects
         caller={caller}
@@ -309,19 +309,19 @@ describe("useEffect", () => {
       collector.getReactHooks(MultipleUseEffectsInner.name)?.getAll("useEffect")
         ?.length
     ).toBe(2);
-    // check the actions, except for the second function others must be called twice
+    // check the actions, except for the second function, the others must be called twice
     expect(callFunc11).toBeCalledTimes(2);
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(2);
-    // the useEffects changed the order, because the second useEffect was not created
+    // useEffects changed the order, because the second useEffect was not created
     expect(useEffectHooks?.get(1)?.action).toBeCalledTimes(2);
     expect(useEffectHooks?.get(2)?.action).toBeCalledTimes(2);
     expect(useEffectHooks?.get(3)).toBeUndefined();
 
     /*
-      render directly the inner component, it should register less effects
+      render directly the inner component. It should register less effects
       and create the inner component with parent=null because it is no
-      longer rendered under the MultipleUseEffects component
+      longer rendered under MultipleUseEffects
     */
     render(
       <MultipleUseEffectsInner
@@ -333,7 +333,7 @@ describe("useEffect", () => {
       />
     );
 
-    // get the useEffect hooks for the specific component with parent=null
+    // get useEffect hooks for the specific component with parent=null
     const useEffectHooksForSecondRender = collector
       .getReactHooks(MultipleUseEffectsInner.name, { parent: null })
       ?.getHooksByType("useEffect");
@@ -353,7 +353,7 @@ describe("useEffect", () => {
         .getReactHooks(MultipleUseEffectsInner.name, { parent: null })
         ?.getAll("useEffect")?.length
     ).toBe(2);
-    // the functions passed in the first wave of test must still have the same call count
+    // the functions passed in the first wave of the test must still have the same call count
     expect(callFunc11).toBeCalledTimes(2);
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(2);
@@ -361,12 +361,12 @@ describe("useEffect", () => {
     expect(callFunc21).toBeCalledTimes(1);
     expect(callFunc22).not.toBeCalled();
     expect(callFunc23).toBeCalledTimes(1);
-    // there are two effects only, because the second one is skipped
+    // there are two effects only, because of the second one is skipped
     expect(useEffectHooksForSecondRender?.get(1)?.action).toBeCalledTimes(1);
     expect(useEffectHooksForSecondRender?.get(2)?.action).toBeCalledTimes(1);
     expect(useEffectHooksForSecondRender?.get(3)).toBeUndefined();
 
-    // one more render of the inner component, this time with the second useEffect to be called
+    // one more render of the inner component. This time with the second useEffect to be called
     render(
       <MultipleUseEffectsInner
         caller={caller}
@@ -392,7 +392,7 @@ describe("useEffect", () => {
         ?.getAll("useEffect")?.length
     ).toBe(3);
 
-    // the functions passed in the first wave of test must still have the same call count
+    // the functions passed in the first wave of the test must still have the same call count
     expect(callFunc11).toBeCalledTimes(2);
     expect(callFunc12).toBeCalledTimes(1);
     expect(callFunc13).toBeCalledTimes(2);
@@ -402,7 +402,7 @@ describe("useEffect", () => {
     expect(callFunc23).toBeCalledTimes(2);
     /*
       now the second useEffect from the previous render becomes the third one 
-      because the second useEffect is now registered
+      because of the second useEffect is now registered
     */
     expect(useEffectHooksForSecondRender?.get(1)?.action).toBeCalledTimes(2);
     expect(useEffectHooksForSecondRender?.get(2)?.action).toBeCalledTimes(1);
@@ -413,7 +413,7 @@ describe("useEffect", () => {
   test("Parent render test", () => {
     const getExpectedText = (text: string, num: number) =>
       `Registered template inner ${text}${num}`;
-    // set a caller object
+    // create a caller object
     const caller = {
       action: jest.fn(),
       templateSetState: ((_state) => {}) as React.Dispatch<
@@ -424,7 +424,7 @@ describe("useEffect", () => {
 
     const { unmount } = render(<Template caller={caller} />);
 
-    // get the useEffect hooks
+    // get useEffect hooks
     const useEffectHooks = collector
       .getReactHooks(TemplateInner.name)
       ?.getHooksByType("useEffect");
@@ -443,7 +443,7 @@ describe("useEffect", () => {
     expect(caller.unmount).not.toBeCalled();
     expect(caller.action).toHaveBeenLastCalledWith("");
 
-    // second render - changing number should re-render component but not re-call useEffect
+    // second render - changing number should re-render the component but not re-call useEffect
     act(() => {
       caller.templateSetState({ num: 1, text: "" });
     });
@@ -504,10 +504,10 @@ describe("useEffect", () => {
 
     unmount();
 
-    // chec the unmount
+    // check the unmount
     // the text should not be in the document
     expect(() => screen.getByText(getExpectedText("text", 5))).toThrowError();
-    // the component should be four times
+    // the component should be called four times
     expect(collector.getCallCount(Template.name)).toBe(4);
     // the component should contain the correct data and the unmount should be called twice
     expect(useEffectHooks?.get(1)?.deps).toEqual(["text"]);
@@ -536,7 +536,7 @@ describe("useEffect", () => {
     // the component should be registered
     expect(collector.hasComponent(WithUmount.name)).toBeTruthy();
     expect(collector.getCallCount(WithUmount.name)).toBe(1);
-    // the component data must mutch the snapshot
+    // the component data must match the snapshot
     expect(
       removeStatsFromCalls(collector.getComponentData(WithUmount.name))
     ).toMatchSnapshot();

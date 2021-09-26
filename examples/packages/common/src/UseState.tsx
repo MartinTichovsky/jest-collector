@@ -7,10 +7,10 @@ const action = (value: string, listener: (value: string) => void) => {
 };
 
 /**
- * This example shows bad set state in actions.
+ * This example shows bad setting the state in the actions.
  *
  * Scenario:
- * Lets say I have an input an I would like to predict what a
+ * Let's say I have an input an I want to predict, what a
  * user wants to write. When the user wrote "somet" I will fill
  * the rest of the word to "something". But because I provided
  * wrong condition, the "action" will set the same state twice.

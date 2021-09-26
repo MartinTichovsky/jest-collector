@@ -42,7 +42,7 @@ export const MultipleUseEffectsInner = ({
 
 /**
  * The inner cmponent used by Template component will call
- * the action in the useEffect. The useEffect is called when
+ * the action in useEffect. UseEffect is called when
  * the passed text changes.
  */
 export const TemplateInner = ({

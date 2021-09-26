@@ -3,9 +3,9 @@ import React from "react";
 import { UseReducer } from "./UseReducer";
 
 /**
- * The test is testing state results from the React.useReducer. Whenever you need
- * to test state result from the useReducer to find out if everything works
- * as you expect, you can use it as bellow.
+ * This test is testing the state results from React.useReducer. Whenever you need
+ * to test the state results from useReducer to find out if everything works
+ * as you expected, you can use it as below.
  *
  * This test will pass.
  */
@@ -15,7 +15,7 @@ test("Testing useReducer state results", () => {
   // get the first useReducer from the collector
   const useReducer = collector.getReactHooks(UseReducer.name)?.getUseReducer(1);
 
-  // the state should have an initial value
+  // the state should have the initial value
   expect(useReducer?.next()).toEqual([{ count: 0 }]);
 
   // increment the count number
@@ -35,15 +35,15 @@ test("Testing useReducer state results", () => {
   // increment the count number
   fireEvent.click(screen.getByTestId("increment"));
 
-  // since last `next()` call there were two dispatch actions
-  // and the state was set twice. At first to number one,
+  // since last `next()` call, there were two dispatch actions
+  // and the state has been set twice. At first to number one,
   // at second to number two
   expect(useReducer?.next()).toEqual([{ count: 1 }, { count: 2 }]);
 
   // reset the state counter
   useReducer?.reset();
 
-  // see all states since first render
+  // see all states since the first render
   expect(useReducer?.next()).toEqual([
     { count: 0 },
     { count: 1 },

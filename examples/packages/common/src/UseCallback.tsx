@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * This example shows correct using the React.useCallback
+ * This example shows the correct using of the React.useCallback.
  */
 export const UseCallback = () => {
   const [state, setState] = React.useState({ num: 0, value: "" });
