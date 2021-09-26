@@ -1,11 +1,10 @@
-import { CollectorAbstract } from "./private-collector.abstract";
+import { CollectorAbstract, GetAllHooks } from "./private-collector.abstract";
 import {
   CallStats,
   FunctionCalled,
   FunctionExecuted,
   GetRegistered,
   GetStatsOptions,
-  HookChecker,
   IdentityWithParent,
   Options,
   OptionsParent,
@@ -309,7 +308,7 @@ export class PrivateCollector extends CollectorAbstract {
     };
   }
 
-  public getOnlyRegisteredHooks(
+  public getOnlyRegisteredHooks<K extends keyof ReactHooksTypes>(
     registered: RegisteredFunction
   ): RegisteredFunction {
     if (!("hooks" in registered)) {
@@ -319,9 +318,9 @@ export class PrivateCollector extends CollectorAbstract {
     const filteredHooks = {};
 
     for (let key in registered.hooks) {
-      filteredHooks[key] = (registered.hooks[key] as HookChecker[]).filter(
-        (item) => item.isRegistered
-      );
+      filteredHooks[key] = (
+        registered.hooks[key] as ReactHooksTypes[K][]
+      ).filter((item) => item.isRegistered);
     }
 
     return {
@@ -330,32 +329,29 @@ export class PrivateCollector extends CollectorAbstract {
     };
   }
 
+  private getOnlyRegisteredHooksByType<K extends keyof ReactHooksTypes>(
+    registered: RegisteredFunction,
+    hookType: K
+  ) {
+    if (
+      !(
+        "hooks" in registered &&
+        registered.hooks &&
+        hookType in registered.hooks
+      )
+    ) {
+      return undefined;
+    }
+
+    return (registered.hooks[hookType] as ReactHooksTypes[K][]).filter(
+      (item) => item.isRegistered
+    );
+  }
+
   public getReactHooks(
     componentName: string,
     options?: Options
-  ):
-    | {
-        getAll: <K extends keyof ReactHooksTypes>(
-          hookType?: K
-        ) =>
-          | (K extends undefined ? ReactHooks<unknown> : ReactHooks<unknown>[K])
-          | undefined;
-        getHook: <K extends keyof ReactHooksTypes>(
-          hookType: K,
-          sequence: number
-        ) => ReactHooksTypes<unknown>[K] | undefined;
-        getHooksByType: <K extends keyof ReactHooksTypes>(
-          hookType: K
-        ) => {
-          get: (sequence: number) => ReactHooksTypes<unknown>[K] | undefined;
-        };
-        getUseState: (sequence: number) => {
-          getState: (stateSequence: number) => unknown | undefined;
-          next: () => unknown[];
-          reset: () => void;
-        };
-      }
-    | undefined;
+  ): GetAllHooks | undefined;
 
   public getReactHooks(componentName: string, options?: Options) {
     const registered = this.getDataFor(componentName, options);
@@ -382,46 +378,10 @@ export class PrivateCollector extends CollectorAbstract {
         get: (sequence: number) =>
           this.getHookWithoutScope(registered, hookType, sequence)
       }),
-      getUseState: (sequence: number) => {
-        let stateIndex = 0;
-        const filtered = this.getOnlyRegisteredHooks(registered);
-
-        return {
-          getState: (stateSequence: number) =>
-            "hooks" in filtered &&
-            filtered.hooks &&
-            filtered.hooks["useState"] &&
-            sequence > 0 &&
-            sequence <= filtered.hooks["useState"].length &&
-            filtered.hooks["useState"][sequence - 1].state &&
-            stateSequence > 0 &&
-            stateSequence <=
-              filtered.hooks["useState"][sequence - 1].state.length
-              ? filtered.hooks["useState"][sequence - 1].state[
-                  stateSequence - 1
-                ]
-              : undefined,
-          next: () => {
-            const useState = this.getHookWithoutScope(
-              registered,
-              "useState",
-              sequence
-            );
-            const result = useState
-              ? useState.state.slice(stateIndex, useState.state.length)
-              : [];
-
-            if (useState) {
-              stateIndex = useState.state.length;
-            }
-
-            return result;
-          },
-          reset: () => {
-            stateIndex = 0;
-          }
-        };
-      }
+      getUseReducer: (sequence: number) =>
+        this.getStateHelper(registered, sequence, "useReducer"),
+      getUseState: (sequence: number) =>
+        this.getStateHelper(registered, sequence, "useState")
     };
   }
 
@@ -462,6 +422,45 @@ export class PrivateCollector extends CollectorAbstract {
 
     return registered.hooksCounter![hookType]!;
   }
+
+  private getStateHelper = (
+    registered: RegisteredFunction,
+    sequence: number,
+    hookType: "useReducer" | "useState"
+  ) => {
+    let stateIndex = 0;
+
+    return {
+      getState: (stateSequence: number) => {
+        const hooks = this.getOnlyRegisteredHooksByType(registered, hookType);
+
+        return hooks &&
+          hooks &&
+          sequence > 0 &&
+          sequence <= hooks.length &&
+          hooks[sequence - 1].state &&
+          stateSequence > 0 &&
+          stateSequence <= hooks[sequence - 1].state.length
+          ? hooks[sequence - 1].state[stateSequence - 1]
+          : undefined;
+      },
+      next: () => {
+        const hook = this.getHookWithoutScope(registered, hookType, sequence);
+        const result = hook
+          ? hook.state.slice(stateIndex, hook.state.length)
+          : [];
+
+        if (hook) {
+          stateIndex = hook.state.length;
+        }
+
+        return result;
+      },
+      reset: () => {
+        stateIndex = 0;
+      }
+    };
+  };
 
   public getStats(
     nameOrOptions?: string | GetStatsOptions,

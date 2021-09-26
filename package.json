@@ -1,9 +1,21 @@
 {
   "name": "jest-collector",
   "version": "1.0.0",
-  "description": "",
+  "description": "A tool for testing imported functions and or React components and its hooks or lifecycles.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/MartinTichovsky/jest-collector"
+  },
+  "keywords": [
+    "jest",
+    "collector",
+    "react",
+    "hooks",
+    "lifecycle",
+    "testing"
+  ],
   "scripts": {
     "build": "yarn clean && tsc --project tsconfig.build.json",
     "build:watch": "yarn build --watch",
@@ -14,7 +26,6 @@
   "author": "Martin Tichovsky",
   "license": "MIT",
   "private": false,
-  "sideEffects": false,
   "files": [
     "lib"
   ],

@@ -80,7 +80,7 @@ There are plans for upcoming versions:
 
 These hooks are processed by the collector:
 
-`useCallback`, `useContext`, `useEffect`, `useMemo`, `useRef`, `useReducer`, `useState`
+`useCallback`, `useContext`, `useEffect`, `useMemo`, `useReducer`, `useRef`, `useState`
 
 ## Configuration
 
@@ -553,6 +553,11 @@ getReactHooks(componentName: string, options?: Options): {
   getHooksByType(hookType: HookType): {
      get(sequence: number): ReactHooks[typeof hookType] | undefined;
   };
+  getUseReducer(sequence: number): {
+    getState(stateSequence: number): unknown | undefined;
+    next(): unknown[];
+    reset(): void;
+  };
   getUseState(sequence: number): {
     getState(stateSequence: number): unknown | undefined;
     next(): unknown[];
@@ -560,7 +565,7 @@ getReactHooks(componentName: string, options?: Options): {
   };
 } | undefined
 
-type HookType = "useCallback" | "useContext" | "useEffect" | "useMemo" | "useRef" | "useReducer" | "useState"
+type HookType = "useCallback" | "useContext" | "useEffect" | "useMemo" | "useReducer" | "useRef" | "useState"
 ```
 
 The return of the method provides functions of how to comfortable work with hooks and its results. The mentioned `hookType` above must be always a name of the hook. When the `hookType` is provided, the result will be always the matching object to the hook.
@@ -573,6 +578,8 @@ The return of the method provides functions of how to comfortable work with hook
 
 `getHooksByType` - returns an object. It helps if you would like to test more hooks and do not call `getHook` for the each time.
   - `get` - returns an object of the hook or undefined if the hook or sequence was not found. The sequence always starts from one.
+
+`getUseReducer` - returns an object or undefined. The logic is the same as described bellow for the `getUseState`. The state is taken from return of the `useReducer`.
 
 `getUseState` - returns an object or undefined if a `useState` does not exist or it was not found by the passed sequence. It helps to test specific `useState` and its returns.
   - `getState` - any value. Get specific state result providing the state sequence. State sequence means the sequence of the state results. It means if you have one `useState` and the React component was rendered twice, the state will have two results. You can get the first result by calling `getState(1)` or the second with `getState(2)`.
@@ -611,12 +618,12 @@ Every function mentioned bellow is a [`jest.fn`](https://jestjs.io/docs/mock-fun
   - `dispatch` - a function returned from the `React.useReducer`.
   - `initialState` - an object passed to the `React.useReducer` as initial value.
   - `reducer` - a function passed to the `React.useReducer` as a reducer.
-  - `state` - any value. State result from the `React.useReducer`.
+  - `state` - an array of any value. State results from the `React.useReducer`.
 
 `useState` - an object
   - `initialState` - an object passed to the `React.useState` as initial value.
   - `setState` - a function returned from the `React.useState`
-  - `state` - any value. State result from the `React.useState`.
+  - `state` - an array of any value. State results from the `React.useState`.
 
 _Examples:_
 
@@ -967,7 +974,7 @@ interface ReactHooks {
     dispatch: jest.Mock;
     initialState: unknown;
     reducer: jest.Mock;
-    state: unknown;
+    state: unknown[];
   }[];
   useState: {
     initialState: unknown;

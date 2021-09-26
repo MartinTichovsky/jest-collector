@@ -14,7 +14,7 @@ import { BadUseState } from "./UseState";
 test("Bad useState using", () => {
   render(<BadUseState />);
 
-  // get fist useState from the collector
+  // get the fist useState from the collector
   const useState = collector.getReactHooks(BadUseState.name)?.getUseState(1);
 
   // default value is set to an empty value

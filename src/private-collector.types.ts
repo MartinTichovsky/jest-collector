@@ -79,7 +79,7 @@ export type HookReducer<T = undefined> = {
   dispatch: jest.Mock;
   initialState: unknown;
   reducer: jest.Mock;
-  state: unknown;
+  state: unknown[];
 } & (T extends undefined ? { _originReducer: unknown } : {});
 
 export interface HookRef {

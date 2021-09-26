@@ -51,10 +51,18 @@ export abstract class GetAllHooks {
   /**
    * Get an object with methods for state results
    *
+   * @param {number} sequence A number of expected sequence of the useReducer during the render process. Sequence starts from 1
+   * @returns {object} An object with methods for tetrieving useReducer results
+   */
+  public abstract getUseReducer(sequence: number): GetState;
+
+  /**
+   * Get an object with methods for state results
+   *
    * @param {number} sequence A number of expected sequence of the useState during the render process. Sequence starts from 1
    * @returns {object} An object with methods for tetrieving useState results
    */
-  public abstract getUseState(sequence: number): GetUseState;
+  public abstract getUseState(sequence: number): GetState;
 }
 
 abstract class GetHooksByType<K extends keyof ReactHooksTypes> {
@@ -63,7 +71,7 @@ abstract class GetHooksByType<K extends keyof ReactHooksTypes> {
   ): ReactHooksTypes<unknown>[K] | undefined;
 }
 
-abstract class GetUseState {
+abstract class GetState {
   /**
    * Get one specific state result
    *

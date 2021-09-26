@@ -194,7 +194,7 @@ export const mockReactHooks = (
         isRegistered: true,
         dispatch: jest.fn(),
         reducer: jest.fn(),
-        state: undefined
+        state: []
       },
       relativePath: caller.relativePath
     });
@@ -207,7 +207,7 @@ export const mockReactHooks = (
 
     const result = origin.useReducer(registered.reducer, initialState);
 
-    registered.state = result[0];
+    registered.state.push(result[0]);
     registered.dispatch.mockImplementation(result[1]);
 
     return [result[0], registered.dispatch];

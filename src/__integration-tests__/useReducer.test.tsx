@@ -19,6 +19,10 @@ describe("useReducer", () => {
       .getReactHooks(OneUseReducer.name)
       ?.getHooksByType("useReducer");
 
+    const useReducer = collector
+      .getReactHooks(OneUseReducer.name)
+      ?.getUseReducer(1);
+
     // the component should be rendered once
     expect(collector.getCallCount(OneUseReducer.name)).toBe(1);
 
@@ -29,7 +33,10 @@ describe("useReducer", () => {
     expect(useReducerHooks?.get(1)).not.toBeUndefined();
     expect(useReducerHooks?.get(2)).toBeUndefined();
     expect(useReducerHooks?.get(1)?.dispatch).not.toBeCalled();
-    expect(useReducerHooks?.get(1)?.state).toEqual({ count: 0 });
+    // test the states with three possible ways
+    expect(useReducerHooks?.get(1)?.state).toEqual([{ count: 0 }]);
+    expect(useReducer?.getState(1)).toEqual({ count: 0 });
+    expect(useReducer?.next()).toEqual([{ count: 0 }]);
 
     // increment the counter
     fireEvent.click(screen.getByTestId("increment"));
@@ -47,7 +54,13 @@ describe("useReducer", () => {
     expect(useReducerHooks?.get(1)?.dispatch).lastCalledWith({
       type: "increment"
     });
-    expect(useReducerHooks?.get(1)?.state).toEqual({ count: 1 });
+    // test the states with three possible ways
+    expect(useReducerHooks?.get(1)?.state).toEqual([
+      { count: 0 },
+      { count: 1 }
+    ]);
+    expect(useReducer?.getState(2)).toEqual({ count: 1 });
+    expect(useReducer?.next()).toEqual([{ count: 1 }]);
 
     // decrement the counter
     fireEvent.click(screen.getByTestId("decrement"));
@@ -65,7 +78,24 @@ describe("useReducer", () => {
     expect(useReducerHooks?.get(1)?.dispatch).lastCalledWith({
       type: "decrement"
     });
-    expect(useReducerHooks?.get(1)?.state).toEqual({ count: 0 });
+    // test the states with three possible ways
+    expect(useReducerHooks?.get(1)?.state).toEqual([
+      { count: 0 },
+      { count: 1 },
+      { count: 0 }
+    ]);
+    expect(useReducer?.getState(3)).toEqual({ count: 0 });
+    expect(useReducer?.next()).toEqual([{ count: 0 }]);
+
+    // reset the counter
+    useReducer?.reset();
+
+    // get all states since beginning
+    expect(useReducer?.next()).toEqual([
+      { count: 0 },
+      { count: 1 },
+      { count: 0 }
+    ]);
 
     // directly call the dispatch
     act(() => {
