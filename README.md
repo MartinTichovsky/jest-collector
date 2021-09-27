@@ -49,13 +49,13 @@
 
 ## Getting Started
 
-Install Jest Collector using [`yarn`](https://yarnpkg.com/en/package/jest):
+Install Jest Collector using [`yarn`](https://yarnpkg.com/en/package/jest-collector):
 
 ```bash
 yarn add --dev jest-collector
 ```
 
-or [`npm`](https://www.npmjs.com/package/jest):
+or [`npm`](https://www.npmjs.com/package/jest-collector):
 
 ```bash
 npm install --save-dev jest-collector
