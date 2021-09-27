@@ -3600,9 +3600,10 @@ jest-cli@^27.2.1:
     prompts "^2.0.1"
     yargs "^16.0.3"
 
-"jest-collector@link:..":
-  version "0.0.0"
-  uid ""
+jest-collector@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/jest-collector/-/jest-collector-1.0.0.tgz#b1e52b63063801b53be694f3c5a6914d20350b56"
+  integrity sha512-ULEIdfaJzDT/rEiv2EWm15IDD6zIaBwwWBx0khEBbwLlRZBEBkHtmGaDeuSzlYgkuZfvPFSYM/4+lWKX18ERGA==
 
 jest-config@^27.2.1:
   version "27.2.1"
