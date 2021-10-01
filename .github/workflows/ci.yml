@@ -2,9 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths-ignore:
+      - package.json
+    tags-ignore:
+      - v*
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build-and-test:
@@ -35,3 +41,41 @@ jobs:
 
       - name: TypeScript check
         run: yarn tsc
+
+ bump-version:
+    if: github.ref == 'refs/heads/main'
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+
+      - name: Set creator
+        run: |
+          git config user.email "automated-version@users.noreply.github.com"
+          git config user.name "Automated Version"
+
+      - name: Increment version
+        env:
+          VERSION_TYPE: ${{ (startsWith(github.event.head_commit.message, 'BREAKING CHANGE:') || contains(toJSON(github.event.head_commit.message), '\n\nBREAKING CHANGE:')) && 'major' || (startsWith(github.event.head_commit.message, 'fix:') || contains(toJSON(github.event.head_commit.message), '\n\nfix:')) && 'patch' || 'minor' }}
+        run: |
+          npm version $VERSION_TYPE -m "v%s"
+          VERSION=$(node -p "require('./package.json').version")
+
+      - name: Push changes
+        run: |
+          git push --follow-tags
+          git push --tags
+
+      - name: Install
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish package
+        run: |
+          npm config set "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" 
+          npm publish
