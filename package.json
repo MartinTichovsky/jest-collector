@@ -1,6 +1,6 @@
 {
   "name": "jest-collector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tool for testing imported functions and or React components and its hooks or lifecycles.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
