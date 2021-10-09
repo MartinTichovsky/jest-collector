@@ -23,7 +23,6 @@ const scripts: Debugger.ScriptParsedEventDataType[] = [];
  */
 const createContext = (session: Session) => {
   if (context === undefined) {
-    console.log("created");
     context = {
       contextId: undefined,
       func: undefined
