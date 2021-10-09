@@ -23,8 +23,9 @@ const scripts: Debugger.ScriptParsedEventDataType[] = [];
  */
 const createContext = (session: Session) => {
   if (context === undefined) {
+    console.log("created");
     context = {
-      contextId: 0,
+      contextId: undefined,
       func: undefined
     };
 
@@ -36,12 +37,11 @@ const createContext = (session: Session) => {
       (
         message: InspectorNotification<Runtime.ExecutionContextCreatedEventDataType>
       ) => {
-        contextId = message.params.context.id;
+        context!.contextId = message.params.context.id;
       }
     );
 
     vm.createContext(context);
-    context.contextId = contextId;
     session.post("Runtime.disable");
   }
 
@@ -59,8 +59,6 @@ const createSession = () => {
         scripts[message.params.scriptId] = message.params;
       }
     );
-
-    session.post("Debugger.enable");
   }
 
   return session;
@@ -78,6 +76,8 @@ export const resolvePath = (func: unknown) => {
   const expression = `func`;
 
   let objectId: string | undefined;
+
+  session.post("Debugger.enable");
 
   session.post(
     "Runtime.evaluate",
@@ -123,6 +123,8 @@ export const resolvePath = (func: unknown) => {
       }
     }
   );
+
+  session.post("Debugger.disable");
 
   return relativePath;
 };
