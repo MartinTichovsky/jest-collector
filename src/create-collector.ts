@@ -128,7 +128,7 @@ export const createCollector = ({
 
       const relativePath = convertFileSystem(file.replace(process.cwd(), ""));
 
-      const mocked = {};
+      const mocked: typeof origin = {};
       Object.defineProperties(mocked, Object.getOwnPropertyDescriptors(origin));
 
       for (let key in origin) {

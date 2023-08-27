@@ -37,7 +37,7 @@ export const checkTheChildrenSequence = (children: Children[]) => {
       nthChild !== undefined &&
       children[index][0].props[__collectorProps__]
     ) {
-      children[index][0].props[__collectorProps__][__nthChild__] = nthChild;
+      children[index][0].props[__collectorProps__]![__nthChild__] = nthChild;
       children[index][1].nthChild = nthChild;
     }
   }
@@ -88,7 +88,7 @@ export const getFunctionIdentity = (
     object.props[DATA_TEST_ID] ||
     (object.props[__collectorProps__] &&
       object.props[__collectorProps__][__parentTestId__]) ||
-    (isDataTestIdInherited ? dataTestId : undefined),
+    (isDataTestIdInherited && dataTestId ? dataTestId : null),
   name: object.type!.name,
   relativePath: object.type![__relativePath__]!
 });

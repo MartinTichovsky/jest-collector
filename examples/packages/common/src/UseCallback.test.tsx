@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
-import { UseCallback } from "./useCallback";
+import { UseCallback } from "./UseCallback";
 
 /**
  * Whenever it is needed to test if you passed to useCallback right deps.

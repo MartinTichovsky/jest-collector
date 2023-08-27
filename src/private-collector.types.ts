@@ -145,7 +145,13 @@ export interface ReactHooksTypes<T = undefined> {
 }
 
 export type ReactHooks<T = undefined> = {
-  [K in keyof ReactHooksTypes]?: ReactHooksTypes<T>[K][];
+  useCallback?: ReactHooksTypes<T>["useCallback"][];
+  useContext?: ReactHooksTypes<T>["useContext"][];
+  useEffect?: ReactHooksTypes<T>["useEffect"][];
+  useMemo?: ReactHooksTypes<T>["useMemo"][];
+  useRef?: ReactHooksTypes<T>["useRef"][];
+  useReducer?: ReactHooksTypes<T>["useReducer"][];
+  useState?: ReactHooksTypes<T>["useState"][];
 };
 
 export interface RegisterHook {

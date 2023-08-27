@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test id inheritance Direct component with external components 1`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
@@ -15,21 +15,21 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "Template",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "DirectComponent",
       "originMock": true,
@@ -38,25 +38,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "TemplateInner",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "Template",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "DirectComponent",
         "originMock": true,
@@ -71,12 +71,12 @@ Array [
 `;
 
 exports[`Test id inheritance Direct component with internal component 1`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
@@ -85,17 +85,17 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "DirectComponent",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "DirectComponentInTheSameFile",
       "originMock": true,
@@ -104,25 +104,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "Template",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "DirectComponent",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "DirectComponentInTheSameFile",
         "originMock": true,
@@ -133,29 +133,29 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "TemplateInner",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "Template",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "DirectComponent",
         "originMock": true,
-        "parent": Object {
+        "parent": {
           "dataTestId": "test-id-1",
           "name": "DirectComponentInTheSameFile",
           "originMock": true,
@@ -172,12 +172,12 @@ Array [
 `;
 
 exports[`Test id inheritance Inheritance disabled: inheritance disabed 1`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
@@ -186,17 +186,17 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -205,21 +205,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -230,25 +230,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "recursiveFunction",
         "originMock": true,
-        "parent": Object {
+        "parent": {
           "dataTestId": "test-id-1",
           "name": "ComplexComponent",
           "originMock": true,
@@ -261,17 +261,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "UnregisteredComponentWithChildren",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -280,21 +280,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "Template",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -303,25 +303,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "TemplateInner",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "Template",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -332,17 +332,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.Inner.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -351,17 +351,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "OneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -370,17 +370,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseRef.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "OneUseCallback",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -389,21 +389,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseCallback.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "OneUseState",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "OneUseCallback",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -418,12 +418,12 @@ Array [
 `;
 
 exports[`Test id inheritance Inheritance disabled: inheritance disabed 2`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
@@ -432,17 +432,17 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -451,21 +451,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -476,25 +476,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "recursiveFunction",
         "originMock": true,
-        "parent": Object {
+        "parent": {
           "dataTestId": "test-id-1",
           "name": "ComplexComponent",
           "originMock": true,
@@ -507,17 +507,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "UnregisteredComponentWithChildren",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -526,21 +526,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "Template",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -549,25 +549,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "TemplateInner",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "Template",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -578,17 +578,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.Inner.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -597,17 +597,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "OneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -616,17 +616,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseRef.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "OneUseCallback",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -635,21 +635,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseCallback.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "OneUseState",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "OneUseCallback",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -664,12 +664,12 @@ Array [
 `;
 
 exports[`Test id inheritance Inheritance enabled - use case 1 1`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
@@ -678,17 +678,17 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -697,21 +697,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -722,25 +722,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "recursiveFunction",
         "originMock": true,
-        "parent": Object {
+        "parent": {
           "dataTestId": "test-id-1",
           "name": "ComplexComponent",
           "originMock": true,
@@ -753,17 +753,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "UnregisteredComponentWithChildren",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -772,21 +772,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "Template",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -795,25 +795,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "TemplateInner",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "Template",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -824,17 +824,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.Inner.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -843,17 +843,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "OneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -862,17 +862,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseRef.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "OneUseCallback",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -881,21 +881,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseCallback.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "OneUseState",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "OneUseCallback",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -910,12 +910,12 @@ Array [
 `;
 
 exports[`Test id inheritance Inheritance enabled - use case 2 1`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
@@ -924,17 +924,17 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -943,21 +943,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -968,25 +968,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "recursiveFunction",
         "originMock": true,
-        "parent": Object {
+        "parent": {
           "dataTestId": "test-id-1",
           "name": "ComplexComponent",
           "originMock": true,
@@ -999,17 +999,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "UnregisteredComponentWithChildren",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -1018,21 +1018,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-2",
     "name": "Template",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -1041,25 +1041,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
-      Object {
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-2",
     "name": "TemplateInner",
     "numberOfCalls": 2,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-2",
       "name": "Template",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,
@@ -1070,17 +1070,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseEffect.Inner.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "UnregisteredComponentWithOneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -1089,17 +1089,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "OneUseRef",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -1108,17 +1108,17 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseRef.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "OneUseCallback",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "ComplexComponent",
       "originMock": true,
@@ -1127,21 +1127,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/UseCallback.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
     "name": "OneUseState",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": "test-id-1",
       "name": "OneUseCallback",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": "test-id-1",
         "name": "ComplexComponent",
         "originMock": true,

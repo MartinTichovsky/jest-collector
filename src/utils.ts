@@ -95,7 +95,7 @@ export const ignoreTest = (
   return items.some((regexp) => relativeTestPath.match(regexp));
 };
 
-export const removeCollectorPrivatePropsFromArgs = <T>(args: T) => {
+export const removeCollectorPrivatePropsFromArgs = (args: IArguments) => {
   if (args[0] && args[0][__collectorProps__]) {
     args[0] = { ...args[0] };
     delete args[0][__collectorProps__];

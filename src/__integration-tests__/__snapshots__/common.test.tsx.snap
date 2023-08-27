@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Commons tests Stats - with children 1`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
@@ -15,18 +15,18 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 1,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -35,18 +35,18 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 2,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -55,18 +55,18 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 3,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -75,18 +75,18 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "ComponentWithChildren",
     "nthChild": 1,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -95,22 +95,22 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 1,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -121,18 +121,18 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "ComponentWithChildren",
     "nthChild": 2,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -141,23 +141,23 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 1,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 2,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -168,23 +168,23 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 2,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 2,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -195,23 +195,23 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 3,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 2,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -226,19 +226,19 @@ Array [
 `;
 
 exports[`Commons tests Stats - with children 2`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 1,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -247,18 +247,18 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 2,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -267,18 +267,18 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 3,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "originMock": true,
@@ -287,22 +287,22 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 1,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -313,23 +313,23 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 1,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 2,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -340,23 +340,23 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 2,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 2,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -367,23 +367,23 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/components/common.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "SimpleComponent",
     "nthChild": 3,
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "ComponentWithChildren",
       "nthChild": 2,
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "ComponentWithChildren",
         "originMock": true,
@@ -398,12 +398,12 @@ Array [
 `;
 
 exports[`Commons tests Stats - without children 1`] = `
-Array [
-  Object {
-    "calls": Array [
-      Object {
+[
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
@@ -412,11 +412,11 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/others/class.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
@@ -425,11 +425,11 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/class-components.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
@@ -438,17 +438,17 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "recursiveFunction",
       "originMock": true,
@@ -457,21 +457,21 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "recursiveFunction",
         "originMock": true,
@@ -482,25 +482,25 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
     "name": "recursiveFunction",
     "numberOfCalls": 1,
-    "parent": Object {
+    "parent": {
       "dataTestId": null,
       "name": "recursiveFunction",
       "originMock": true,
-      "parent": Object {
+      "parent": {
         "dataTestId": null,
         "name": "recursiveFunction",
         "originMock": true,
-        "parent": Object {
+        "parent": {
           "dataTestId": null,
           "name": "recursiveFunction",
           "originMock": true,
@@ -513,11 +513,11 @@ Array [
     },
     "relativePath": "/src/__integration-tests__/others/recursive-function.ts",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": null,
@@ -526,11 +526,11 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/common.unregistered.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-1",
@@ -539,11 +539,11 @@ Array [
     "parent": null,
     "relativePath": "/src/__integration-tests__/components/UseEffect.tsx",
   },
-  Object {
-    "calls": Array [
-      Object {
+  {
+    "calls": [
+      {
         "args": undefined,
-        "stats": Object {},
+        "stats": {},
       },
     ],
     "dataTestId": "test-id-2",
@@ -556,11 +556,11 @@ Array [
 `;
 
 exports[`Commons tests Stats - without children 2`] = `
-Object {
-  "calls": Array [
-    Object {
+{
+  "calls": [
+    {
       "args": undefined,
-      "stats": Object {},
+      "stats": {},
     },
   ],
   "dataTestId": null,
@@ -572,11 +572,11 @@ Object {
 `;
 
 exports[`Commons tests Stats - without children 3`] = `
-Object {
-  "calls": Array [
-    Object {
+{
+  "calls": [
+    {
       "args": undefined,
-      "stats": Object {},
+      "stats": {},
     },
   ],
   "dataTestId": "test-id-1",

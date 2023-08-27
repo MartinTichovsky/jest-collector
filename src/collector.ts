@@ -110,7 +110,7 @@ export class Collector extends CollectorAbstract {
     }
 
     const filtered = this.privateCollector.getOnlyRegisteredHooks(registered);
-    delete (filtered as RegisteredFunction<unknown>)["hooksCounter"];
+    delete filtered["hooksCounter"];
 
     filtered.hooks = this.privateCollector.removePropsFromAllHooks(
       filtered!.hooks!

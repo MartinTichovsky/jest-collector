@@ -14,13 +14,12 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
     "stripInternal": true,
     "sourceMap": true
   },
-  "include": ["src"],
+  "include": ["src", "types"],
   "exclude": ["node_modules"]
 }

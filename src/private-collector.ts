@@ -9,9 +9,7 @@ import {
   Options,
   OptionsParent,
   OptionsWithName,
-  ReactHooks,
   ReactHooksTypes,
-  RegisteredFunction,
   RegisterHookProps,
   RegisterReactClass,
   RegisterUseContext,
@@ -20,6 +18,7 @@ import {
   RegisterUseRef,
   RegisterUseState,
   RegisterUseWithAction,
+  RegisteredFunction,
   Stats
 } from "./private-collector.types";
 
@@ -311,16 +310,19 @@ export class PrivateCollector extends CollectorAbstract {
   public getOnlyRegisteredHooks<K extends keyof ReactHooksTypes>(
     registered: RegisteredFunction
   ): RegisteredFunction {
-    if (!("hooks" in registered)) {
+    if (registered.hooks === undefined) {
       return { ...registered };
     }
 
-    const filteredHooks = {};
+    const hooks = registered.hooks;
+    const filteredHooks: {
+      [key: string]: ReactHooksTypes<undefined>[K][];
+    } = {};
 
-    for (let key in registered.hooks) {
-      filteredHooks[key] = (
-        registered.hooks[key] as ReactHooksTypes[K][]
-      ).filter((item) => item.isRegistered);
+    for (let key in hooks) {
+      filteredHooks[key as keyof typeof filteredHooks] = hooks[
+        key as keyof typeof hooks
+      ]!.filter((item) => item.isRegistered) as ReactHooksTypes<undefined>[K][];
     }
 
     return {
@@ -798,19 +800,21 @@ export class PrivateCollector extends CollectorAbstract {
       ...item
     };
 
-    if (result["_originReducer"]) {
-      delete result["_originReducer"];
+    if ("_originReducer" in result && result._originReducer) {
+      delete result!._originReducer;
     }
 
-    if (result["_originScope"]) {
-      delete result["_originScope"];
+    if ("_originScope" in result && result._originScope) {
+      delete result!._originScope;
     }
 
-    if (result["_originState"]) {
-      delete result["_originState"];
+    if ("_originState" in result && result._originState) {
+      delete result!._originState;
     }
 
-    delete result["isRegistered"];
+    if ("isRegistered" in result) {
+      delete result!.isRegistered;
+    }
 
     return result;
   }
@@ -823,11 +827,21 @@ export class PrivateCollector extends CollectorAbstract {
       .map((item) => this.removeHelperProps(item));
   }
 
-  public removePropsFromAllHooks(hooks: ReactHooks) {
-    const result: ReactHooks<unknown> = {};
+  public removePropsFromAllHooks<K extends keyof ReactHooksTypes>(hooks: {
+    [key: string]: ReactHooksTypes<undefined>[K][];
+  }) {
+    const result: {
+      [key: string]: ReactHooksTypes<undefined>[K][];
+    } = {};
 
     for (let key in hooks) {
-      result[key] = this.removePropsFromHook(hooks[key]);
+      const entires = hooks[key as keyof typeof hooks];
+
+      if (!entires) {
+        continue;
+      }
+
+      result[key as keyof typeof result] = this.removePropsFromHook<K>(entires);
     }
 
     return result;
@@ -871,7 +885,14 @@ export class PrivateCollector extends CollectorAbstract {
     }
 
     for (let hookType in registered.hooks) {
-      for (let hook of registered.hooks[hookType]) {
+      const entires =
+        registered.hooks[hookType as keyof typeof registered.hooks];
+
+      if (!entires) {
+        continue;
+      }
+
+      for (let hook of entires) {
         hook.isRegistered = false;
       }
     }

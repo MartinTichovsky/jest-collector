@@ -1,3 +1,14 @@
+/* istanbul ignore file */
+
+import {
+  DATA_TEST_ID,
+  __collectorProps__,
+  __nthChild__,
+  __originMock__,
+  __parentTestId__,
+  __parent__,
+  __relativePath__
+} from "./constants";
 import { PrivateCollector } from "./private-collector";
 import {
   FunctionIdentity,
@@ -36,10 +47,17 @@ export interface ProcessReactResultProps {
 
 export interface ReactObject {
   props: {
+    [__collectorProps__]?: {
+      [__nthChild__]?: number;
+      [__parent__]?: RegisteredFunction | null;
+      [__parentTestId__]?: string;
+    };
+    [DATA_TEST_ID]?: string | null;
     children?: ReactObject | ReactObject[];
   };
   type?: {
-    __relativePath__?: string;
+    [__originMock__]?: boolean;
+    [__relativePath__]?: string;
     name: string;
     clone: (
       privateCollector: PrivateCollector,

@@ -14,7 +14,9 @@ type Context =
 
 let context: Context = undefined;
 let session: Session | undefined = undefined;
-const scripts: Debugger.ScriptParsedEventDataType[] = [];
+const scripts: {
+  [key: string]: Debugger.ScriptParsedEventDataType;
+} = {};
 
 /**
  * Because of each test is run separately with different
