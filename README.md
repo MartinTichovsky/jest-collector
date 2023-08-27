@@ -67,7 +67,7 @@ The Jest Collector is a tool for mocking all imports and collect data about the 
 
 This tool provides a way of testing how many times your component has been rendered (called) if it contains the correct properties or if you used correct dependencies in React hooks such as in `useEffect`, `useCallback` or in `useMemo`.
 
-The Jest Collector will not be useful for unit tests, but it is very helpful for integration tests. While working on [`form-controller`](https://github.com/MartinTichovsky/form-controller), which is far from being released, I wanted to test the performance of the components. I realized that I knew very little about React and how the hooks worked under the hood. Let's suppose that the Jest Collector does not influence React. Then we can develop our component by a test-driven development and use the Jest Collector to see if everything works as expected. At the end, we can test the whole result of our work, prevent useless renders, and improve the performance.
+The Jest Collector will not be useful for unit tests, but it is very helpful for integration tests. While working on [`formco`](https://github.com/MartinTichovsky/formco), which is far from being released, I wanted to test the performance of the components. I realized that I knew very little about React and how the hooks worked under the hood. Let's suppose that the Jest Collector does not influence React. Then we can develop our component by a test-driven development and use the Jest Collector to see if everything works as expected. At the end, we can test the whole result of our work, prevent useless renders, and improve the performance.
 
 To better understand it, check out the [`examples`](https://github.com/MartinTichovsky/jest-collector/tree/main/examples).
 
